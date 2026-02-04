@@ -1,0 +1,43 @@
+{
+  "name": "@workspace/api-routes",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "lint": "eslint \"src/**/*.ts*\" --max-warnings 0"
+  },
+  "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^4.0.48",
+    "@ai-sdk/anthropic": "^3.0.36",
+    "@ai-sdk/google-vertex": "^4.0.42",
+    "@ai-sdk/openai": "^3.0.25",
+    "@aws-sdk/client-s3": "^3.982.0",
+    "@aws-sdk/credential-providers": "^3.982.0",
+    "@aws-sdk/s3-request-presigner": "^3.982.0",
+    "@hono/node-server": "^1.19.9",
+    "@workspace/server": "workspace:*",
+    "ai": "^6.0.69",
+    "drizzle-orm": "^0.45.1",
+    "hono": "^4.11.7",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^2.8.3",
+    "@types/node": "^24.1.0",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./*.js": "./dist/*.js",
+    "./*": "./dist/*.js"
+  }
+}

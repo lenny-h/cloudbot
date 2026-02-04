@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/dev.ts",
+    "dev:once": "tsx src/dev.ts",
+    "build": "tsc",
+    "start": "node dist/dev.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@workspace/api-routes": "workspace:*",
+    "@workspace/server": "workspace:*",
+    "ai": "^6.0.69",
+    "drizzle-orm": "0.45.1",
+    "hono": "^4.11.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "dotenv": "^17.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
