@@ -1,9 +1,6 @@
-import { type ArtifactKind } from "../schemas/artifact-schema.js";
+import { type z } from "zod";
+import { dataSchemas } from "../schemas/data-schemas.js";
 
 export type CustomUIDataTypes = {
-  "chat-created": { id: string };
-  kind: { id: string; title: string; kind: ArtifactKind };
-  "text-delta": string;
-  "code-delta": string;
-  finish: string;
+  [K in keyof typeof dataSchemas]: z.infer<(typeof dataSchemas)[K]>;
 };

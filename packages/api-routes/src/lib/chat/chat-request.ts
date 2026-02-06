@@ -20,7 +20,7 @@ export class ChatRequest {
   public readonly messages: CustomUIMessage[];
   public readonly lastMessage: CustomUIMessage;
   public readonly createNewChat: boolean;
-  public readonly selectedChatModel: number;
+  public readonly modelIdx: number;
   public readonly isTemporary: boolean; // Whether to save the chat or not
   public readonly reasoningEnabled?: boolean;
   public readonly webSearchEnabled?: boolean;
@@ -31,7 +31,7 @@ export class ChatRequest {
     user: User,
     messages: CustomUIMessage[],
     createNewChat: boolean,
-    selectedChatModel: number,
+    modelIdx: number,
     isTemporary: boolean,
     reasoningEnabled?: boolean,
     webSearchEnabled?: boolean,
@@ -42,7 +42,7 @@ export class ChatRequest {
     this.messages = messages;
     this.lastMessage = messages[messages.length - 1]!;
     this.createNewChat = createNewChat;
-    this.selectedChatModel = selectedChatModel;
+    this.modelIdx = modelIdx;
     this.isTemporary = isTemporary;
     this.reasoningEnabled = reasoningEnabled;
     this.webSearchEnabled = webSearchEnabled;
@@ -80,7 +80,7 @@ export class ChatRequest {
       id,
       messages: incomingMessages,
       messageCount,
-      modelIdx: selectedChatModel,
+      modelIdx,
       temporary: isTemporary,
       reasoning: reasoningEnabled,
       webSearch: webSearchEnabled,
@@ -150,7 +150,7 @@ export class ChatRequest {
       user,
       validatedUIMessages,
       createNewChat,
-      selectedChatModel,
+      modelIdx,
       isTemporary,
       reasoningEnabled,
       webSearchEnabled,

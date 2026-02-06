@@ -9,49 +9,34 @@ import {
   type Tool,
   type UIMessageStreamWriter,
 } from "ai";
+import { generateTitleFromUserMessage } from "../../providers/generate-title.js";
+import { titleModelIdx } from "../../providers/models.js";
+import { getModel } from "../../providers/providers.js";
+import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { saveChat } from "../queries/chats.js";
 import { saveMessages } from "../queries/messages.js";
-import { ChatRequest } from "./chat-request.js";
+import { type ChatRequest } from "./chat-request.js";
 
 const logger = createLogger("chat-handler");
 
 type StreamTextInput = Parameters<typeof streamText>[0];
 
 export abstract class ChatHandler {
+  protected env: Bindings;
   protected request: ChatRequest;
 
-  constructor(request: ChatRequest) {
+  constructor(env: Bindings, request: ChatRequest) {
+    this.env = env;
     this.request = request;
   }
 
-  async handleRequest(): Promise<Response> {
-    const createdChat = await this.handleChatCreation();
-
-    const stream = createUIMessageStream<CustomUIMessage>({
-      execute: async ({ writer }) => {
-        if (createdChat) {
-          writer.write({
-            type: "data-chat-created",
-            data: { id: createdChat.id },
-            transient: true,
-          });
-        }
-
-        await this.executeChat(writer);
-      },
-      onError: (error) => this.handleError(error),
-    });
-
-    return createUIMessageStreamResponse({ stream });
-  }
-
   protected async generateChatTitle(): Promise<string> {
-    const config = await getModel(chatTitleModelIdx);
+    const config = await getModel(this.env, titleModelIdx);
 
     logger.debug("Generating chat title with model", {
       chatId: this.request.id,
-      message: this.request.messages[this.request.messages.length - 1],
+      message: this.request.lastMessage,
       model: config.model.toString(),
     });
 
@@ -64,8 +49,9 @@ export abstract class ChatHandler {
   protected async handleChatCreation(): Promise<Chat | undefined> {
     if (!this.request.createNewChat) return undefined;
 
-    const title = await this.generateChatTitle();
+    logger.debug("Creating new chat", { chatId: this.request.id });
 
+    const title = await this.generateChatTitle();
     const createdChat = await saveChat({
       id: this.request.id,
       userId: this.request.user.id,
@@ -131,23 +117,44 @@ export abstract class ChatHandler {
     return finalPrompt;
   }
 
-  protected async createStreamTextConfig({
+  protected async buildStreamTextConfig({
     systemPrompt,
   }: {
     systemPrompt: string;
   }): Promise<StreamTextInput> {
-    const config = await getModel(this.request.selectedChatModel);
+    const config = await getModel(this.env, this.request.modelIdx);
     let modelMessages = await convertToModelMessages(this.request.messages);
 
     return {
       system: systemPrompt,
-      model: config.modelId,
+      model: config.model,
       providerOptions: config.providerOptions,
       messages: modelMessages,
       experimental_transform: smoothStream({
         chunking: "word",
       }),
     };
+  }
+
+  async handleRequest(): Promise<Response> {
+    const createdChat = await this.handleChatCreation();
+
+    const stream = createUIMessageStream<CustomUIMessage>({
+      execute: async ({ writer }) => {
+        if (createdChat) {
+          writer.write({
+            type: "data-chat-created",
+            data: { id: createdChat.id },
+            transient: true,
+          });
+        }
+
+        await this.executeChat(writer);
+      },
+      onError: (error) => this.handleError(error),
+    });
+
+    return createUIMessageStreamResponse({ stream });
   }
 
   // Abstract methods to be implemented by subclasses

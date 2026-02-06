@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { documentHandlersByArtifactKind } from "@/lib/artifacts/server";
-import { getDocumentById } from "@/lib/db/queries";
-import type { ChatMessage } from "@/lib/types";
 import { tool, type UIMessageStreamWriter } from "ai";
-import type { Session } from "next-auth";
 import { z } from "zod";
+import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { documentHandlersByArtifactKind } from "../artifacts/artifact-server.js";
+import { getDocumentById } from "../queries/documents.js";
 
 type UpdateDocumentProps = {
-  session: Session;
-  dataStream: UIMessageStreamWriter<ChatMessage>;
+  userId: string;
+  dataStream: UIMessageStreamWriter<CustomUIMessage>;
 };
 
-export const updateDocument = ({ session, dataStream }: UpdateDocumentProps) =>
+export const updateDocument = ({ userId, dataStream }: UpdateDocumentProps) =>
   tool({
     description: "Update a document with the given description.",
     inputSchema: z.object({
@@ -61,7 +60,7 @@ export const updateDocument = ({ session, dataStream }: UpdateDocumentProps) =>
         document,
         description,
         dataStream,
-        session,
+        userId,
       });
 
       dataStream.write({ type: "data-finish", data: null, transient: true });

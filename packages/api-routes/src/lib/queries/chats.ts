@@ -1,12 +1,12 @@
 import { db } from "@workspace/server/drizzle/db.js";
 import { chats } from "@workspace/server/drizzle/schema/schema.js";
 import { and, desc, eq, lt } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 
 export async function getChatById({ id }: { id: string }) {
   const result = await db
     .select({
       userId: chats.userId,
+      title: chats.title,
     })
     .from(chats)
     .where(eq(chats.id, id))
@@ -17,6 +17,10 @@ export async function getChatById({ id }: { id: string }) {
   }
 
   return result[0];
+}
+
+export async function deleteChatById({ id }: { id: string }) {
+  await db.delete(chats).where(eq(chats.id, id));
 }
 
 export async function getFavouriteChatsByUserId({
@@ -44,26 +48,6 @@ export async function getFavouriteChatsByUserId({
   return await query;
 }
 
-export async function updateChatFavouriteStatus({
-  id,
-  isFavourite,
-}: {
-  id: string;
-  isFavourite: boolean;
-}) {
-  const result = await db
-    .update(chats)
-    .set({ isFavourite })
-    .where(eq(chats.id, id))
-    .returning();
-
-  if (result.length === 0) {
-    throw new HTTPException(404, { message: "NOT_FOUND" });
-  }
-
-  return result[0];
-}
-
 export async function saveChat({
   id,
   userId,
@@ -83,8 +67,4 @@ export async function saveChat({
     .returning();
 
   return result[0];
-}
-
-export async function deleteChatById({ id }: { id: string }) {
-  await db.delete(chats).where(eq(chats.id, id));
 }

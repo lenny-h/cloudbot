@@ -1,10 +1,5 @@
 import * as z from "zod";
 
-import { ChatHandlerFactory } from "@workspace/api-routes/lib/chat/index.js";
-import {
-  deleteChatById,
-  getChatById,
-} from "@workspace/api-routes/lib/queries/chats.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -14,75 +9,68 @@ import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
+import { chatsIsFavouriteSchema } from "./schema.js";
 
-const patchQuerySchema = z
-  .object({
-    id: uuidSchema,
-    fav: z.boolean(),
-  })
-  .strict();
-
-const deleteQuerySchema = z
-  .object({
-    id: uuidSchema,
-  })
-  .strict();
+const paramSchema = z.object({ chatId: uuidSchema }).strict();
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
-  .post("/", async (c) => {
-    const handler = await ChatHandlerFactory.createStandardChatHandler(c);
-    return await handler.handleRequest();
-  })
-  .patch(
+  .get(
     "/",
-    validator("query", (value, c) => {
-      const parsed = patchQuerySchema.safeParse(value);
+    validator("param", (value, c) => {
+      const parsed = paramSchema.safeParse(value);
       if (!parsed.success) {
         throw new HTTPException(400, { message: "BAD_REQUEST" });
       }
       return parsed.data;
     }),
     async (c) => {
-      const { id, fav: isFavourite } = c.req.valid("query");
+      const { chatId } = c.req.valid("param");
       const user = c.get("user");
 
       const result = await db
-        .update(chats)
-        .set({ isFavourite })
-        .where(and(eq(chats.id, id), eq(chats.userId, user.id)))
-        .returning();
+        .select({ isFavourite: chats.isFavourite })
+        .from(chats)
+        .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)))
+        .limit(1);
 
       if (result.length === 0) {
         throw new HTTPException(404, { message: "NOT_FOUND" });
       }
 
-      const updatedChat = result[0];
-
-      return c.json({ updatedChat });
+      return c.json({ isFavourite: result[0].isFavourite });
     },
   )
-  .delete(
+  .patch(
     "/",
-    validator("query", (value, c) => {
-      const parsed = deleteQuerySchema.safeParse(value);
+    validator("param", (value, c) => {
+      const parsed = paramSchema.safeParse(value);
+      if (!parsed.success) {
+        throw new HTTPException(400, { message: "BAD_REQUEST" });
+      }
+      return parsed.data;
+    }),
+    validator("json", async (value, c) => {
+      const parsed = chatsIsFavouriteSchema.safeParse(value);
       if (!parsed.success) {
         throw new HTTPException(400, { message: "BAD_REQUEST" });
       }
       return parsed.data;
     }),
     async (c) => {
-      const { id } = c.req.valid("query");
+      const { chatId } = c.req.valid("param");
+      const { isFavourite } = c.req.valid("json");
       const user = c.get("user");
 
-      const chat = await getChatById({ id });
+      const result = await db
+        .update(chats)
+        .set({ isFavourite })
+        .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)));
 
-      if (!chat || chat.userId !== user.id) {
+      if (result.rowCount === 0) {
         throw new HTTPException(404, { message: "NOT_FOUND" });
       }
 
-      await deleteChatById({ id });
-
-      return c.json({ message: "Chat deleted" });
+      return c.json({ message: "Chat favourite status updated" });
     },
   );
 

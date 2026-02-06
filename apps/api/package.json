@@ -2,10 +2,9 @@
   "name": "api",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/dev.ts",
-    "dev:once": "tsx src/dev.ts",
-    "build": "tsc",
-    "start": "node dist/dev.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
@@ -26,6 +25,7 @@
     "dotenv": "^17.2.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "wrangler": "^4.63.0"
   }
 }

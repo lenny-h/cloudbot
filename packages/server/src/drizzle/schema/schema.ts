@@ -78,8 +78,8 @@ export const files = sqliteTable(
 
 export type File = InferSelectModel<typeof files>;
 
-export const document = sqliteTable(
-  "Document",
+export const documents = sqliteTable(
+  "documents",
   {
     id: text("id").notNull(),
     title: text("title").notNull(),
@@ -90,15 +90,17 @@ export const document = sqliteTable(
     owner: text("owner")
       .notNull()
       .references(() => users.id),
-    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
   },
   (table) => [primaryKey({ columns: [table.id, table.createdAt] })],
 );
 
-export type Document = InferSelectModel<typeof document>;
+export type Document = InferSelectModel<typeof documents>;
 
-export const suggestion = sqliteTable(
-  "Suggestion",
+export const suggestions = sqliteTable(
+  "suggestions",
   {
     id: text("id").primaryKey().notNull(),
     documentId: text("document_id").notNull(),
@@ -114,14 +116,16 @@ export const suggestion = sqliteTable(
     owner: text("owner")
       .notNull()
       .references(() => users.id),
-    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
   },
   (table) => [
     foreignKey({
       columns: [table.documentId, table.documentCreatedAt],
-      foreignColumns: [document.id, document.createdAt],
+      foreignColumns: [documents.id, documents.createdAt],
     }),
   ],
 );
 
-export type Suggestion = InferSelectModel<typeof suggestion>;
+export type Suggestion = InferSelectModel<typeof suggestions>;

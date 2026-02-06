@@ -1,7 +1,8 @@
 export type Provider =
+  | "aigateway"
   | "anthropic"
-  | "amazon-bedrock"
   | "azure"
+  | "amazon-bedrock"
   | "google-vertex"
   | "openai";
 
@@ -66,3 +67,12 @@ function parseChatModels(): ChatModel[] {
 }
 
 export const chatModels: ChatModel[] = parseChatModels();
+
+export const titleModelIdx = parseInt(process.env.TITLE_MODEL_IDX ?? "0");
+export const artifactModelIdx = parseInt(process.env.ARTIFACT_MODEL_IDX ?? "1");
+export const webSearchModelIdx = parseInt(
+  process.env.WEB_SEARCH_MODEL_IDX ?? "0",
+);
+export const completionModelIdx = parseInt(
+  process.env.COMPLETION_MODEL_IDX ?? "0",
+);

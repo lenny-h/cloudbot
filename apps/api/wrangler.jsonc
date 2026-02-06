@@ -1,9 +1,15 @@
 {
     "name": "cloudbot-api",
     "main": "src/index.ts",
-    "compatibility_date": "2025-04-01",
+    "compatibility_date": "2026-02-05",
     "compatibility_flags": [
         "nodejs_compat"
+    ],
+    "r2_buckets": [
+        {
+            "binding": "YOUR_BUCKET",
+            "bucket_name": "your-bucket"
+        }
     ],
     "d1_databases": [
         {
@@ -12,5 +18,8 @@
             "database_id": "YOUR_DB_ID",
             "migrations_dir": "./../packages/server/src/drizzle/migrations"
         }
-    ]
+    ],
+    "ai": {
+        "binding": "AI"
+    }
 }

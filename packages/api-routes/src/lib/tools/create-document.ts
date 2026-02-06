@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { tool, type UIMessageStreamWriter } from "ai";
+import { z } from "zod";
+import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import {
   artifactKinds,
   documentHandlersByArtifactKind,
-} from "@/lib/artifacts/server";
-import type { ChatMessage } from "@/lib/types";
-import { generateUUID } from "@/lib/utils";
-import { tool, type UIMessageStreamWriter } from "ai";
-import type { Session } from "next-auth";
-import { z } from "zod";
+} from "../artifacts/artifact-server.js";
+import { generateUUID } from "../utils.js";
 
 type CreateDocumentProps = {
-  session: Session;
-  dataStream: UIMessageStreamWriter<ChatMessage>;
+  userId: string;
+  dataStream: UIMessageStreamWriter<CustomUIMessage>;
 };
 
-export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
+export const createDocument = ({ userId, dataStream }: CreateDocumentProps) =>
   tool({
     description:
       "Create a document for a writing or content creation activities. This tool will call other functions that will generate the contents of the document based on the title and kind.",
@@ -39,12 +38,6 @@ export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
       const id = generateUUID();
 
       dataStream.write({
-        type: "data-kind",
-        data: kind,
-        transient: true,
-      });
-
-      dataStream.write({
         type: "data-id",
         data: id,
         transient: true,
@@ -53,6 +46,12 @@ export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
       dataStream.write({
         type: "data-title",
         data: title,
+        transient: true,
+      });
+
+      dataStream.write({
+        type: "data-kind",
+        data: kind,
         transient: true,
       });
 
@@ -75,7 +74,7 @@ export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
         id,
         title,
         dataStream,
-        session,
+        userId,
       });
 
       dataStream.write({ type: "data-finish", data: null, transient: true });

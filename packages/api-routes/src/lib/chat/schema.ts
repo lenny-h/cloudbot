@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { chatModels } from "../../constants/models.js";
+import { chatModels } from "../../providers/models.js";
 
 const basePayloadSchema = z
   .object({

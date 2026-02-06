@@ -3,19 +3,17 @@ import { artifactSchema } from "./artifact-schema.js";
 import { uuidSchema } from "./uuid-schema.js";
 
 export const dataSchemas = {
-  chat: z
+  "chat-created": z
     .object({
       id: uuidSchema,
     })
     .strict(),
-  kind: z
-    .object({
-      id: uuidSchema,
-      title: z.string().min(1).max(128),
-      kind: artifactSchema,
-    })
-    .strict(),
-  "text-delta": z.string(),
-  "code-delta": z.string(),
-  finish: z.string(),
+  id: uuidSchema,
+  title: z.string(),
+  kind: artifactSchema,
+  textDelta: z.string(),
+  codeDelta: z.string(),
+  sheetDelta: z.string(),
+  clear: z.null(),
+  finish: z.null(),
 };

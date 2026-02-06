@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { sheetPrompt, updateDocumentPrompt } from "@/lib/ai/prompts";
 import { getArtifactModel } from "@/lib/ai/providers";
-import { streamObject } from "ai";
-import { z } from "zod";
+import { streamText } from "ai";
+import { sheetPrompt, updateDocumentPrompt } from "../../providers/prompts.js";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const sheetDocumentHandler = createDocumentHandler<"sheet">({
@@ -23,21 +22,17 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
   onCreateDocument: async ({ title, dataStream }) => {
     let draftContent = "";
 
-    const { fullStream } = streamObject({
+    const { fullStream } = streamText({
       model: getArtifactModel(),
       system: sheetPrompt,
       prompt: title,
-      schema: z.object({
-        csv: z.string().describe("CSV data"),
-      }),
     });
 
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
-        const { object } = delta;
-        const { csv } = object;
+      if (type === "text-delta") {
+        const { text: csv } = delta;
 
         if (csv) {
           dataStream.write({
@@ -62,21 +57,17 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
   onUpdateDocument: async ({ document, description, dataStream }) => {
     let draftContent = "";
 
-    const { fullStream } = streamObject({
+    const { fullStream } = streamText({
       model: getArtifactModel(),
       system: updateDocumentPrompt(document.content, "sheet"),
       prompt: description,
-      schema: z.object({
-        csv: z.string(),
-      }),
     });
 
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
-        const { object } = delta;
-        const { csv } = object;
+      if (type === "text-delta") {
+        const { text: csv } = delta;
 
         if (csv) {
           dataStream.write({

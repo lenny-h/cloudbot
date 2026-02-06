@@ -9,7 +9,7 @@ export class ChatHandlerFactory {
   ): Promise<StandardChatHandler> {
     const chatRequest = await ChatRequest.fromRequest(c, chatPayloadSchema);
 
-    return new StandardChatHandler(chatRequest);
+    return new StandardChatHandler(c.env, chatRequest);
   }
 }
 

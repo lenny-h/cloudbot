@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { updateDocumentPrompt } from "@/lib/ai/prompts";
 import { getArtifactModel } from "@/lib/ai/providers";
 import { smoothStream, streamText } from "ai";
+import { updateDocumentPrompt } from "../../providers/prompts.js";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const textDocumentHandler = createDocumentHandler<"text">({

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { codePrompt, updateDocumentPrompt } from "@/lib/ai/prompts";
-import { getArtifactModel } from "@/lib/ai/providers";
-import { streamObject } from "ai";
-import { z } from "zod";
+import { streamText } from "ai";
+import { artifactModelIdx } from "../../providers/models.js";
+import { codePrompt, updateDocumentPrompt } from "../../providers/prompts.js";
+import { getModel } from "../../providers/providers.js";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const codeDocumentHandler = createDocumentHandler<"code">({
@@ -23,21 +23,19 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
   onCreateDocument: async ({ title, dataStream }) => {
     let draftContent = "";
 
-    const { fullStream } = streamObject({
-      model: getArtifactModel(),
+    const config = await getModel(env, artifactModelIdx);
+
+    const { fullStream } = streamText({
+      model: config.model,
       system: codePrompt,
       prompt: title,
-      schema: z.object({
-        code: z.string(),
-      }),
     });
 
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
-        const { object } = delta;
-        const { code } = object;
+      if (type === "text-delta") {
+        const { text: code } = delta;
 
         if (code) {
           dataStream.write({
@@ -56,21 +54,19 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
   onUpdateDocument: async ({ document, description, dataStream }) => {
     let draftContent = "";
 
-    const { fullStream } = streamObject({
-      model: getArtifactModel(),
+    const config = await getModel(env, artifactModelIdx);
+
+    const { fullStream } = streamText({
+      model: config.model,
       system: updateDocumentPrompt(document.content, "code"),
       prompt: description,
-      schema: z.object({
-        code: z.string(),
-      }),
     });
 
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
-        const { object } = delta;
-        const { code } = object;
+      if (type === "text-delta") {
+        const { text: code } = delta;
 
         if (code) {
           dataStream.write({

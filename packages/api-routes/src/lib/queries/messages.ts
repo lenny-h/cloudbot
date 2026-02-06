@@ -2,7 +2,7 @@ import { db } from "@workspace/server/drizzle/db.js";
 import { messages } from "@workspace/server/drizzle/schema/schema.js";
 import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { CustomUIMessage } from "../../types/custom-ui-message.js";
+import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 
 export async function getMessageById({ messageId }: { messageId: string }) {
   const result = await db

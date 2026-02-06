@@ -16,12 +16,17 @@
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^4.0.48",
     "@ai-sdk/anthropic": "^3.0.36",
+    "@ai-sdk/azure": "^3.0.26",
     "@ai-sdk/google-vertex": "^4.0.42",
     "@ai-sdk/openai": "^3.0.25",
+    "@ai-sdk/perplexity": "^3.0.17",
     "@aws-sdk/client-s3": "^3.982.0",
     "@aws-sdk/credential-providers": "^3.982.0",
     "@aws-sdk/s3-request-presigner": "^3.982.0",
+    "@exalabs/ai-sdk": "^1.0.5",
     "@hono/node-server": "^1.19.9",
+    "@parallel-web/ai-sdk-tools": "^0.2.1",
+    "@tavily/ai-sdk": "^0.4.1",
     "@workspace/server": "workspace:*",
     "ai": "^6.0.69",
     "drizzle-orm": "^0.45.1",
@@ -29,6 +34,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260205.0",
     "@turbo/gen": "^2.8.3",
     "@types/node": "^24.1.0",
     "@workspace/eslint-config": "workspace:*",

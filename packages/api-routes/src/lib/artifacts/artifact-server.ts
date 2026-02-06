@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import type { ArtifactKind } from "@/components/artifact";
-import type { UIMessageStreamWriter } from "ai";
-import { saveDocument } from "../db/queries";
-import type { Document } from "../db/schema";
-import type { ChatMessage } from "../types";
+import { type Document } from "@workspace/server/drizzle/schema/schema.js";
+import { type UIMessageStreamWriter } from "ai";
+import { type ArtifactKind } from "../../schemas/artifact-schema.js";
+import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { saveDocument } from "../queries/documents.js";
 import { codeDocumentHandler } from "./code-server.js";
 import { sheetDocumentHandler } from "./sheet-server.js";
 import { textDocumentHandler } from "./text-server.js";
@@ -32,14 +32,14 @@ export type SaveDocumentProps = {
 export type CreateDocumentCallbackProps = {
   id: string;
   title: string;
-  dataStream: UIMessageStreamWriter<ChatMessage>;
+  dataStream: UIMessageStreamWriter<CustomUIMessage>;
   userId: string;
 };
 
 export type UpdateDocumentCallbackProps = {
   document: Document;
   description: string;
-  dataStream: UIMessageStreamWriter<ChatMessage>;
+  dataStream: UIMessageStreamWriter<CustomUIMessage>;
   userId: string;
 };
 

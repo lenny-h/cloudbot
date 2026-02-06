@@ -1,4 +1,3 @@
-import { generateUUID } from "@workspace/api-routes/utils/utils.js";
 import { createLogger } from "@workspace/server/logger.js";
 import {
   stepCountIs,
@@ -6,19 +5,22 @@ import {
   type Tool,
   type UIMessageStreamWriter,
 } from "ai";
-import { STANDARD_SYSTEM_PROMPT } from "../../constants/prompt.js";
+import { STANDARD_SYSTEM_PROMPT } from "../../providers/prompts.js";
+import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
-import { createDocumentTool } from "../tools/create-document.js";
+import { createDocument } from "../tools/create-document.js";
+import { updateDocument } from "../tools/update-document.js";
+import { generateUUID } from "../utils.js";
 import { ChatHandler } from "./chat-handler.js";
-import { ChatRequest } from "./chat-request.js";
+import { type ChatRequest } from "./chat-request.js";
 
 const logger = createLogger("standard-chat-handler");
 
 export class StandardChatHandler extends ChatHandler {
   private systemPrompt = STANDARD_SYSTEM_PROMPT;
 
-  constructor(request: ChatRequest) {
-    super(request);
+  constructor(env: Bindings, request: ChatRequest) {
+    super(env, request);
   }
 
   private async buildSystemPrompt(): Promise<string> {
@@ -33,10 +35,13 @@ export class StandardChatHandler extends ChatHandler {
     writer: UIMessageStreamWriter<CustomUIMessage>,
   ): Record<string, Tool> {
     const tools: Record<string, Tool> = {
-      createDocument: createDocumentTool({
-        writer,
-        chatId: this.request.id,
+      createDocument: createDocument({
         userId: this.request.user.id,
+        dataStream: writer,
+      }),
+      updateDocument: updateDocument({
+        userId: this.request.user.id,
+        dataStream: writer,
       }),
     };
 
@@ -47,11 +52,9 @@ export class StandardChatHandler extends ChatHandler {
     writer: UIMessageStreamWriter<CustomUIMessage>,
   ): Promise<void> {
     const systemPrompt = await this.buildSystemPrompt();
-
-    const streamConfig = await this.createStreamTextConfig({
+    const streamConfig = await this.buildStreamTextConfig({
       systemPrompt,
     });
-
     const tools = this.retrieveToolSet(writer);
 
     logger.info("Executing chat with tools:", Object.keys(tools));

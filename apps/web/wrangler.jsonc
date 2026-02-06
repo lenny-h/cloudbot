@@ -1,7 +1,7 @@
 {
   "main": ".open-next/worker.js",
   "name": "monorepo-web",
-  "compatibility_date": "2025-03-25",
+  "compatibility_date": "2026-02-05",
   "compatibility_flags": [
     "nodejs_compat"
   ],

@@ -4,7 +4,6 @@ import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import { secureHeaders } from "hono/secure-headers";
 
-// Create Hono application
 const app = new Hono()
   .use("*", requestId())
   .use("*", compress())
