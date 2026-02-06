@@ -16,7 +16,6 @@ const basePayloadSchema = z
     reasoning: z.boolean().optional(),
     webSearch: z.boolean().optional(),
     trigger: z.string().max(128).optional(),
-    timezone: z.string().optional(), // e.g., "America/New_York"
   })
   .refine(
     (data) => {

@@ -1,5 +1,5 @@
 export type Provider =
-  | "aigateway"
+  | "workers-ai"
   | "anthropic"
   | "azure"
   | "amazon-bedrock"

@@ -9,6 +9,8 @@ import { standardSystemPrompt } from "../../providers/prompts.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { createDocument } from "../tools/create-document.js";
+import { extractFromDocuments } from "../tools/extract-from-documents.js";
+import { extractFromWeb } from "../tools/extract-from-web.js";
 import { updateDocument } from "../tools/update-document.js";
 import { generateUUID } from "../utils.js";
 import { ChatHandler } from "./chat-handler.js";
@@ -45,7 +47,19 @@ export class StandardChatHandler extends ChatHandler {
         userId: this.request.user.id,
         dataStream: writer,
       }),
+      extractFromDocuments: extractFromDocuments({
+        env: this.env,
+        dataStream: writer,
+      }),
     };
+
+    if (this.request.webSearchEnabled) {
+      tools.extractFromWeb = extractFromWeb({
+        env: this.env,
+        userLocation: this.request.userLocation,
+        dataStream: writer,
+      });
+    }
 
     return tools;
   }

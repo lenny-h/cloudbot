@@ -25,114 +25,134 @@ export const getModel = async (
     throw new HTTPException(400, { message: "INVALID_MODEL" });
   }
 
-  if (chatModel.provider === "aigateway") {
-    const { createAiGateway } = await import("ai-gateway-provider");
+  switch (chatModel.provider) {
+    case "workers-ai": {
+      const { createWorkersAI } = await import("workers-ai-provider");
 
-    const aigateway = createAiGateway({
-      binding: env.AI.gateway(process.env.AI_GATEWAY_NAME!),
-      options: {
-        skipCache: true, // Optional request-level settings
-      },
-    });
+      const workersai = createWorkersAI({ binding: env.AI });
 
-    return {
-      model: aigateway(chatModel.name),
-      providerOptions: {
-        aigateway: {},
-      },
-    };
-  }
+      return {
+        model: workersai(chatModel.name),
+        providerOptions: {},
+      };
+    }
 
-  if (chatModel.provider === "anthropic") {
-    const { anthropic } = await import("@ai-sdk/anthropic");
+    case "anthropic": {
+      const { anthropic } = await import("@ai-sdk/anthropic");
 
-    return {
-      model: anthropic(chatModel.name),
-      providerOptions: {
-        anthropic: {
-          ...(reasoningEnabled
-            ? {
-                contextManagement: {
-                  edits: [
-                    {
-                      type: "clear_thinking_20251015",
-                      keep: { type: "thinking_turns", value: 2 },
-                    },
-                  ],
-                },
-                disableParallelToolUse: true,
-                sendReasoning: true,
-                thinking: { type: "enabled", budgetTokens: 1024 },
-              }
-            : {}),
+      return {
+        model: anthropic(chatModel.name),
+        providerOptions: {
+          anthropic: {
+            ...(reasoningEnabled
+              ? {
+                  contextManagement: {
+                    edits: [
+                      {
+                        type: "clear_thinking_20251015",
+                        keep: { type: "thinking_turns", value: 2 },
+                      },
+                    ],
+                  },
+                  disableParallelToolUse: true,
+                  sendReasoning: true,
+                  thinking: { type: "enabled", budgetTokens: 1024 },
+                }
+              : {}),
+          },
         },
-      },
-    };
-  }
+      };
+    }
 
-  if (chatModel.provider === "amazon-bedrock") {
-    const { createAmazonBedrock } = await import("@ai-sdk/amazon-bedrock");
+    case "amazon-bedrock": {
+      const { createAmazonBedrock } = await import("@ai-sdk/amazon-bedrock");
 
-    const bedrock = createAmazonBedrock({
-      region: process.env.AWS_REGION,
-      credentialProvider: fromNodeProviderChain(),
-    });
+      const bedrock = createAmazonBedrock({
+        region: process.env.AWS_REGION,
+        credentialProvider: fromNodeProviderChain(),
+      });
 
-    const bedrockModel = bedrock(chatModel.name);
+      const bedrockModel = bedrock(chatModel.name);
 
-    return {
-      model: wrapLanguageModel({
-        model: bedrockModel,
-        middleware: extractReasoningMiddleware({ tagName: "thinking" }),
-      }),
-      providerOptions: {
-        amazon_bedrock: {
-          ...(reasoningEnabled
-            ? { reasoningConfig: { type: "enabled", budgetTokens: 1024 } }
-            : {}),
+      return {
+        model: wrapLanguageModel({
+          model: bedrockModel,
+          middleware: extractReasoningMiddleware({ tagName: "thinking" }),
+        }),
+        providerOptions: {
+          amazon_bedrock: {
+            ...(reasoningEnabled
+              ? { reasoningConfig: { type: "enabled", budgetTokens: 1024 } }
+              : {}),
+          },
         },
-      },
-    };
-  }
+      };
+    }
 
-  if (chatModel.provider === "google-vertex") {
-    const { vertex } = await import("@ai-sdk/google-vertex");
+    case "azure": {
+      const { azure } = await import("@ai-sdk/azure");
 
-    return {
-      model: vertex(chatModel.name),
-      providerOptions: {
-        google: {
-          ...(reasoningEnabled
-            ? {
-                thinkingConfig: {
-                  includeThoughts: true,
-                  thinkingBudget: 1024,
-                },
-              }
-            : {}),
+      const azureModel = azure(chatModel.name);
+
+      return {
+        model: wrapLanguageModel({
+          model: azureModel,
+          middleware: extractReasoningMiddleware({ tagName: "think" }),
+        }),
+        providerOptions: {
+          openai: {
+            parallelToolCalls: false,
+            ...(reasoningEnabled
+              ? { reasoningEffort: "medium", reasoningSummary: "auto" }
+              : {
+                  reasoningEffort: "none",
+                }),
+            store: false,
+          },
         },
-      },
-    };
-  }
+      };
+    }
 
-  if (chatModel.provider === "openai") {
-    const { openai } = await import("@ai-sdk/openai");
+    case "google-vertex": {
+      const { vertex } = await import("@ai-sdk/google-vertex");
 
-    return {
-      model: openai(chatModel.name),
-      providerOptions: {
-        openai: {
-          parallelToolCalls: false,
-          store: false,
-          ...(reasoningEnabled
-            ? { reasoningEffort: "medium", reasoningSummary: "auto" }
-            : {
-                reasoningEffort: "none",
-              }),
+      return {
+        model: vertex(chatModel.name),
+        providerOptions: {
+          google: {
+            ...(reasoningEnabled
+              ? {
+                  thinkingConfig: {
+                    includeThoughts: true,
+                    thinkingBudget: 1024,
+                  },
+                }
+              : {}),
+          },
         },
-      },
-    };
-  }
+      };
+    }
 
-  throw new HTTPException(400, { message: "INVALID_MODEL" });
+    case "openai": {
+      const { openai } = await import("@ai-sdk/openai");
+
+      return {
+        model: openai(chatModel.name),
+        providerOptions: {
+          openai: {
+            parallelToolCalls: false,
+            ...(reasoningEnabled
+              ? { reasoningEffort: "medium", reasoningSummary: "auto" }
+              : {
+                  reasoningEffort: "none",
+                }),
+            store: false,
+          },
+        },
+      };
+    }
+
+    default:
+      throw new HTTPException(400, { message: "INVALID_MODEL" });
+  }
 };

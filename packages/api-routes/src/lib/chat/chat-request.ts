@@ -8,11 +8,16 @@ import { HTTPException } from "hono/http-exception";
 import { dataSchemas } from "../../schemas/data-schemas.js";
 import { metadataSchema } from "../../schemas/metadata-schema.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { type UserLocation } from "../../types/user-location.js";
 import { getChatById } from "../queries/chats.js";
 import { getMessagesByChatId } from "../queries/messages.js";
 import { tools } from "../tools/index.js";
 
 const logger = createLogger("chat-request");
+
+interface CloudflareRequest extends Request {
+  cf?: Record<string, string>;
+}
 
 export class ChatRequest {
   public readonly id: string; // Chat ID
@@ -24,7 +29,7 @@ export class ChatRequest {
   public readonly isTemporary: boolean; // Whether to save the chat or not
   public readonly reasoningEnabled?: boolean;
   public readonly webSearchEnabled?: boolean;
-  public readonly timezone?: string; // User's timezone from browser
+  public readonly userLocation: UserLocation;
 
   constructor(
     id: string,
@@ -33,9 +38,9 @@ export class ChatRequest {
     createNewChat: boolean,
     modelIdx: number,
     isTemporary: boolean,
+    userLocation: UserLocation,
     reasoningEnabled?: boolean,
     webSearchEnabled?: boolean,
-    timezone?: string,
   ) {
     this.id = id;
     this.user = user;
@@ -44,9 +49,9 @@ export class ChatRequest {
     this.createNewChat = createNewChat;
     this.modelIdx = modelIdx;
     this.isTemporary = isTemporary;
+    this.userLocation = userLocation;
     this.reasoningEnabled = reasoningEnabled;
     this.webSearchEnabled = webSearchEnabled;
-    this.timezone = timezone;
 
     logger.debug("ChatRequest constructed", {
       chatId: id,
@@ -55,7 +60,7 @@ export class ChatRequest {
       isTemporary,
       reasoningEnabled,
       webSearchEnabled,
-      timezone,
+      userLocation,
     });
   }
 
@@ -84,8 +89,20 @@ export class ChatRequest {
       temporary: isTemporary,
       reasoning: reasoningEnabled,
       webSearch: webSearchEnabled,
-      timezone,
     } = validatedPayload;
+
+    // Extract user location from Cloudflare's request.cf properties.
+    // These are populated automatically by Cloudflare's edge network
+    const cf = (c.req.raw as CloudflareRequest).cf;
+    const userLocation: UserLocation = {
+      city: cf?.city,
+      region: cf?.region,
+      regionCode: cf?.regionCode,
+      country: cf?.country,
+      timezone: cf?.timezone,
+      latitude: cf?.latitude,
+      longitude: cf?.longitude,
+    };
 
     let createNewChat = false;
     let prevMessages: CustomUIMessage[] = [];
@@ -152,9 +169,9 @@ export class ChatRequest {
       createNewChat,
       modelIdx,
       isTemporary,
+      userLocation,
       reasoningEnabled,
       webSearchEnabled,
-      timezone,
     );
   }
 }

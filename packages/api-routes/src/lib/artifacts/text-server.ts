@@ -16,6 +16,7 @@ import { artifactModelIdx } from "@workspace/api-routes/providers/models.js";
 import { updateDocumentPrompt } from "@workspace/api-routes/providers/prompts.js";
 import { getModel } from "@workspace/api-routes/providers/providers.js";
 import { smoothStream, streamText } from "ai";
+import { HTTPException } from "hono/http-exception";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const textDocumentHandler = createDocumentHandler<"text">({
@@ -52,6 +53,9 @@ export const textDocumentHandler = createDocumentHandler<"text">({
     return draftContent;
   },
   onUpdateDocument: async ({ document, description, dataStream, env }) => {
+    if (!document.content)
+      throw new HTTPException(500, { message: "INTERNAL_SERVER_ERROR" });
+
     let draftContent = "";
 
     const config = await getModel(env, artifactModelIdx);

@@ -6,22 +6,29 @@ import { webSearchPrompt } from "../../providers/prompts.js";
 import { getModel } from "../../providers/providers.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { type UserLocation } from "../../types/user-location.js";
 
 type ExtractFromWebProps = {
   env: Bindings;
+  userLocation: UserLocation;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
 };
 
 type SearchProvider =
   | "anthropic"
+  | "azure"
   | "google"
+  | "google-enterprise"
   | "openai"
-  | "perplexity"
   | "exalabs"
   | "parallel"
   | "tavily";
 
-export const extractFromWeb = ({ env, dataStream }: ExtractFromWebProps) =>
+export const extractFromWeb = ({
+  env,
+  userLocation,
+  dataStream,
+}: ExtractFromWebProps) =>
   tool({
     description:
       "Searches the web for current information. Use this tool when you need to find up-to-date information, news, or facts that may not be in your training data.",
@@ -39,13 +46,41 @@ export const extractFromWeb = ({ env, dataStream }: ExtractFromWebProps) =>
       let tools;
 
       switch (provider) {
-        case "anthropic":
+        case "anthropic": {
           const { anthropic } = await import("@ai-sdk/anthropic");
 
           tools = {
             webFetch: anthropic.tools.webFetch_20250910(),
-            webSearch: anthropic.tools.webSearch_20250305(),
+            webSearch: anthropic.tools.webSearch_20250305({
+              userLocation: {
+                type: "approximate",
+                country: userLocation.country,
+                region: userLocation.region,
+                city: userLocation.city,
+                timezone: userLocation.timezone,
+              },
+            }),
           };
+
+          break;
+        }
+
+        case "azure": {
+          const { azure } = await import("@ai-sdk/azure");
+
+          tools = {
+            web_search_preview: azure.tools.webSearchPreview({
+              searchContextSize: "medium",
+              userLocation: {
+                type: "approximate",
+                city: userLocation.city,
+                region: userLocation.region,
+              },
+            }),
+          };
+
+          break;
+        }
 
         case "google": {
           const { vertex } = await import("@ai-sdk/google-vertex");
@@ -57,11 +92,28 @@ export const extractFromWeb = ({ env, dataStream }: ExtractFromWebProps) =>
           break;
         }
 
+        case "google-enterprise": {
+          const { vertex } = await import("@ai-sdk/google-vertex");
+
+          tools = {
+            enterprise_web_search: vertex.tools.enterpriseWebSearch({}),
+          };
+
+          break;
+        }
+
         case "openai": {
           const { openai } = await import("@ai-sdk/openai");
 
           tools = {
-            web_search: openai.tools.webSearch({}),
+            web_search: openai.tools.webSearch({
+              searchContextSize: "medium",
+              userLocation: {
+                type: "approximate",
+                city: userLocation.city,
+                region: userLocation.region,
+              },
+            }),
           };
 
           break;

@@ -109,9 +109,13 @@ export abstract class ChatHandler {
     finalPrompt += `\n\n## Current Context\n\n`;
     finalPrompt += `Today's date is ${dateString} at ${timeString}.\n`;
 
-    // Add user location if available
-    if (this.request.timezone) {
-      finalPrompt += `The user is in the timezone: ${this.request.timezone}.\n`;
+    // Add user location context from Cloudflare edge data
+    const { city, region, country, timezone } = this.request.userLocation;
+    if (timezone) {
+      finalPrompt += `The user is in the timezone: ${timezone}.\n`;
+    }
+    if (city && region && country) {
+      finalPrompt += `The user is located in ${city}, ${region}, ${country}.\n`;
     }
 
     return finalPrompt;

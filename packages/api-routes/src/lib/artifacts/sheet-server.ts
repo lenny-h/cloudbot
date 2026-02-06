@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { streamText } from "ai";
+import { HTTPException } from "hono/http-exception";
 import { artifactModelIdx } from "../../providers/models.js";
 import { sheetPrompt, updateDocumentPrompt } from "../../providers/prompts.js";
 import { getModel } from "../../providers/providers.js";
@@ -58,6 +59,9 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
     return draftContent;
   },
   onUpdateDocument: async ({ document, description, dataStream, env }) => {
+    if (!document.content)
+      throw new HTTPException(500, { message: "INTERNAL_SERVER_ERROR" });
+
     let draftContent = "";
 
     const config = await getModel(env, artifactModelIdx);
