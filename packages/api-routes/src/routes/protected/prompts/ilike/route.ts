@@ -1,22 +1,16 @@
 import * as z from "zod";
 
-import { itemsPerPageSchema } from "@workspace/api-routes/schemas/items-per-page-schema.js";
-import { pageNumberSchema } from "@workspace/api-routes/schemas/page-number-schema.js";
+import { prefixSchema } from "@workspace/api-routes/schemas/prefix-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { chats } from "@workspace/server/drizzle/schema/schema.js";
-import { desc, eq } from "drizzle-orm";
+import { prompts } from "@workspace/server/drizzle/schema/schema.js";
+import { and, eq, ilike } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
 
-const querySchema = z
-  .object({
-    pageNumber: pageNumberSchema,
-    itemsPerPage: itemsPerPageSchema,
-  })
-  .strict();
+const querySchema = z.object({ prefix: prefixSchema }).strict();
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
   "/",
@@ -28,18 +22,22 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     return parsed.data;
   }),
   async (c) => {
-    const { pageNumber, itemsPerPage } = c.req.valid("query");
+    const { prefix } = c.req.valid("query");
     const user = c.get("user");
 
-    const userChats = await db
-      .select()
-      .from(chats)
-      .where(eq(chats.userId, user.id))
-      .orderBy(desc(chats.createdAt))
-      .limit(itemsPerPage)
-      .offset(pageNumber * itemsPerPage);
+    const result = await db
+      .select({
+        id: prompts.id,
+        name: prompts.name,
+        content: prompts.content,
+      })
+      .from(prompts)
+      .where(
+        and(eq(prompts.userId, user.id), ilike(prompts.name, `%${prefix}%`)),
+      )
+      .limit(5);
 
-    return c.json(userChats);
+    return c.json(result);
   },
 );
 

@@ -14,6 +14,7 @@
 
 import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
+import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { documentHandlersByArtifactKind } from "../artifacts/artifact-server.js";
 import { getDocumentById } from "../queries/documents.js";
@@ -21,9 +22,10 @@ import { getDocumentById } from "../queries/documents.js";
 type UpdateDocumentProps = {
   userId: string;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
+  env: Bindings;
 };
 
-export const updateDocument = ({ userId, dataStream }: UpdateDocumentProps) =>
+export const updateDocument = ({ userId, dataStream, env }: UpdateDocumentProps) =>
   tool({
     description: "Update a document with the given description.",
     inputSchema: z.object({
@@ -61,6 +63,7 @@ export const updateDocument = ({ userId, dataStream }: UpdateDocumentProps) =>
         description,
         dataStream,
         userId,
+        env,
       });
 
       dataStream.write({ type: "data-finish", data: null, transient: true });

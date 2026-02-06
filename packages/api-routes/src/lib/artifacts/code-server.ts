@@ -20,7 +20,7 @@ import { createDocumentHandler } from "./artifact-server.js";
 
 export const codeDocumentHandler = createDocumentHandler<"code">({
   kind: "code",
-  onCreateDocument: async ({ title, dataStream }) => {
+  onCreateDocument: async ({ title, dataStream, env }) => {
     let draftContent = "";
 
     const config = await getModel(env, artifactModelIdx);
@@ -51,7 +51,7 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
 
     return draftContent;
   },
-  onUpdateDocument: async ({ document, description, dataStream }) => {
+  onUpdateDocument: async ({ document, description, dataStream, env }) => {
     let draftContent = "";
 
     const config = await getModel(env, artifactModelIdx);

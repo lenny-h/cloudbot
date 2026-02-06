@@ -1,6 +1,6 @@
 import { db } from "@workspace/server/drizzle/db.js";
 import { messages } from "@workspace/server/drizzle/schema/schema.js";
-import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { desc, eq, inArray, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 
@@ -57,20 +57,6 @@ export async function saveMessages({
       },
     })
     .returning();
-}
-
-export async function deleteMessagesByChatIdAfterTimestamp({
-  chatId,
-  timestamp,
-}: {
-  chatId: string;
-  timestamp: Date;
-}) {
-  await db
-    .delete(messages)
-    .where(
-      and(eq(messages.chatId, chatId), gte(messages.createdAt, timestamp)),
-    );
 }
 
 export async function deleteLastMessagePair({ chatId }: { chatId: string }) {

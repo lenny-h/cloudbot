@@ -12,18 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { getArtifactModel } from "@/lib/ai/providers";
 import { streamText } from "ai";
+import { artifactModelIdx } from "../../providers/models.js";
 import { sheetPrompt, updateDocumentPrompt } from "../../providers/prompts.js";
+import { getModel } from "../../providers/providers.js";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const sheetDocumentHandler = createDocumentHandler<"sheet">({
   kind: "sheet",
-  onCreateDocument: async ({ title, dataStream }) => {
+  onCreateDocument: async ({ title, dataStream, env }) => {
     let draftContent = "";
 
+    const config = await getModel(env, artifactModelIdx);
+
     const { fullStream } = streamText({
-      model: getArtifactModel(),
+      model: config.model,
       system: sheetPrompt,
       prompt: title,
     });
@@ -54,11 +57,13 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
 
     return draftContent;
   },
-  onUpdateDocument: async ({ document, description, dataStream }) => {
+  onUpdateDocument: async ({ document, description, dataStream, env }) => {
     let draftContent = "";
 
+    const config = await getModel(env, artifactModelIdx);
+
     const { fullStream } = streamText({
-      model: getArtifactModel(),
+      model: config.model,
       system: updateDocumentPrompt(document.content, "sheet"),
       prompt: description,
     });

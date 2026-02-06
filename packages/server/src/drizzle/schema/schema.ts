@@ -129,3 +129,14 @@ export const suggestions = sqliteTable(
 );
 
 export type Suggestion = InferSelectModel<typeof suggestions>;
+
+export const prompts = sqliteTable("prompts", {
+  id: text("id").primaryKey().notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  content: text("content").notNull(),
+});
+
+export type Prompt = InferSelectModel<typeof prompts>;

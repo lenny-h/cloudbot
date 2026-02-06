@@ -14,6 +14,7 @@
 
 import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
+import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import {
   artifactKinds,
@@ -24,9 +25,10 @@ import { generateUUID } from "../utils.js";
 type CreateDocumentProps = {
   userId: string;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
+  env: Bindings;
 };
 
-export const createDocument = ({ userId, dataStream }: CreateDocumentProps) =>
+export const createDocument = ({ userId, dataStream, env }: CreateDocumentProps) =>
   tool({
     description:
       "Create a document for a writing or content creation activities. This tool will call other functions that will generate the contents of the document based on the title and kind.",
@@ -75,6 +77,7 @@ export const createDocument = ({ userId, dataStream }: CreateDocumentProps) =>
         title,
         dataStream,
         userId,
+        env,
       });
 
       dataStream.write({ type: "data-finish", data: null, transient: true });

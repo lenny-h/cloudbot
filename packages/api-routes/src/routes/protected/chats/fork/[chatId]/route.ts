@@ -49,12 +49,11 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    // Get messages to copy (fetch only what we need using LIMIT)
     let messagesToCopy;
     if (messageId) {
       // Get the last MAX_FORKED_MESSAGES messages up to and including the target message
       // Order by DESC to get the most recent ones, then reverse for chronological order
-      // We use a subquery for the timestamp to avoid precision loss with Js Date
+      // We use a subquery for the timestamp to avoid precision loss with JS Date
       const recentMessages = await db
         .select({
           role: messages.role,

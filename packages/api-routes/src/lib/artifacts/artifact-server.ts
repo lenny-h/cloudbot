@@ -15,6 +15,7 @@
 import { type Document } from "@workspace/server/drizzle/schema/schema.js";
 import { type UIMessageStreamWriter } from "ai";
 import { type ArtifactKind } from "../../schemas/artifact-schema.js";
+import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { saveDocument } from "../queries/documents.js";
 import { codeDocumentHandler } from "./code-server.js";
@@ -34,6 +35,7 @@ export type CreateDocumentCallbackProps = {
   title: string;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
   userId: string;
+  env: Bindings;
 };
 
 export type UpdateDocumentCallbackProps = {
@@ -41,6 +43,7 @@ export type UpdateDocumentCallbackProps = {
   description: string;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
   userId: string;
+  env: Bindings;
 };
 
 export type DocumentHandler<T = ArtifactKind> = {
@@ -62,6 +65,7 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
         title: args.title,
         dataStream: args.dataStream,
         userId: args.userId,
+        env: args.env,
       });
 
       if (args.userId) {
@@ -82,6 +86,7 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
         description: args.description,
         dataStream: args.dataStream,
         userId: args.userId,
+        env: args.env,
       });
 
       if (args.userId) {

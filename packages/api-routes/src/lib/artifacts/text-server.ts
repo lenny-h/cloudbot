@@ -12,18 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { getArtifactModel } from "@/lib/ai/providers";
+import { artifactModelIdx } from "@workspace/api-routes/providers/models.js";
+import { updateDocumentPrompt } from "@workspace/api-routes/providers/prompts.js";
+import { getModel } from "@workspace/api-routes/providers/providers.js";
 import { smoothStream, streamText } from "ai";
-import { updateDocumentPrompt } from "../../providers/prompts.js";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const textDocumentHandler = createDocumentHandler<"text">({
   kind: "text",
-  onCreateDocument: async ({ title, dataStream }) => {
+  onCreateDocument: async ({ title, dataStream, env }) => {
     let draftContent = "";
 
+    const config = await getModel(env, artifactModelIdx);
+
     const { fullStream } = streamText({
-      model: getArtifactModel(),
+      model: config.model,
       system:
         "Write about the given topic. Markdown is supported. Use headings wherever appropriate.",
       experimental_transform: smoothStream({ chunking: "word" }),
@@ -48,11 +51,13 @@ export const textDocumentHandler = createDocumentHandler<"text">({
 
     return draftContent;
   },
-  onUpdateDocument: async ({ document, description, dataStream }) => {
+  onUpdateDocument: async ({ document, description, dataStream, env }) => {
     let draftContent = "";
 
+    const config = await getModel(env, artifactModelIdx);
+
     const { fullStream } = streamText({
-      model: getArtifactModel(),
+      model: config.model,
       system: updateDocumentPrompt(document.content, "text"),
       experimental_transform: smoothStream({ chunking: "word" }),
       prompt: description,

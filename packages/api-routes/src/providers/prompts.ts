@@ -5,10 +5,10 @@ export const standardSystemPrompt: string = `Give concise and helpful responses.
   `;
 
 export const completionSystemPrompt: string =
-  "You are an autocomplete assistant. Predict the next 5-20 words based on context. Output only new text, not the context.";
+  "You are an autocomplete assistant. Predict the next 5-20 words based on context. Output the last three characters of the context followed by your prediction.";
 
 export const wordCompletionCheckPrompt: string =
-  "Check if the last word is complete or incomplete (cut off mid-word). Respond with ONLY 'complete' or 'incomplete'.";
+  "Check if the last word is complete or incomplete (cut off mid-word).";
 
 export const documentSearchPrompt: string =
   "Your purpose is to extract relevant information from documents. Cite each source by referencing its ID using the format [[doc:{sourceId}]]. When citing multiple sources, separate each citation with a space (e.g., [[doc:id1]] [[doc:id2]]).";

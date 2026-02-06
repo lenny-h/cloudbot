@@ -5,7 +5,7 @@ import {
   type Tool,
   type UIMessageStreamWriter,
 } from "ai";
-import { STANDARD_SYSTEM_PROMPT } from "../../providers/prompts.js";
+import { standardSystemPrompt } from "../../providers/prompts.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { createDocument } from "../tools/create-document.js";
@@ -17,7 +17,7 @@ import { type ChatRequest } from "./chat-request.js";
 const logger = createLogger("standard-chat-handler");
 
 export class StandardChatHandler extends ChatHandler {
-  private systemPrompt = STANDARD_SYSTEM_PROMPT;
+  private systemPrompt = standardSystemPrompt;
 
   constructor(env: Bindings, request: ChatRequest) {
     super(env, request);
@@ -36,10 +36,12 @@ export class StandardChatHandler extends ChatHandler {
   ): Record<string, Tool> {
     const tools: Record<string, Tool> = {
       createDocument: createDocument({
+        env: this.env,
         userId: this.request.user.id,
         dataStream: writer,
       }),
       updateDocument: updateDocument({
+        env: this.env,
         userId: this.request.user.id,
         dataStream: writer,
       }),
