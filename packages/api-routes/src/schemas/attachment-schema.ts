@@ -7,6 +7,12 @@ export const allowedMediaTypes = [
   "application/pdf",
 ] as const;
 
+export const allowedExtensions = new Set(
+  allowedMediaTypes.map((type) => {
+    return type.split("/").pop();
+  }),
+);
+
 export const attachmentSchema = z.object({
   filename: z.string().max(256),
   mediaType: z.enum(allowedMediaTypes, {

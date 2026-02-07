@@ -72,7 +72,7 @@ export class StorageClient {
     key: string;
     contentType: string;
     contentLength: number;
-  }): Promise<{ url: string; headers: Record<string, string> }> {
+  }): Promise<{ url: string }> {
     const s3Client = StorageClient.getS3Client();
     const command = new PutObjectCommand({
       Bucket: bucket,
@@ -82,7 +82,7 @@ export class StorageClient {
     });
 
     const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 65 });
-    return { url: signedUrl, headers: {} };
+    return { url: signedUrl };
   }
 
   static async getSignedUrlForDownload({
