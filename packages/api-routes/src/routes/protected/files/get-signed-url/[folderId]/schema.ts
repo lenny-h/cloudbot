@@ -1,0 +1,53 @@
+export const allowedMediaTypes = [
+  // Plain text files
+  "text/plain",
+  "text/markdown",
+  "text/toml",
+  "application/x-tex",
+  "application/x-latex",
+  "application/x-sh",
+  "application/x-msdos-batch",
+  "text/x-powershell",
+  "text/sgml",
+  "application/json",
+  "application/x-yaml",
+  "text/css",
+  "application/javascript",
+  "application/x-httpd-php",
+  "text/x-python",
+  "text/x-ruby",
+  "text/x-java-source",
+  "text/x-c",
+  "text/x-c++",
+  "text/x-c-header",
+  "text/x-go",
+  "text/rust",
+  "text/swift",
+  "text/dart",
+  "application/x-elisp",
+  "text/x-elisp",
+  "text/x-emacs-lisp",
+  // Rich format files
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/svg+xml",
+  "text/html",
+  "application/xml",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-excel.sheet.macroenabled.12",
+  "application/vnd.ms-excel.sheet.binary.macroenabled.12",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.oasis.opendocument.spreadsheet",
+  "application/vnd.oasis.opendocument.text",
+  "text/csv",
+  "application/vnd.apple.numbers",
+] as const;
+
+export const allowedExtensions = new Set(
+  allowedMediaTypes.map((type) => {
+    return type.split("/").pop();
+  }),
+);

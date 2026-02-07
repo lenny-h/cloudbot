@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 import { StorageClient } from "@workspace/api-routes/lib/storage-client.js";
-import { getSignedUrlSchema } from "@workspace/api-routes/schemas/signed-url-schema.js";
+import { createSignedUrlSchema } from "@workspace/api-routes/schemas/signed-url-schema.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -17,10 +17,12 @@ import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
+import { allowedMediaTypes } from "./schema.js";
 
 const logger = createLogger("get-signed-url");
 
 const paramSchema = z.object({ folderId: uuidSchema }).strict();
+const signedUrlSchema = createSignedUrlSchema(allowedMediaTypes);
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
   "/",
@@ -32,7 +34,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     return parsed.data;
   }),
   validator("json", async (value, c) => {
-    const parsed = getSignedUrlSchema.safeParse(value);
+    const parsed = signedUrlSchema.safeParse(value);
     if (!parsed.success) {
       // Check if the error is related to the filename field
       const filenameError = parsed.error.issues.find((issue) =>

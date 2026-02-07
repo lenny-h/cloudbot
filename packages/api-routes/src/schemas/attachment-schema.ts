@@ -1,17 +1,6 @@
 import * as z from "zod";
 
-export const allowedMediaTypes = [
-  "image/jpg",
-  "image/jpeg",
-  "image/png",
-  "application/pdf",
-] as const;
-
-export const allowedExtensions = new Set(
-  allowedMediaTypes.map((type) => {
-    return type.split("/").pop();
-  }),
-);
+import { allowedMediaTypes } from "../routes/protected/attachments/get-signed-url/schema.js";
 
 export const attachmentSchema = z.object({
   filename: z.string().max(256),
