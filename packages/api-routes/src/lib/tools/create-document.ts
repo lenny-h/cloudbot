@@ -16,11 +16,11 @@ import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { generateUUID } from "../../utils/generate-uuid.js";
 import {
   artifactKinds,
   documentHandlersByArtifactKind,
 } from "../artifacts/artifact-server.js";
-import { generateUUID } from "../utils.js";
 
 type CreateDocumentProps = {
   userId: string;
@@ -28,7 +28,11 @@ type CreateDocumentProps = {
   env: Bindings;
 };
 
-export const createDocument = ({ userId, dataStream, env }: CreateDocumentProps) =>
+export const createDocument = ({
+  userId,
+  dataStream,
+  env,
+}: CreateDocumentProps) =>
   tool({
     description:
       "Create a document for a writing or content creation activities. This tool will call other functions that will generate the contents of the document based on the title and kind.",

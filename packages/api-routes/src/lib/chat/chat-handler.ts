@@ -12,10 +12,14 @@ import {
 import { generateTitleFromUserMessage } from "../../providers/generate-title.js";
 import { titleModelIdx } from "../../providers/models.js";
 import { getModel } from "../../providers/providers.js";
+import { type Attachment } from "../../schemas/attachment-schema.js";
+import { type ContextFilter } from "../../schemas/context-filter-schema.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { saveChat } from "../queries/chats.js";
+import { getLatestDocumentsByIds } from "../queries/documents.js";
 import { saveMessages } from "../queries/messages.js";
+import { StorageClient } from "../storage-client.js";
 import { type ChatRequest } from "./chat-request.js";
 
 const logger = createLogger("chat-handler");
@@ -119,6 +123,83 @@ export abstract class ChatHandler {
     }
 
     return finalPrompt;
+  }
+
+  protected getContextFilter(): ContextFilter | undefined {
+    const metadata = this.request.lastMessage.metadata;
+    return metadata?.contextFilter;
+  }
+
+  protected getAttachments(): Attachment[] {
+    const metadata = this.request.lastMessage.metadata;
+    return metadata?.attachments ?? [];
+  }
+
+  /**
+   * Download attachments from R2 and add them as file parts to the last user message.
+   * Also retrieves context filter documents and adds them as text parts.
+   */
+  protected async integrateContextIntoMessages(): Promise<void> {
+    const lastMessage = this.request.lastMessage;
+    if (lastMessage.role !== "user") return;
+
+    const attachments = this.getAttachments();
+    const contextFilter = this.getContextFilter();
+
+    // Process file attachments from R2
+    if (attachments.length > 0) {
+      const storageClient = new StorageClient(this.env.YOUR_BUCKET);
+
+      for (const attachment of attachments) {
+        try {
+          const fileContent = await storageClient.downloadFile({
+            key: attachment.filename,
+          });
+
+          const base64Data = Buffer.from(fileContent).toString("base64");
+          const dataUrl = `data:${attachment.mediaType};base64,${base64Data}`;
+
+          lastMessage.parts.push({
+            type: "file",
+            url: dataUrl,
+            mediaType: attachment.mediaType,
+          } as any);
+
+          logger.debug("Attached file to message", {
+            filename: attachment.filename,
+            mediaType: attachment.mediaType,
+          });
+        } catch (error) {
+          logger.warn("Failed to download attachment", {
+            filename: attachment.filename,
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+      }
+    }
+
+    // Process context filter documents
+    if (contextFilter && contextFilter.documents.length > 0) {
+      const documentIds = contextFilter.documents.map((d) => d.id);
+      const docs = await getLatestDocumentsByIds({
+        ids: documentIds,
+        userId: this.request.user.id,
+      });
+
+      for (const doc of docs) {
+        if (doc.content) {
+          lastMessage.parts.push({
+            type: "text",
+            text: `\n\n[Referenced Document: "${doc.title}"]\n\n${doc.content}`,
+          } as any);
+
+          logger.debug("Attached document to message", {
+            documentId: doc.id,
+            title: doc.title,
+          });
+        }
+      }
+    }
   }
 
   protected async buildStreamTextConfig({

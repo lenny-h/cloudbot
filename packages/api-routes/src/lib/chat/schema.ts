@@ -6,7 +6,7 @@ const basePayloadSchema = z
     id: z.uuid({
       message: "Chat ID must be a valid UUID",
     }),
-    messages: z.array(z.any()).min(1), // This will be validate with the ai.validateUIMessages function later
+    messages: z.array(z.any()).min(1), // This will be validated with the ai.validateUIMessages function later
     modelIdx: z
       .number()
       .int()

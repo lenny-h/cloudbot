@@ -8,11 +8,12 @@ import {
 import { standardSystemPrompt } from "../../providers/prompts.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { generateUUID } from "../../utils/generate-uuid.js";
+import { getPromptsByIds } from "../queries/prompts.js";
 import { createDocument } from "../tools/create-document.js";
 import { extractFromDocuments } from "../tools/extract-from-documents.js";
 import { extractFromWeb } from "../tools/extract-from-web.js";
 import { updateDocument } from "../tools/update-document.js";
-import { generateUUID } from "../utils.js";
 import { ChatHandler } from "./chat-handler.js";
 import { type ChatRequest } from "./chat-request.js";
 
@@ -26,7 +27,25 @@ export class StandardChatHandler extends ChatHandler {
   }
 
   private async buildSystemPrompt(): Promise<string> {
-    const finalPrompt = await this.buildBaseSystemPrompt(this.systemPrompt);
+    let finalPrompt = await this.buildBaseSystemPrompt(this.systemPrompt);
+
+    // Append context filter prompts to the system prompt
+    const contextFilter = this.getContextFilter();
+    if (contextFilter && contextFilter.prompts.length > 0) {
+      const promptIds = contextFilter.prompts.map((p) => p.id);
+      const userPrompts = await getPromptsByIds({
+        ids: promptIds,
+        userId: this.request.user.id,
+      });
+
+      if (userPrompts.length > 0) {
+        finalPrompt += `\n\n## User-Selected Instructions\n\n`;
+        finalPrompt += `The user has selected the following custom instructions. Follow them carefully:\n\n`;
+        for (const prompt of userPrompts) {
+          finalPrompt += `### ${prompt.name}\n\n${prompt.content}\n\n`;
+        }
+      }
+    }
 
     logger.info("Final system prompt:\n\n", finalPrompt);
 
@@ -67,6 +86,9 @@ export class StandardChatHandler extends ChatHandler {
   protected async executeChat(
     writer: UIMessageStreamWriter<CustomUIMessage>,
   ): Promise<void> {
+    // Integrate attachments and context filter documents into the messages
+    await this.integrateContextIntoMessages();
+
     const systemPrompt = await this.buildSystemPrompt();
     const streamConfig = await this.buildStreamTextConfig({
       systemPrompt,

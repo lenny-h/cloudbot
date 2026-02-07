@@ -53,20 +53,45 @@ export const courses = sqliteTable("courses", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
-  private: integer("private", { mode: "boolean" }).notNull().default(false),
+  visibility: text("visibility", { enum: ["private", "protected", "public"] })
+    .notNull()
+    .default("private"),
+  encryptedKey: text("encrypted_key"),
 });
 
 export type Course = InferSelectModel<typeof courses>;
+
+export const courseUsers = sqliteTable(
+  "course_users",
+  {
+    courseId: text("course_id")
+      .notNull()
+      .references(() => courses.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => [primaryKey({ columns: [table.courseId, table.userId] })],
+);
 
 // Files table
 export const files = sqliteTable(
   "files",
   {
     id: text("id").primaryKey().notNull(),
+    visibility: text("visibility", { enum: ["private", "protected", "public"] })
+      .notNull()
+      .default("private"),
     courseId: text("course_id")
       .notNull()
       .references(() => courses.id),
     name: text("name").notNull(),
+    owner: text("owner")
+      .notNull()
+      .references(() => users.id),
     size: integer("size").notNull(),
     pageCount: integer("page_count"),
     createdAt: integer("created_at", { mode: "timestamp" })

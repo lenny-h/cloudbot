@@ -1,7 +1,6 @@
 import * as z from "zod";
 
 import { getChatById } from "@workspace/api-routes/lib/queries/chats.js";
-import { generateUUID } from "@workspace/api-routes/lib/utils.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -11,6 +10,7 @@ import { and, desc, eq, lte, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
+import { generateUUID } from "../../../../../../dist/utils/utils.js";
 
 const MAX_FORKED_MESSAGES = 14;
 
