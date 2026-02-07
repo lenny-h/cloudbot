@@ -4,8 +4,8 @@ import { encryptApiKey } from "@workspace/api-routes/utils/encryption.js";
 import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import {
-  courses,
   courseUsers,
+  folders,
 } from "@workspace/server/drizzle/schema/schema.js";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -32,7 +32,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
         : undefined;
 
     await db.transaction(async (tx) => {
-      const courseId = await db.insert(courses).values({
+      const folderId = await db.insert(folders).values({
         id: generateUUID(),
         name: values.name,
         owner: user.id,
@@ -41,16 +41,16 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
         encryptedKey,
       });
 
-      // If the course is protected, add the creator as a member
+      // If the folder is protected, add the creator as a member
       if (values.visibility === "protected") {
         await tx.insert(courseUsers).values({
-          courseId,
+          folderId,
           userId: user.id,
         });
       }
     });
 
-    return c.json({ message: "Course created" });
+    return c.json({ message: "Folder created" });
   },
 );
 

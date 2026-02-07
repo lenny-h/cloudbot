@@ -1,10 +1,13 @@
 import { db } from "@workspace/server/drizzle/db.js";
 import { courseUsers } from "@workspace/server/drizzle/schema/schema.js";
 import { and, eq } from "drizzle-orm";
-import type { InferSelectModel } from "drizzle-orm";
-import type { files } from "@workspace/server/drizzle/schema/schema.js";
 
-type File = InferSelectModel<typeof files>;
+export type FileMetadata = {
+  id: string;
+  visibility: string;
+  folderId: string;
+  owner: string;
+};
 
 /**
  * Filters files based on user permissions
@@ -13,9 +16,9 @@ type File = InferSelectModel<typeof files>;
  * - Private files require user to be the owner
  */
 export async function filterAuthorizedFiles(
-  fileList: File[],
+  fileList: FileMetadata[],
   userId: string,
-): Promise<File[]> {
+): Promise<FileMetadata[]> {
   const filteredFiles = await Promise.all(
     fileList.map(async (file) => {
       // Public files are always allowed
@@ -30,7 +33,7 @@ export async function filterAuthorizedFiles(
           .from(courseUsers)
           .where(
             and(
-              eq(courseUsers.courseId, file.courseId),
+              eq(courseUsers.folderId, file.folderId),
               eq(courseUsers.userId, userId),
             ),
           )
@@ -39,7 +42,7 @@ export async function filterAuthorizedFiles(
         return access.length > 0 ? file : null;
       }
 
-      // For private files, check if user is the course owner
+      // For private files, check if user is the folder owner
       if (file.visibility === "private" && file.owner === userId) {
         return file;
       }
@@ -49,5 +52,5 @@ export async function filterAuthorizedFiles(
   );
 
   // Remove null entries (files user doesn't have access to)
-  return filteredFiles.filter((file): file is File => file !== null);
+  return filteredFiles.filter((file) => file !== null);
 }

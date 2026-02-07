@@ -1,10 +1,10 @@
 import * as z from "zod";
 
-import { filterAuthorizedFiles } from "@workspace/api-routes/utils/filter-authorized-files.js";
 import { prefixSchema } from "@workspace/api-routes/schemas/prefix-schema.js";
 import { createUuidArraySchema } from "@workspace/api-routes/schemas/uuid-array-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
+import { filterAuthorizedFiles } from "@workspace/api-routes/utils/filter-authorized-files.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { files } from "@workspace/server/drizzle/schema/schema.js";
 import { and, desc, ilike, inArray, sql } from "drizzle-orm";
@@ -15,7 +15,7 @@ import { validator } from "hono/validator";
 const querySchema = z
   .object({
     prefix: prefixSchema,
-    courseIds: createUuidArraySchema(20),
+    folderIds: createUuidArraySchema(20),
   })
   .strict();
 
@@ -29,7 +29,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     return parsed.data;
   }),
   async (c) => {
-    const { prefix, courseIds } = c.req.valid("query");
+    const { prefix, folderIds } = c.req.valid("query");
     const user = c.get("user");
 
     const result = await db
@@ -37,7 +37,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       .from(files)
       .where(
         and(
-          inArray(files.courseId, courseIds),
+          inArray(files.folderId, folderIds),
           ilike(files.name, sql`${prefix} || '%'`),
         ),
       )

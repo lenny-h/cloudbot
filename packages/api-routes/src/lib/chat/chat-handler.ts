@@ -245,7 +245,7 @@ export abstract class ChatHandler {
   // Abstract methods to be implemented by subclasses
   protected abstract retrieveToolSet(
     writer: UIMessageStreamWriter<CustomUIMessage>,
-  ): Record<string, Tool>;
+  ): Promise<Record<string, Tool>>;
   protected abstract executeChat(
     writer: UIMessageStreamWriter<CustomUIMessage>,
   ): Promise<void>;

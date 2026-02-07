@@ -1,18 +1,18 @@
 import * as z from "zod";
 
-import { deleteCourse } from "@workspace/api-routes/lib/queries/courses.js";
+import { deleteCourse } from "@workspace/api-routes/lib/queries/folders.js";
 import { StorageClient } from "@workspace/api-routes/lib/storage-client.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { courses, files } from "@workspace/server/drizzle/schema/schema.js";
+import { files, folders } from "@workspace/server/drizzle/schema/schema.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
 
-const paramSchema = z.object({ courseId: uuidSchema }).strict();
+const paramSchema = z.object({ folderId: uuidSchema }).strict();
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
   "/",
@@ -24,19 +24,19 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
     return parsed.data;
   }),
   async (c) => {
-    const { courseId } = c.req.valid("param");
+    const { folderId } = c.req.valid("param");
     const user = c.get("user");
 
     const result = await db
       .select({
-        visibility: courses.visibility,
+        visibility: folders.visibility,
       })
-      .from(courses)
-      .where(and(eq(courses.id, courseId), eq(courses.owner, user.id)))
+      .from(folders)
+      .where(and(eq(folders.id, folderId), eq(folders.owner, user.id)))
       .limit(1);
 
-    const course = result[0];
-    if (!course) {
+    const folder = result[0];
+    if (!folder) {
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
@@ -44,13 +44,12 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       .select({
         id: files.id,
         visibility: files.visibility,
-        name: files.name,
       })
       .from(files)
-      .where(eq(files.courseId, courseId));
+      .where(eq(files.folderId, folderId));
 
     if (courseFiles.length === 0) {
-      const deletedCourseName = await deleteCourse({ courseId });
+      const deletedCourseName = await deleteCourse({ folderId });
 
       if (!deletedCourseName) {
         throw new HTTPException(404, { message: "NOT_FOUND" });
@@ -66,15 +65,15 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
 
       const key =
         file.visibility === "private"
-          ? `${user.id}/${courseId}/${file.name}`
-          : `${file.visibility}/${courseId}/${file.name}`;
+          ? `${user.id}/${folderId}/${file.id}`
+          : `${file.visibility}/${folderId}/${file.id}`;
 
       await storageClient.deleteFile({
         key,
       });
     }
 
-    const deletedCourseName = await deleteCourse({ courseId });
+    const deletedCourseName = await deleteCourse({ folderId });
 
     if (!deletedCourseName) {
       throw new HTTPException(404, { message: "NOT_FOUND" });

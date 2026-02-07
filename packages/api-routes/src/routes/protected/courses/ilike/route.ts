@@ -4,7 +4,7 @@ import { prefixSchema } from "@workspace/api-routes/schemas/prefix-schema.js";
 import { Bindings } from "@workspace/api-routes/types/bindings.js";
 import { Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { courses } from "@workspace/server/drizzle/schema/schema.js";
+import { folders } from "@workspace/server/drizzle/schema/schema.js";
 import { and, eq, ilike, ne, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -27,15 +27,15 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
 
     const result = await db
       .select({
-        id: courses.id,
-        name: courses.name,
-        visibility: courses.visibility,
+        id: folders.id,
+        name: folders.name,
+        visibility: folders.visibility,
       })
-      .from(courses)
+      .from(folders)
       .where(
         and(
-          ilike(courses.name, sql`${prefix} || '%'`),
-          or(ne(courses.visibility, "private"), eq(courses.owner, user.id)),
+          ilike(folders.name, sql`${prefix} || '%'`),
+          or(ne(folders.visibility, "private"), eq(folders.owner, user.id)),
         ),
       )
       .limit(5);

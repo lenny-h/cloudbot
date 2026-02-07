@@ -1,11 +1,11 @@
 import * as z from "zod";
 
 import { itemsPerPageSchema } from "@workspace/api-routes/schemas/items-per-page-schema.js";
-import { filterAuthorizedFiles } from "@workspace/api-routes/utils/filter-authorized-files.js";
 import { pageNumberSchema } from "@workspace/api-routes/schemas/page-number-schema.js";
 import { createUuidArraySchema } from "@workspace/api-routes/schemas/uuid-array-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
+import { filterAuthorizedFiles } from "@workspace/api-routes/utils/filter-authorized-files.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { files } from "@workspace/server/drizzle/schema/schema.js";
 import { inArray } from "drizzle-orm";
@@ -13,12 +13,12 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
 
-// Private courses have their files stored with the key format: `${user.id}/{courseId}/{fileName}`
-// Protected and public courses have their files stored with the key format: `{visibility}/{courseId}/{fileName}`
+// Private folders have their files stored with the key format: `${user.id}/{folderId}/{fileName}`
+// Protected and public folders have their files stored with the key format: `{visibility}/{folderId}/{fileName}`
 
 const querySchema = z
   .object({
-    courseIds: createUuidArraySchema(20),
+    folderIds: createUuidArraySchema(20),
     pageNumber: pageNumberSchema,
     itemsPerPage: itemsPerPageSchema,
   })
@@ -34,13 +34,13 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     return parsed.data;
   }),
   async (c) => {
-    const { courseIds, pageNumber, itemsPerPage } = c.req.valid("query");
+    const { folderIds, pageNumber, itemsPerPage } = c.req.valid("query");
     const user = c.get("user");
 
     const result = await db
       .select()
       .from(files)
-      .where(inArray(files.courseId, courseIds))
+      .where(inArray(files.folderId, folderIds))
       .limit(itemsPerPage)
       .offset(pageNumber * itemsPerPage);
 

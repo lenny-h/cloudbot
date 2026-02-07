@@ -4,14 +4,23 @@ import { tool, type UIMessageStreamWriter } from "ai";
 import { documentSearchPrompt } from "../../providers/prompts.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import { buildMetadataFilter } from "../../utils/build-metadata-filter.js";
+import { type FileMetadata } from "../../utils/filter-authorized-files.js";
+import { FolderMetadata } from "../../utils/filter-authorized-folders.js";
 
 type ExtractFromDocumentsProps = {
   env: Bindings;
+  userId: string;
+  fileMetadata: FileMetadata[];
+  folderMetadata: FolderMetadata[];
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
 };
 
 export const extractFromDocuments = ({
   env,
+  userId,
+  fileMetadata,
+  folderMetadata,
   dataStream,
 }: ExtractFromDocumentsProps) =>
   tool({
@@ -23,6 +32,15 @@ export const extractFromDocuments = ({
     }),
     outputSchema: z.object({ extractedInformation: z.string() }),
     execute: async ({ query, max_num_results }) => {
+      // Permissions already checked in standard-chat-handler
+      // fileMetadata contains only files the user has access to
+
+      const metadataFilter = buildMetadataFilter(
+        userId,
+        fileMetadata,
+        folderMetadata,
+      );
+
       const answer = await env.AI.autorag("autorag").aiSearch({
         system_prompt: documentSearchPrompt,
         query,
@@ -36,6 +54,7 @@ export const extractFromDocuments = ({
           model: "@cf/baai/bge-reranker-base",
         },
         stream: false,
+        ...(metadataFilter && { filters: metadataFilter }),
       });
 
       for (const source of answer.data) {
@@ -45,8 +64,8 @@ export const extractFromDocuments = ({
           mediaType: source.filename.split(".").pop() || "unknown",
           title: source.filename,
         });
-
-        return { extractedInformation: answer.response };
       }
+
+      return { extractedInformation: answer.response };
     },
   });

@@ -1,3 +1,5 @@
+import { db } from "@workspace/server/drizzle/db.js";
+import { files, folders } from "@workspace/server/drizzle/schema/schema.js";
 import { createLogger } from "@workspace/server/logger.js";
 import {
   stepCountIs,
@@ -5,9 +7,19 @@ import {
   type Tool,
   type UIMessageStreamWriter,
 } from "ai";
+import { inArray } from "drizzle-orm";
+import { HTTPException } from "hono/http-exception";
 import { standardSystemPrompt } from "../../providers/prompts.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
+import {
+  type FileMetadata,
+  filterAuthorizedFiles,
+} from "../../utils/filter-authorized-files.js";
+import {
+  filterAuthorizedCourses,
+  type FolderMetadata,
+} from "../../utils/filter-authorized-folders.js";
 import { generateUUID } from "../../utils/generate-uuid.js";
 import { getPromptsByIds } from "../queries/prompts.js";
 import { createDocument } from "../tools/create-document.js";
@@ -52,9 +64,11 @@ export class StandardChatHandler extends ChatHandler {
     return finalPrompt;
   }
 
-  protected retrieveToolSet(
+  protected async retrieveToolSet(
     writer: UIMessageStreamWriter<CustomUIMessage>,
-  ): Record<string, Tool> {
+  ): Promise<Record<string, Tool>> {
+    const contextFilter = this.getContextFilter();
+
     const tools: Record<string, Tool> = {
       createDocument: createDocument({
         env: this.env,
@@ -66,11 +80,85 @@ export class StandardChatHandler extends ChatHandler {
         userId: this.request.user.id,
         dataStream: writer,
       }),
-      extractFromDocuments: extractFromDocuments({
-        env: this.env,
-        dataStream: writer,
-      }),
     };
+
+    // Only include extractFromDocuments if context filter has files or folders
+    if (
+      contextFilter &&
+      ((contextFilter.files && contextFilter.files.length > 0) ||
+        (contextFilter.folders && contextFilter.folders.length > 0))
+    ) {
+      // Check permissions and get authorized file metadata
+      let authorizedFileMetadata: FileMetadata[] = [];
+      let authorizedFolderMetadata: FolderMetadata[] = [];
+
+      // Check files if present
+      if (contextFilter.files && contextFilter.files.length > 0) {
+        const fileIds = contextFilter.files.map((f) => f.id);
+        const requestedFiles = await db
+          .select({
+            id: files.id,
+            visibility: files.visibility,
+            folderId: files.folderId,
+            owner: files.owner,
+          })
+          .from(files)
+          .where(inArray(files.id, fileIds));
+
+        const authorizedFileMetadata = await filterAuthorizedFiles(
+          requestedFiles,
+          this.request.user.id,
+        );
+
+        if (authorizedFileMetadata.length !== fileIds.length) {
+          logger.warn("User does not have access to all referenced files", {
+            userId: this.request.user.id,
+            requestedFiles: fileIds.length,
+            authorizedFiles: authorizedFileMetadata.length,
+          });
+          throw new HTTPException(403, {
+            message: "You do not have permission to access one or more files",
+          });
+        }
+      }
+      // Check folders only if no files are present
+      else if (contextFilter.folders && contextFilter.folders.length > 0) {
+        const folderIds = contextFilter.folders.map((c) => c.id);
+        const requestedCourses = await db
+          .select({
+            id: folders.id,
+            visibility: folders.visibility,
+            folderId: folders.id,
+            owner: folders.owner,
+          })
+          .from(folders)
+          .where(inArray(folders.id, folderIds));
+
+        const authorizedFolderMetadata = await filterAuthorizedCourses(
+          requestedCourses,
+          this.request.user.id,
+        );
+
+        if (authorizedFolderMetadata.length !== folderIds.length) {
+          logger.warn("User does not have access to all referenced folders", {
+            userId: this.request.user.id,
+            requestedCourses: folderIds.length,
+            authorizedCourses: authorizedFolderMetadata.length,
+          });
+          throw new HTTPException(403, {
+            message: "You do not have permission to access one or more folders",
+          });
+        }
+      }
+
+      tools.extractFromDocuments = extractFromDocuments({
+        env: this.env,
+        userId: this.request.user.id,
+        fileMetadata: authorizedFileMetadata,
+        folderMetadata: authorizedFolderMetadata,
+        dataStream: writer,
+      });
+    }
 
     if (this.request.webSearchEnabled) {
       tools.extractFromWeb = extractFromWeb({
@@ -93,7 +181,7 @@ export class StandardChatHandler extends ChatHandler {
     const streamConfig = await this.buildStreamTextConfig({
       systemPrompt,
     });
-    const tools = this.retrieveToolSet(writer);
+    const tools = await this.retrieveToolSet(writer);
 
     logger.info("Executing chat with tools:", Object.keys(tools));
 

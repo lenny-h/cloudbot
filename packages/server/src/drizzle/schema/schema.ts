@@ -42,8 +42,8 @@ export const messages = sqliteTable("messages", {
 
 export type Message = InferSelectModel<typeof messages>;
 
-// Courses table
-export const courses = sqliteTable("courses", {
+// Folders table
+export const folders = sqliteTable("folders", {
   id: text("id").primaryKey().notNull(),
   name: text("name").notNull().unique(),
   owner: text("owner")
@@ -59,14 +59,14 @@ export const courses = sqliteTable("courses", {
   encryptedKey: text("encrypted_key"),
 });
 
-export type Course = InferSelectModel<typeof courses>;
+export type Folder = InferSelectModel<typeof folders>;
 
 export const courseUsers = sqliteTable(
   "course_users",
   {
-    courseId: text("course_id")
+    folderId: text("course_id")
       .notNull()
-      .references(() => courses.id, { onDelete: "cascade" }),
+      .references(() => folders.id, { onDelete: "cascade" }),
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -74,7 +74,7 @@ export const courseUsers = sqliteTable(
       .notNull()
       .default(sql`(unixepoch())`),
   },
-  (table) => [primaryKey({ columns: [table.courseId, table.userId] })],
+  (table) => [primaryKey({ columns: [table.folderId, table.userId] })],
 );
 
 // Files table
@@ -85,9 +85,9 @@ export const files = sqliteTable(
     visibility: text("visibility", { enum: ["private", "protected", "public"] })
       .notNull()
       .default("private"),
-    courseId: text("course_id")
+    folderId: text("course_id")
       .notNull()
-      .references(() => courses.id),
+      .references(() => folders.id),
     name: text("name").notNull(),
     owner: text("owner")
       .notNull()
@@ -98,7 +98,7 @@ export const files = sqliteTable(
       .notNull()
       .default(sql`(unixepoch())`),
   },
-  (table) => [unique().on(table.courseId, table.name)],
+  (table) => [unique().on(table.folderId, table.name)],
 );
 
 export type File = InferSelectModel<typeof files>;

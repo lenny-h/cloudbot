@@ -5,13 +5,13 @@ const createCourseFormSchema = z
     name: z
       .string()
       .min(3, {
-        message: "Course name is required.",
+        message: "Folder name is required.",
       })
       .max(128, {
-        message: "Course name must be less than 128 characters.",
+        message: "Folder name must be less than 128 characters.",
       }),
     description: z.string().max(512, {
-      message: "Course description must be less than 512 characters.",
+      message: "Folder description must be less than 512 characters.",
     }),
     visibility: z.enum(["private", "protected", "public"]),
     password: z.string().optional(),
@@ -25,7 +25,7 @@ const createCourseFormSchema = z
     },
     {
       message:
-        "Password is required and must be at least 8 characters long for protected courses.",
+        "Password is required and must be at least 8 characters long for protected folders.",
     },
   )
   .strict();

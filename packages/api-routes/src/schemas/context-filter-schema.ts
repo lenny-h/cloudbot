@@ -12,14 +12,14 @@ export const contextFilterSchema = z
       .max(5, {
         message: "You can only select up to 5 prompts",
       }),
-    courses: z
+    folders: z
       .array(
         z.object({
           id: uuidSchema,
         }),
       )
       .max(5, {
-        message: "You can only select up to 5 courses",
+        message: "You can only select up to 5 folders",
       }),
     files: z
       .array(
