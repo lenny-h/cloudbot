@@ -1,7 +1,7 @@
 import "@workspace/server/types/hono.js";
 
 import { serve } from "@hono/node-server";
-import { createLogger } from "@workspace/server/logger.js";
+import { createLogger } from "@workspace/server/logger/logger.js";
 import app from "./app.js";
 
 // Configure logger
@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 8080;
 const isDev = process.env.NODE_ENV === "development";
 
 logger.info(
-  `Starting NextGPT API server on port ${PORT} (Environment: ${isDev ? "development" : "production"})`
+  `Starting NextGPT API server on port ${PORT} (Environment: ${isDev ? "development" : "production"})`,
 );
 
 serve(
@@ -24,5 +24,5 @@ serve(
   },
   (info) => {
     logger.info(`Server running on http://localhost:${info.port}`);
-  }
+  },
 );

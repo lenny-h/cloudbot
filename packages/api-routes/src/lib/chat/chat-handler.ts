@@ -1,5 +1,5 @@
 import { type Chat } from "@workspace/server/drizzle/schema/schema.js";
-import { createLogger } from "@workspace/server/logger.js";
+import { createLogger } from "@workspace/server/logger/logger.js";
 import {
   convertToModelMessages,
   createUIMessageStream,

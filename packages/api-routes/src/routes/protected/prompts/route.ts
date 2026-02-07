@@ -1,12 +1,12 @@
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
+import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { prompts } from "@workspace/server/drizzle/schema/schema.js";
 import { count, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
-import { generateUUID } from "../../../../dist/utils/utils.js";
 import { insertPromptSchema } from "./schema.js";
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()

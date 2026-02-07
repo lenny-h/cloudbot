@@ -1,3 +1,9 @@
+import { protectedApiRouter } from "@workspace/api-routes/routes/protected/index.js";
+import { unprotectedApiRouter } from "@workspace/api-routes/routes/unprotected/index.js";
+import { auth } from "@workspace/server/auth-server.js";
+import { conditionalLogger } from "@workspace/server/logger/conditional-logger.js";
+import { authMiddleware } from "@workspace/server/middleware/auth-middleware.js";
+import { errorHandler } from "@workspace/server/middleware/error-handler.js";
 import { Hono } from "hono";
 import { compress } from "hono/compress";
 import { cors } from "hono/cors";
