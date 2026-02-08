@@ -24,6 +24,7 @@ import foldersRoute from "./folders/route.js";
 import foldersValidateAccessRoute from "./folders/validate-access/route.js";
 import messagesRoute from "./messages/[chatId]/route.js";
 import trailingMessagesRoute from "./messages/delete-trailing/[messageId]/route.js";
+import profilesRoute from "./profiles/route.js";
 import promptsDeleteRoute from "./prompts/[promptId]/route.js";
 import promptsIlike from "./prompts/ilike/route.js";
 import promptsRoute from "./prompts/route.js";
@@ -69,6 +70,9 @@ const protectedApiRouter = new Hono()
   // Messages
   .route("/messages/delete-trailing/:messageId", trailingMessagesRoute)
   .route("/messages/:chatId", messagesRoute)
+
+  // Profiles
+  .route("/profiles", profilesRoute)
 
   // Prompts
   .route("/prompts", promptsRoute)

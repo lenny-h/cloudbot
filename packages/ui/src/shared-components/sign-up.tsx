@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { memo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Checkbox } from "../components/checkbox";
 import {
   Form,
   FormControl,
@@ -25,7 +24,10 @@ import {
 } from "../components/tooltip";
 import { useSharedTranslations } from "../contexts/shared-translations-context";
 import { signUp } from "../lib/auth-client";
-import { signUpFormSchema, type SignUpFormData } from "../lib/validations";
+import {
+  signUpFormSchema,
+  type SignUpFormData,
+} from "../schemas/sign-up-form-schema";
 import { SubmitButton } from "./submit-button";
 
 export const SignUp = memo(() => {
@@ -49,7 +51,6 @@ export const SignUp = memo(() => {
       email: values.email,
       password: values.password,
       username: values.username,
-      isPublic: values.isPublic,
       callbackURL: `${window.location.origin}/${locale}`,
       fetchOptions: {
         onError: (ctx) => {
@@ -139,9 +140,6 @@ export const SignUp = memo(() => {
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                        <span className="text-primary text-sm">
-                          {sharedT.profileForm.privateLabel}
-                        </span>
                       </div>
                     </div>
                     <FormControl>
@@ -160,43 +158,11 @@ export const SignUp = memo(() => {
                       <FormLabel htmlFor="username">
                         {sharedT.profileForm.username}
                       </FormLabel>
-                      <div className="hidden items-center space-x-1 md:flex">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="text-primary size-4" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {sharedT.profileForm.usernameTooltip}
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <span className="text-primary text-sm">
-                          {sharedT.profileForm.publicLabel}
-                        </span>
-                      </div>
                     </div>
                     <FormControl>
                       <Input placeholder="johndoe" {...field} />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="isPublic"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>{sharedT.profileForm.letInvite}</FormLabel>
-                    </div>
                   </FormItem>
                 )}
               />

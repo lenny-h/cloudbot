@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  GitHubIcon,
-  GitLabIcon,
-  GoogleIcon,
-} from "@workspace/ui/components/icons";
 import { memo, useState } from "react";
 import { toast } from "sonner";
+import { GitHubIcon, GitLabIcon, GoogleIcon } from "../components/icons";
 import { useSharedTranslations } from "../contexts/shared-translations-context";
 import { client } from "../lib/auth-client";
 import { SubmitButton } from "./submit-button";
@@ -32,11 +28,11 @@ export const SocialLogins = memo(() => {
     toast.promise(googleLoginPromise, {
       loading: sharedT.socialLogins.redirectingTo.replace(
         "{provider}",
-        "Google"
+        "Google",
       ),
       success: sharedT.socialLogins.redirectingTo.replace(
         "{provider}",
-        "Google"
+        "Google",
       ),
       error: sharedT.socialLogins.redirectError.replace("{provider}", "Google"),
     });
