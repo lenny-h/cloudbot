@@ -1,0 +1,108 @@
+{
+  "apiCodes": {
+    "ABORT_ERROR": "Die Anfrage wurde abgebrochen",
+    "BAD_REQUEST": "Der Server konnte Ihre Anfrage nicht bearbeiten",
+    "UNAUTHORIZED": "Sie müssen angemeldet sein, um diese Aktion durchzuführen",
+    "FORBIDDEN": "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen",
+    "PAYLOAD_TOO_LARGE": "Die Nutzlast Ihrer Anfrage ist zu groß",
+    "RATE_LIMIT": "Das Ratenlimit wurde überschritten",
+    "INTERNAL_SERVER_ERROR": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut",
+    "UPSTREAM_ERROR": "Einige Upstream-Dienste reagieren nicht",
+    "FALLBACK_ERROR": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+    "IMAGE_ERROR": "Bild nicht verfügbar",
+    "INVALID_KEY": "Ungültiges Passwort",
+    "INVALID_EMAIL_DOMAIN": "Ihre E-Mail-Domain ist nicht für die Anmeldung erlaubt",
+    "INVALID_FILENAME": "Ungültiger Dateiname. Dateinamen dürfen keine Sonderzeichen enthalten und müssen eine gültige Endung haben",
+    "LOAD_MORE_ERROR": "Fehler beim Laden weiterer Elemente",
+    "NO_RESULTS": "Keine Ergebnisse gefunden",
+    "PAGE_NOT_FOUND": "Die Seite konnte nicht gefunden werden",
+    "PROMPT_LIMIT_REACHED": "Sie haben das Limit für benutzerdefinierte Prompts erreicht"
+  },
+  "centralLoading": {
+    "loading": "Lädt..."
+  },
+  "forgotPassword": {
+    "backToSignIn": "Zurück zur Anmeldung?",
+    "email": "E-Mail",
+    "errorSending": "Fehler beim Senden der E-Mail",
+    "resetButton": "Passwort zurücksetzen",
+    "sendingEmail": "E-Mail wird gesendet...",
+    "signIn": "Anmelden",
+    "success": "Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail gesendet.",
+    "title": "Passwort zurücksetzen"
+  },
+  "navUser": {
+    "loading": "Lädt...",
+    "logOut": "Abmelden",
+    "noUsername": "Kein Benutzername",
+    "unnamed": "Unbenannt",
+    "updateProfile": "Profil aktualisieren"
+  },
+  "profileForm": {
+    "goBackHome": "Zurück zur Startseite",
+    "loading": "Lädt...",
+    "name": "Name",
+    "nameTooltip": "Der Name wird nur verwendet, um Sie innerhalb der App anzusprechen.",
+    "success": "Profil erfolgreich aktualisiert 🎉",
+    "update": "Profil aktualisieren",
+    "updating": "Profil wird aktualisiert...",
+    "username": "Benutzername"
+  },
+  "resetPassword": {
+    "confirmPassword": "Passwort bestätigen",
+    "confirmPasswordPlaceholder": "Passwort bestätigen",
+    "description": "Bitte geben Sie unten Ihr neues Passwort ein.",
+    "error": "Fehler beim Zurücksetzen des Passworts",
+    "password": "Passwort",
+    "passwordPlaceholder": "Neues Passwort",
+    "passwordsDontMatch": "Passwörter stimmen nicht überein",
+    "resetButton": "Passwort zurücksetzen",
+    "resetting": "Passwort wird zurückgesetzt...",
+    "success": "Passwort erfolgreich zurückgesetzt!",
+    "title": "Passwort zurücksetzen"
+  },
+  "signIn": {
+    "emailLabel": "E-Mail",
+    "error": "Fehler bei der Anmeldung",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccountText": "Noch kein Konto?",
+    "orContinueWith": "Oder fortfahren mit",
+    "orSignInWithSSO": "Oder mit SSO anmelden",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Ihr Passwort",
+    "privacyPolicy": "Datenschutzbestimmungen",
+    "redirecting": "Weiterleitung...",
+    "signInButton": "Anmelden",
+    "signUpText": "Registrieren",
+    "signingIn": "Anmeldung...",
+    "success": "Erfolgreich angemeldet",
+    "termsAnd": "und",
+    "termsOfService": "Nutzungsbedingungen",
+    "termsPrefix": "Indem Sie fortfahren stimmen Sie unseren",
+    "verifyEmail": {
+      "error": "Fehler beim Verifizieren der E-Mail",
+      "loading": "E-Mail wird verifiziert...",
+      "success": "E-Mail erfolgreich verifiziert"
+    }
+  },
+  "signUp": {
+    "alreadyHaveAccount": "Bereits ein Konto?",
+    "error": "Fehler bei der Registrierung",
+    "signingUp": "Registrierung...",
+    "signInText": "Anmelden",
+    "signUpButton": "Registrieren",
+    "success": "Erfolgreich registriert. Bitte bestätigen Sie Ihre E-Mail.",
+    "title": "Registrieren"
+  },
+  "socialLogins": {
+    "redirectingTo": "Weiterleitung zu {provider}...",
+    "redirectError": "Weiterleitung zu {provider} fehlgeschlagen"
+  },
+  "sso": {
+    "institutionEmailLabel": "Institutions-E-Mail",
+    "institutionEmailPlaceholder": "benutzer@institution.edu",
+    "loginWithInstitution": "Mit Ihrer Institution anmelden",
+    "redirectingToSSO": "Weiterleitung zu Institutions-SSO...",
+    "redirectError": "Weiterleitung zu Institutions-SSO fehlgeschlagen"
+  }
+}

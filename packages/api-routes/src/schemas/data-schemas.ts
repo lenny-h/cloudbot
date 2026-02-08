@@ -16,4 +16,6 @@ export const dataSchemas = {
   sheetDelta: z.string(),
   clear: z.null(),
   finish: z.null(),
+  fileGenerating: z.string(),
+  fileGenerated: z.string(),
 };

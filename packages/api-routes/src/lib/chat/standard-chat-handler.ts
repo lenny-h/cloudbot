@@ -25,6 +25,7 @@ import { getPromptsByIds } from "../queries/prompts.js";
 import { createDocument } from "../tools/create-document.js";
 import { extractFromDocuments } from "../tools/extract-from-documents.js";
 import { extractFromWeb } from "../tools/extract-from-web.js";
+import { generateFile } from "../tools/generate-file.js";
 import { updateDocument } from "../tools/update-document.js";
 import { ChatHandler } from "./chat-handler.js";
 import { type ChatRequest } from "./chat-request.js";
@@ -76,6 +77,11 @@ export class StandardChatHandler extends ChatHandler {
         dataStream: writer,
       }),
       updateDocument: updateDocument({
+        env: this.env,
+        userId: this.request.user.id,
+        dataStream: writer,
+      }),
+      generateFile: generateFile({
         env: this.env,
         userId: this.request.user.id,
         dataStream: writer,

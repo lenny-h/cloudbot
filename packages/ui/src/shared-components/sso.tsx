@@ -1,0 +1,98 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Key } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { memo } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../components/form";
+import { Input } from "../components/input";
+import { useSharedTranslations } from "../contexts/shared-translations-context";
+import { client } from "../lib/auth-client";
+import { SubmitButton } from "./submit-button";
+
+const ssoFormSchema = z.object({
+  email: z.email("Please enter a valid email address"),
+});
+
+type SSOFormData = z.infer<typeof ssoFormSchema>;
+
+export const SSO = memo(() => {
+  const { sharedT, locale } = useSharedTranslations();
+
+  const router = useRouter();
+
+  const form = useForm<SSOFormData>({
+    resolver: zodResolver(ssoFormSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  async function onSubmit(values: SSOFormData) {
+    console.log("SSO form submitted with values:", values);
+
+    const ssoLoginPromise = client.signIn.sso(
+      {
+        email: values.email,
+        callbackURL: `${window.location.origin}/${locale}/`,
+      },
+      {
+        onSuccess() {
+          router.push(`/${locale}/`);
+        },
+        onError(context) {
+          throw new Error(context.error.message);
+        },
+      }
+    );
+
+    toast.promise(ssoLoginPromise, {
+      loading: sharedT.sso.redirectingToSSO,
+      success: sharedT.sso.redirectingToSSO,
+      error: sharedT.sso.redirectError,
+    });
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="grid gap-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{sharedT.sso.institutionEmailLabel}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={sharedT.sso.institutionEmailPlaceholder}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SubmitButton
+            className="w-full"
+            isPending={form.formState.isSubmitting}
+            pendingText={sharedT.signIn.redirecting}
+          >
+            <Key className="mr-2" />
+            {sharedT.sso.loginWithInstitution}
+          </SubmitButton>
+        </div>
+      </form>
+    </Form>
+  );
+});

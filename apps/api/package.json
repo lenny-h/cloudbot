@@ -17,7 +17,7 @@
     "hono": "^4.11.7"
   },
   "devDependencies": {
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.18",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",

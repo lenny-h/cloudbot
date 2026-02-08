@@ -1,0 +1,108 @@
+{
+  "apiCodes": {
+    "ABORT_ERROR": "The request was aborted",
+    "BAD_REQUEST": "The server could not serve your request",
+    "UNAUTHORIZED": "You must be signed in to perform this action",
+    "FORBIDDEN": "You do not have permission to access this resource",
+    "PAYLOAD_TOO_LARGE": "The payload of your request is too large",
+    "RATE_LIMIT": "The rate limit has been exceeded",
+    "INTERNAL_SERVER_ERROR": "An error occurred. Please try again later",
+    "UPSTREAM_ERROR": "Some upstream services are not responding",
+    "FALLBACK_ERROR": "An error occurred. Please try again later.",
+    "IMAGE_ERROR": "Image not available",
+    "INVALID_KEY": "Invalid password",
+    "INVALID_EMAIL_DOMAIN": "Your email domain is not allowed to sign up",
+    "INVALID_FILENAME": "Filenames must not contain special characters and must have a valid extension",
+    "LOAD_MORE_ERROR": "Failed to load more items",
+    "NO_RESULTS": "No results found",
+    "PAGE_NOT_FOUND": "Page not found",
+    "PROMPT_LIMIT_REACHED": "You have reached the limit for custom prompts"
+  },
+  "centralLoading": {
+    "loading": "Loading..."
+  },
+  "forgotPassword": {
+    "backToSignIn": "Back to sign in?",
+    "email": "Email",
+    "errorSending": "Failed to send reset email",
+    "resetButton": "Reset Password",
+    "sendingEmail": "Sending email...",
+    "signIn": "Sign in",
+    "success": "A password reset link has been sent to your email.",
+    "title": "Reset password"
+  },
+  "navUser": {
+    "loading": "Loading...",
+    "logOut": "Log out",
+    "noUsername": "No username",
+    "unnamed": "Unnamed",
+    "updateProfile": "Update profile"
+  },
+  "profileForm": {
+    "goBackHome": "Go back home",
+    "loading": "Loading...",
+    "name": "Name",
+    "nameTooltip": "The name is only used to address you inside the app.",
+    "success": "Profile updated successfully 🎉",
+    "update": "Update profile",
+    "updating": "Updating profile...",
+    "username": "Username"
+  },
+  "resetPassword": {
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "description": "Please enter your new password below.",
+    "error": "Failed to reset password",
+    "password": "Password",
+    "passwordPlaceholder": "New password",
+    "passwordsDontMatch": "Passwords do not match",
+    "resetButton": "Reset password",
+    "resetting": "Resetting password...",
+    "success": "Password reset successfully!",
+    "title": "Reset password"
+  },
+  "signIn": {
+    "emailLabel": "Email",
+    "error": "Failed to sign in",
+    "forgotPassword": "Forgot your password?",
+    "noAccountText": "Don't have an account?",
+    "orContinueWith": "Or continue with",
+    "orSignInWithSSO": "Or sign in with SSO",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Your password",
+    "privacyPolicy": "Privacy Policy",
+    "redirecting": "Redirecting...",
+    "signInButton": "Sign in",
+    "signUpText": "Sign up",
+    "signingIn": "Signing in...",
+    "success": "Successfully signed in",
+    "termsAnd": "and",
+    "termsOfService": "Terms of Service",
+    "termsPrefix": "By clicking continue, you agree to our",
+    "verifyEmail": {
+      "error": "Failed to verify email",
+      "loading": "Verifying email...",
+      "success": "Email verified successfully"
+    }
+  },
+  "signUp": {
+    "alreadyHaveAccount": "Already have an account?",
+    "error": "Failed to sign up",
+    "signingUp": "Signing up...",
+    "signInText": "Sign in",
+    "signUpButton": "Sign up",
+    "success": "Successfully signed up. Please confirm your email.",
+    "title": "Sign up"
+  },
+  "socialLogins": {
+    "redirectingTo": "Redirecting to {provider}...",
+    "redirectError": "Failed to redirect to {provider}"
+  },
+  "sso": {
+    "institutionEmailLabel": "Institution Email",
+    "institutionEmailPlaceholder": "user@institution.edu",
+    "loginWithInstitution": "Login With Your Institution",
+    "redirectingToSSO": "Redirecting to institution SSO...",
+    "redirectError": "Failed to redirect to institution SSO"
+  }
+}
