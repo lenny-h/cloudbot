@@ -41,7 +41,6 @@ export const SignUp = memo(() => {
       password: "",
       name: "",
       username: "",
-      isPublic: true,
     },
   });
 

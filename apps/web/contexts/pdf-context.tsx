@@ -1,9 +1,9 @@
 "use client";
 
-import { useEditor } from "@workspace/ui/contexts/editor-context";
+import { useEditor } from "@/contexts/editor-context";
+import { resizeEditor } from "@/lib/utils";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
-import { resizeEditor } from "@workspace/ui/lib/utils";
 import {
   createContext,
   type ReactNode,
@@ -42,7 +42,7 @@ function getCachedUrl(folderId: string, fileId: string): string | null {
 
   try {
     const cacheKey = `${CACHE_KEY_PREFIX}${folderId}:${fileId}`;
-    const cached = localStorage.getItem(cacheKey);
+    const cached = sessionStorage.getItem(cacheKey);
 
     if (!cached) return null;
 
@@ -54,7 +54,7 @@ function getCachedUrl(folderId: string, fileId: string): string | null {
     }
 
     // Clean up expired cache entry
-    localStorage.removeItem(cacheKey);
+    sessionStorage.removeItem(cacheKey);
     return null;
   } catch (error) {
     console.error("Error reading from cache:", error);
@@ -71,7 +71,7 @@ function setCachedUrl(folderId: string, fileId: string, url: string): void {
       url,
       expiresAt: Date.now() + CACHE_EXPIRY_MS,
     };
-    localStorage.setItem(cacheKey, JSON.stringify(data));
+    sessionStorage.setItem(cacheKey, JSON.stringify(data));
   } catch (error) {
     console.error("Error writing to cache:", error);
   }

@@ -53,7 +53,7 @@ export const SSO = memo(() => {
         onError(context) {
           throw new Error(context.error.message);
         },
-      }
+      },
     );
 
     toast.promise(ssoLoginPromise, {

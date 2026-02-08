@@ -7,6 +7,6 @@
       "@workspace/ui/*": ["./src/*"]
     }
   },
-  "include": ["."],
+  "include": [".", "../../apps/web/contexts/autocomplete-context.tsx", "../../apps/web/contexts/editor-context.tsx", "../../apps/web/contexts/refs-context.tsx"],
   "exclude": ["node_modules", "dist"]
 }

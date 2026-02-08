@@ -3,13 +3,13 @@
 import { EditorHeader } from "@/components/editors/editor-header";
 import { PdfHeader } from "@/components/editors/pdf-header";
 import { PDFViewer } from "@/components/sidebars/pdf-viewer";
+import { useEditor } from "@/contexts/editor-context";
+import { useRefs } from "@/contexts/refs-context";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@workspace/ui/components/resizable";
-import { useEditor } from "@workspace/ui/contexts/editor-context";
-import { useRefs } from "@workspace/ui/contexts/refs-context";
 import { EditorWrapper } from "@workspace/ui/custom-components/editor-wrapper";
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { useEffect } from "react";
