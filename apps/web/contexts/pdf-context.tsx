@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 interface PDFContextType {
   currentPdfUrl: string | null;
-  currentFileName: string | null;
+  currentFilename: string | null;
   openPdf: (
     isMobile: boolean,
     panelRef: RefObject<PanelImperativeHandle | null>,
@@ -80,7 +80,7 @@ function setCachedUrl(folderId: string, fileId: string, url: string): void {
 export function PDFProvider({ children }: { children: ReactNode }) {
   const { sharedT } = useSharedTranslations();
 
-  const [currentFileName, setCurrentFileName] = useState<string | null>(null);
+  const [currentFilename, setCurrentFilename] = useState<string | null>(null);
   const [currentPdfUrl, setCurrentPdfUrl] = useState<string | null>(null);
 
   const [, setEditorMode] = useEditor();
@@ -114,7 +114,7 @@ export function PDFProvider({ children }: { children: ReactNode }) {
 
   const loadPdf = useCallback(
     async (folderId: string, fileId: string) => {
-      setCurrentFileName(fileId);
+      setCurrentFilename(fileId);
       setIsFetching(true);
 
       try {
@@ -158,7 +158,7 @@ export function PDFProvider({ children }: { children: ReactNode }) {
     <PDFContext.Provider
       value={{
         currentPdfUrl,
-        currentFileName,
+        currentFilename,
         openPdf,
         isFetching,
       }}

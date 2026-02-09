@@ -57,7 +57,7 @@ export const CodeEditor = memo(({ codeEditorRef: editorRef }: EditorProps) => {
 
 export function syncCodeEditorContentToLocalStorage(
   editorRef: React.RefObject<EditorView | null>,
-  setLocalStorageInput: React.Dispatch<React.SetStateAction<EditorContent>>
+  setLocalStorageInput: React.Dispatch<React.SetStateAction<EditorContent>>,
 ) {
   if (!editorRef.current) return;
 
@@ -68,26 +68,3 @@ export function syncCodeEditorContentToLocalStorage(
     content,
   }));
 }
-
-// export function updateCodeEditorWithNewState(
-//   editorRef: React.RefObject<EditorView | null>,
-//   content: string,
-//   editable: boolean,
-// ) {
-//   if (!editorRef.current) return;
-
-//   const newState = EditorState.create({
-//     doc: content,
-//     extensions: [
-//       basicSetup,
-//       python(),
-//       javascript(),
-//       java(),
-//       cpp(),
-//       oneDark,
-//       EditorView.editable.of(editable),
-//     ],
-//   });
-
-//   editorRef.current.setState(newState);
-// }

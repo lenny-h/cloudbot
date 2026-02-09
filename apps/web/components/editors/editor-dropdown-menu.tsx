@@ -1,6 +1,6 @@
+import { useEditor } from "@/contexts/editor-context";
 import { useWebTranslations } from "@/contexts/web-translations";
 import { useQueryClient } from "@tanstack/react-query";
-import { type CustomDocument } from "@workspace/server/drizzle/schema";
 import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,
@@ -9,17 +9,13 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import { Switch } from "@workspace/ui/components/switch";
-import { useAutocomplete } from "@workspace/ui/contexts/autocomplete-context";
-import { useEditor } from "@workspace/ui/contexts/editor-context";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
-import { DeleteForm } from "@workspace/ui/editors/delete-form";
-import {
-  RenameForm,
-  type RenameFormData,
-} from "@workspace/ui/editors/rename-form";
 import { apiFetcher, removeFromInfiniteCache } from "@workspace/ui/lib/fetcher";
 import { FilePlus, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
+import { DeleteForm } from "../custom/delete-form";
+import { RenameForm, type RenameFormData } from "../custom/rename-form";
 
 interface EditorDropdownMenuProps {
   editorContent: {
@@ -45,7 +41,11 @@ export const EditorDropdownMenu = ({
   const queryClient = useQueryClient();
 
   const [editorMode] = useEditor();
-  const [autocomplete, setAutocomplete] = useAutocomplete();
+  const [autocomplete, setAutocomplete] = useLocalStorage<{
+    text: boolean;
+  }>("autocomplete", {
+    text: false,
+  });
 
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -170,9 +170,7 @@ export const EditorDropdownMenu = ({
               <span>{webT.editorDropdownMenu.autocomplete}</span>
               <Switch
                 className="cursor-pointer"
-                checked={
-                  editorMode === "text" ? autocomplete.text : autocomplete.code
-                }
+                checked={autocomplete.text}
                 onCheckedChange={(checked) => {
                   setAutocomplete((prev) => ({
                     ...prev,

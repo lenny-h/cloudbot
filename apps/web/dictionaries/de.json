@@ -20,6 +20,18 @@
         "promptName": "Name des Prompts",
         "success": "Prompt erstellt 🎉"
     },
+    "chat": {
+        "errorOccurred": "Ein Fehler ist aufgetreten, bitte versuchen Sie es später erneut!",
+        "waitForResponse": "Bitte warten Sie, bis die Antwort beendet ist!"
+    },
+    "chatHeader": {
+        "chatAdded": "Chat zu Favoriten hinzugefügt",
+        "chatAddedError": "Fehler beim Hinzufügen des Chats zu den Favoriten",
+        "chatRemoved": "Chat aus Favoriten entfernt",
+        "chatRemovedError": "Fehler beim Entfernen des Chats aus den Favoriten",
+        "addToFavourites": "Zu Favoriten hinzufügen",
+        "toggleSidebar": "Seitenleiste umschalten"
+    },
     "chatItem": {
         "addToFavourites": "Zu Favoriten hinzufügen",
         "defaultTitle": "Chat",
@@ -58,6 +70,12 @@
             "chat": "Fehler beim Löschen des Chats. Bitte versuchen Sie es später erneut."
         }
     },
+    "editorDropdownMenu": {
+        "delete": "Löschen",
+        "rename": "Umbenennen",
+        "new": "Neu",
+        "autocomplete": "Autovervollständigung"
+    },
     "editorHeader": {
         "diffView": "Diff-Ansicht",
         "accept": "Akzeptieren",
@@ -79,6 +97,21 @@
         "errorLoading": "Fehler beim Laden von {type}",
         "noResultsFound": "Keine Ergebnisse gefunden",
         "maxItemsError": "Sie können nur bis zu {maxItems} Elemente auswählen"
+    },
+    "folderKeyDialog": {
+        "folderAccessRequired": "Passwort erforderlich",
+        "enterAccessKey": "Bitte geben Sie das Passwort für \"{folderName}\" ein, um fortzufahren.",
+        "folderKey": "Passwort",
+        "enterFolderAccessKey": "Passwort eingeben",
+        "cancel": "Abbrechen",
+        "submit": "Einreichen",
+        "requestingAccess": "Zugang wird angefordert...",
+        "accessGranted": "Zugang gewährt!",
+        "failedToRequestAccess": "Fehler beim Anfordern des Zugangs"
+    },
+    "folderSelector": {
+        "foldersSelected": "{count} folders selected",
+        "searchFolders": "Search folders"
     },
     "loadButton": {
         "load": "Laden",

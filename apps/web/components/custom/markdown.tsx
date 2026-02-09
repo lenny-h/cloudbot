@@ -1,5 +1,5 @@
-import { type DocumentSource } from "@workspace/api-routes/types/document-source";
-import { type NormalizedWebSource } from "@workspace/api-routes/types/web-source";
+import { type SourceDocumentUIPart, type SourceUrlUIPart } from "ai";
+import "katex/dist/katex.min.css";
 import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -8,10 +8,8 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import { SourceBadge } from "./source-badge";
+import { DocSourceBadge } from "./doc-source-badge";
 import { WebSourceBadge } from "./web-source-badge";
-
-import "katex/dist/katex.min.css";
 
 const CodeBlock = dynamic(
   () => import("./code-block").then((mod) => mod.CodeBlock),
@@ -36,12 +34,12 @@ const preserveLineBreaks = (text: string, keyPrefix: string) => {
       i === array.length - 1
         ? line
         : [
-          line,
-          <React.Fragment key={`${keyPrefix}-br-${i}`}>
-            <br />
-            <br />
-          </React.Fragment>,
-        ],
+            line,
+            <React.Fragment key={`${keyPrefix}-br-${i}`}>
+              <br />
+              <br />
+            </React.Fragment>,
+          ],
     )
     .flat();
 };
@@ -130,8 +128,8 @@ const getComponents = ({
   docSources,
   webSources,
 }: {
-  docSources?: DocumentSource[];
-  webSources?: NormalizedWebSource[];
+  docSources?: SourceDocumentUIPart[];
+  webSources?: SourceUrlUIPart[];
 }): Partial<ComponentsWithSourceRef> => ({
   // Render custom element produced by rehypeSourceRefs
   "source-ref": ({ node }: any) => {
@@ -139,10 +137,10 @@ const getComponents = ({
     const sourceId = node?.properties?.sourceId ?? "";
 
     if (sourceType === "doc") {
-      const source = docSources?.find((s) => s.id === sourceId);
-      return source ? <SourceBadge source={source} /> : null;
+      const source = docSources?.find((s) => s.sourceId === sourceId);
+      return source ? <DocSourceBadge source={source} /> : null;
     } else if (sourceType === "web") {
-      const source = webSources?.find((s) => s.id === sourceId);
+      const source = webSources?.find((s) => s.sourceId === sourceId);
       return source ? <WebSourceBadge source={source} /> : null;
     }
 
@@ -216,32 +214,32 @@ const getComponents = ({
     );
   },
   h1: ({ children, ...props }) => (
-    <h1 className="mb-2 mt-5 text-3xl font-semibold" {...props}>
+    <h1 className="mt-5 mb-2 text-3xl font-semibold" {...props}>
       {children}
     </h1>
   ),
   h2: ({ children, ...props }) => (
-    <h2 className="mb-2 mt-5 text-2xl font-semibold" {...props}>
+    <h2 className="mt-5 mb-2 text-2xl font-semibold" {...props}>
       {children}
     </h2>
   ),
   h3: ({ children, ...props }) => (
-    <h3 className="mb-2 mt-5 text-xl font-semibold" {...props}>
+    <h3 className="mt-5 mb-2 text-xl font-semibold" {...props}>
       {children}
     </h3>
   ),
   h4: ({ children, ...props }) => (
-    <h4 className="mb-2 mt-5 text-lg font-semibold" {...props}>
+    <h4 className="mt-5 mb-2 text-lg font-semibold" {...props}>
       {children}
     </h4>
   ),
   h5: ({ children, ...props }) => (
-    <h5 className="mb-2 mt-5 text-base font-semibold" {...props}>
+    <h5 className="mt-5 mb-2 text-base font-semibold" {...props}>
       {children}
     </h5>
   ),
   h6: ({ children, ...props }) => (
-    <h6 className="mb-2 mt-5 text-sm font-semibold" {...props}>
+    <h6 className="mt-5 mb-2 text-sm font-semibold" {...props}>
       {children}
     </h6>
   ),
@@ -278,7 +276,7 @@ const getComponents = ({
   th: ({ children, ...props }) => {
     return (
       <th
-        className="text-muted-foreground px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+        className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase"
         {...props}
       >
         {children}
@@ -288,7 +286,7 @@ const getComponents = ({
   td: ({ children, ...props }) => {
     return (
       <td
-        className="text-muted-foreground whitespace-nowrap px-6 py-4 text-sm"
+        className="text-muted-foreground px-6 py-4 text-sm whitespace-nowrap"
         {...props}
       >
         {children}
@@ -299,8 +297,8 @@ const getComponents = ({
 
 interface MarkdownProps {
   children: string;
-  docSources?: DocumentSource[];
-  webSources?: NormalizedWebSource[];
+  docSources?: SourceDocumentUIPart[];
+  webSources?: SourceUrlUIPart[];
   parseSourceRefs?: boolean;
 }
 

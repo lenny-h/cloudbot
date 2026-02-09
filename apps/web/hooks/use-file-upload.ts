@@ -1,0 +1,106 @@
+import { type Attachment } from "@workspace/api-routes/schemas/attachment-schema";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
+import { apiFetcher } from "@workspace/ui/lib/fetcher";
+import { checkResponse } from "@workspace/ui/lib/translation-utils";
+import { useState, type ChangeEvent } from "react";
+import { toast } from "sonner";
+
+export const useFileUpload = () => {
+  const { sharedT } = useSharedTranslations();
+  const [uploadQueue, setUploadQueue] = useState<string[]>([]);
+
+  const getSignedUrl = async (file: File) => {
+    return await apiFetcher(
+      (client) =>
+        client.attachments["get-signed-url"].$post({
+          json: {
+            filename: file.name,
+            fileSize: file.size,
+            fileType: file.type as
+              | "application/pdf"
+              | "image/jpeg"
+              | "image/png",
+          },
+        }),
+      sharedT.apiCodes,
+    );
+  };
+
+  const uploadFile = async (file: File) => {
+    try {
+      const { signedUrl, key } = await getSignedUrl(file);
+      const renamedFile = new File([file], key, { type: file.type });
+
+      const uploadHeaders: Record<string, string> = {
+        "Content-Type": file.type,
+      };
+
+      const uploadResponse = await fetch(signedUrl, {
+        method: "PUT",
+        headers: uploadHeaders,
+        body: renamedFile,
+      });
+
+      checkResponse(uploadResponse, sharedT.apiCodes);
+
+      // Create a blob URL for preview
+      const previewUrl = URL.createObjectURL(file);
+
+      return {
+        filename: key,
+        mediaType: file.type as
+          | "application/pdf"
+          | "image/jpeg"
+          | "image/png"
+          | "image/jpg",
+        previewUrl,
+      };
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : sharedT.apiCodes.FALLBACK_ERROR,
+      );
+    }
+  };
+
+  const handleFilesUpload = async (
+    files: File[],
+    setAttachments: (fn: (current: Attachment[]) => Attachment[]) => void,
+  ) => {
+    if (files.length === 0) return;
+
+    setUploadQueue(files.map((file) => file.name));
+
+    try {
+      const uploadPromises = files.map((file) => uploadFile(file));
+      const uploadedAttachments = await Promise.all(uploadPromises);
+      const successfullyUploadedAttachments = uploadedAttachments.filter(
+        (attachment) => attachment !== undefined,
+      );
+
+      setAttachments((currentAttachments) => [
+        ...currentAttachments,
+        ...successfullyUploadedAttachments,
+      ]);
+    } catch (error) {
+      console.error("Error uploading files!", error);
+    } finally {
+      setUploadQueue([]);
+    }
+  };
+
+  const handleFileChange = async (
+    event: ChangeEvent<HTMLInputElement>,
+    setAttachments: (fn: (current: Attachment[]) => Attachment[]) => void,
+  ) => {
+    const files = Array.from(event.target.files || []);
+    await handleFilesUpload(files, setAttachments);
+  };
+
+  return {
+    uploadQueue,
+    handleFileChange,
+    handleFilesUpload,
+  };
+};

@@ -95,7 +95,7 @@ export const EditorHeader = memo(() => {
       try {
         await apiFetcher(
           (client) =>
-            client.documents.content[":documentId"].$patch({
+            client["documents"][":documentId"].$patch({
               param: { documentId: savedId },
               json: { content },
             }),

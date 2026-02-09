@@ -14,5 +14,8 @@
     "components": "@/components",
     "utils": "@workspace/ui/lib/utils",
     "ui": "@workspace/ui/components"
+  },
+  "registries": {
+    "@ai-elements": "https://ai-sdk.dev/elements/api/registry/{name}.json"
   }
 }

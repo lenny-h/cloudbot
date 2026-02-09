@@ -1,3 +1,4 @@
+import { type ContextFilter } from "@workspace/api-routes/schemas/context-filter-schema";
 import { type PanelImperativeHandle } from "react-resizable-panels";
 
 export function capitalizeFirstLetter(string: string): string {
@@ -13,4 +14,17 @@ export function resizeEditor(
   } else if (collapse) {
     panelRef.current?.collapse();
   }
+}
+
+export function minimizeFilter(filter: ContextFilter) {
+  return {
+    prompts: filter.prompts.map((p) => ({ id: p.id })),
+    folders: filter.folders.map((f) => ({
+      id: f.id,
+    })),
+    files: filter.files.map((f) => ({
+      id: f.id,
+    })),
+    documents: filter.documents.map((doc) => ({ id: doc.id })),
+  };
 }

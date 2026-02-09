@@ -106,7 +106,7 @@ export const documents = sqliteTable("documents", {
   id: text("id").primaryKey().notNull(),
   title: text("title").notNull(),
   content: text("content"),
-  kind: text("kind", { enum: ["text", "code", "image", "sheet"] })
+  kind: text("kind", { enum: ["text", "code", "sheet"] })
     .notNull()
     .default("text"),
   owner: text("owner")

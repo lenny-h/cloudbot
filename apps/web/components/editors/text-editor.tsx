@@ -1,21 +1,19 @@
 "use client";
 
-import { useAutocomplete } from "@workspace/ui/contexts/autocomplete-context";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
-import {
-  mathMarkdownSerializer,
-  mathTextSerializer,
-} from "@workspace/ui/editors/prosemirror-math/utils/text-serializer";
 import { exampleSetup } from "prosemirror-example-setup";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { memo, useEffect, useRef } from "react";
 import { useLocalStorage } from "usehooks-ts";
-
 import { createCompletionPlugin } from "./completion-plugin";
 import { buildDocumentFromContent } from "./helper-functions";
 import { plugins, textEditorSchema } from "./prosemirror-math/config";
 import "./prosemirror-math/styles.css";
+import {
+  mathMarkdownSerializer,
+  mathTextSerializer,
+} from "./prosemirror-math/utils/text-serializer";
 
 export type EditorContent = {
   id?: string;
@@ -29,10 +27,11 @@ type EditorProps = {
 
 export const TextEditor = memo(({ textEditorRef: editorRef }: EditorProps) => {
   const { sharedT } = useSharedTranslations();
-
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [autocomplete] = useAutocomplete();
+  const [autocomplete] = useLocalStorage<{ text: boolean }>("autocomplete", {
+    text: false,
+  });
   const [localStorageInput, setLocalStorageInput] =
     useLocalStorage<EditorContent>("text-editor-input", {
       id: undefined,

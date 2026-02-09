@@ -19,7 +19,7 @@ import { AddPromptForm } from "./add-prompt-form";
 import { SearchWithSelection } from "./search-with-selection";
 
 interface AddContextProps {
-  type: "files" | "documents" | "prompts";
+  type: "prompts" | "files" | "documents";
 }
 
 export const AddContext = memo(({ type }: AddContextProps) => {
@@ -56,11 +56,11 @@ export const AddContext = memo(({ type }: AddContextProps) => {
           )}
           onClick={() => setOpen((open) => !open)}
         >
-          {type === "files"
-            ? webT.addContext.addFiles
-            : type === "documents"
-              ? webT.addContext.addDocuments
-              : webT.addContext.addPrompts}
+          {type === "prompts"
+            ? webT.addContext.addPrompts
+            : type === "files"
+              ? webT.addContext.addFiles
+              : webT.addContext.addDocuments}
           <kbd className="bg-muted text-muted-foreground inline-flex h-4 items-center gap-1 rounded-xl border px-1.5 font-mono font-medium">
             <span className="text-xs">⌘</span>
             {shortcut}
@@ -79,11 +79,11 @@ export const AddContext = memo(({ type }: AddContextProps) => {
           ) : (
             <div className="flex items-center justify-between pr-6">
               <DialogTitle>
-                {type === "files"
-                  ? webT.addContext.searchFiles
-                  : type === "documents"
-                    ? webT.addContext.searchDocuments
-                    : webT.addContext.searchPrompts}
+                {type === "prompts"
+                  ? webT.addContext.searchPrompts
+                  : type === "files"
+                    ? webT.addContext.searchFiles
+                    : webT.addContext.searchDocuments}
               </DialogTitle>
               {type === "prompts" && (
                 <Button

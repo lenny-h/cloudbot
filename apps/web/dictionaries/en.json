@@ -20,6 +20,18 @@
         "promptName": "Prompt Name",
         "success": "Prompt created 🎉"
     },
+    "chat": {
+        "errorOccurred": "An error occurred, please try again!",
+        "waitForResponse": "Please wait for the model to finish its response!"
+    },
+    "chatHeader": {
+        "chatAdded": "Chat added to favourites",
+        "chatAddedError": "Failed to add chat to favourites",
+        "chatRemoved": "Chat removed from favourites",
+        "chatRemovedError": "Failed to remove chat from favourites",
+        "addToFavourites": "Add to favourites",
+        "toggleSidebar": "Toggle sidebar"
+    },
     "chatItem": {
         "addToFavourites": "Add to favourites",
         "defaultTitle": "Chat",
@@ -58,6 +70,12 @@
             "chat": "Failed to delete chat. Please try again later."
         }
     },
+    "editorDropdownMenu": {
+        "delete": "Delete",
+        "rename": "Rename",
+        "new": "New",
+        "autocomplete": "Autocomplete"
+    },
     "editorHeader": {
         "diffView": "Diff view",
         "accept": "Accept",
@@ -79,6 +97,21 @@
         "errorLoading": "Error loading {type}",
         "noResultsFound": "No results found",
         "maxItemsError": "You can only select up to {maxItems} items"
+    },
+    "folderKeyDialog": {
+        "folderAccessRequired": "Folder Access Required",
+        "enterAccessKey": "Please enter the access key for \"{folderName}\" to continue.",
+        "folderKey": "Folder key",
+        "enterFolderAccessKey": "Enter folder access key",
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "requestingAccess": "Requesting folder access...",
+        "accessGranted": "Folder access granted!",
+        "failedToRequestAccess": "Failed to request folder access"
+    },
+    "folderSelector": {
+        "foldersSelected": "{count} Ordner ausgewählt",
+        "searchFolders": "Ordner suchen"
     },
     "loadButton": {
         "load": "Load",
