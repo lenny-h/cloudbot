@@ -11,15 +11,15 @@ import { RefsProvider } from "@/contexts/refs-context";
 import { ChatModelProvider } from "@/contexts/selected-chat-model";
 import { VSResultsProvider } from "@/contexts/semantic-search-results";
 import { TempChatProvider } from "@/contexts/temporary-chat-context";
-import { type User } from "@workspace/server/drizzle/schema";
+import { type User } from "@workspace/server/drizzle/schema/auth-schema";
 import {
   SidebarInset,
   SidebarProvider,
 } from "@workspace/ui/components/sidebar-left";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { UserProvider } from "@workspace/ui/contexts/user-context";
-import { CentralLoadingScreen } from "@workspace/ui/custom-components/central-loading-screen";
 import { client } from "@workspace/ui/lib/auth-client";
+import { CentralLoadingScreen } from "@workspace/ui/shared-components/central-loading-screen";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

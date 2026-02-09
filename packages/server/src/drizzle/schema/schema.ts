@@ -1,6 +1,5 @@
 import { InferSelectModel, sql } from "drizzle-orm";
 import {
-  foreignKey,
   integer,
   primaryKey,
   sqliteTable,
@@ -93,7 +92,7 @@ export const files = sqliteTable(
       .notNull()
       .references(() => users.id),
     size: integer("size").notNull(),
-    pageCount: integer("page_count"),
+    format: text("format").notNull(),
     createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .default(sql`(unixepoch())`),
@@ -103,57 +102,43 @@ export const files = sqliteTable(
 
 export type File = InferSelectModel<typeof files>;
 
-export const documents = sqliteTable(
-  "documents",
-  {
-    id: text("id").notNull(),
-    title: text("title").notNull(),
-    content: text("content"),
-    kind: text("kind", { enum: ["text", "code", "image", "sheet"] })
-      .notNull()
-      .default("text"),
-    owner: text("owner")
-      .notNull()
-      .references(() => users.id),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
-  },
-  (table) => [primaryKey({ columns: [table.id, table.createdAt] })],
-);
+export const documents = sqliteTable("documents", {
+  id: text("id").primaryKey().notNull(),
+  title: text("title").notNull(),
+  content: text("content"),
+  kind: text("kind", { enum: ["text", "code", "image", "sheet"] })
+    .notNull()
+    .default("text"),
+  owner: text("owner")
+    .notNull()
+    .references(() => users.id),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
 
 export type Document = InferSelectModel<typeof documents>;
 
-export const suggestions = sqliteTable(
-  "suggestions",
-  {
-    id: text("id").primaryKey().notNull(),
-    documentId: text("document_id").notNull(),
-    documentCreatedAt: integer("document_created_at", {
-      mode: "timestamp",
-    }).notNull(),
-    originalText: text("original_text").notNull(),
-    suggestedText: text("suggested_text").notNull(),
-    description: text("description"),
-    isResolved: integer("is_resolved", { mode: "boolean" })
-      .notNull()
-      .default(false),
-    owner: text("owner")
-      .notNull()
-      .references(() => users.id),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.documentId, table.documentCreatedAt],
-      foreignColumns: [documents.id, documents.createdAt],
-    }),
-  ],
-);
+export const diffs = sqliteTable("diffs", {
+  id: text("id").primaryKey().notNull(),
+  documentId: text("document_id")
+    .notNull()
+    .references(() => documents.id),
+  previousText: text("previous_text").notNull(),
+  newText: text("new_text").notNull(),
+  description: text("description"),
+  isResolved: integer("is_resolved", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  owner: text("owner")
+    .notNull()
+    .references(() => users.id),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
 
-export type Suggestion = InferSelectModel<typeof suggestions>;
+export type Diff = InferSelectModel<typeof diffs>;
 
 export const prompts = sqliteTable("prompts", {
   id: text("id").primaryKey().notNull(),

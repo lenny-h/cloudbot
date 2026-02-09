@@ -45,7 +45,7 @@ export class ChatRequest {
     this.id = id;
     this.user = user;
     this.messages = messages;
-    this.lastMessage = messages[messages.length - 1]!;
+    this.lastMessage = messages[messages.length - 1];
     this.createNewChat = createNewChat;
     this.modelIdx = modelIdx;
     this.isTemporary = isTemporary;

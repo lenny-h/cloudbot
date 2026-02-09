@@ -12,6 +12,10 @@ import chatsIsFavouriteRoute from "./chats/is-favourite/[chatId]/route.js";
 import chatsRoute from "./chats/route.js";
 import chatsTitleRoute from "./chats/title/[chatId]/route.js";
 import completionRoute from "./completion/route.js";
+import documentsDocumentIdRoute from "./documents/[documentId]/route.js";
+import documentsIlike from "./documents/ilike/route.js";
+import documentsRoute from "./documents/route.js";
+import documentsTitleRoute from "./documents/title/[documentId]/[title]/route.js";
 import filesFileIdRoute from "./files/[fileId]/route.js";
 import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/[fileId]/route.js";
 import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/route.js";
@@ -49,6 +53,12 @@ const protectedApiRouter = new Hono()
 
   // Completion
   .route("/completion", completionRoute)
+
+  // Documents
+  .route("/documents", documentsRoute)
+  .route("/documents/ilike", documentsIlike)
+  .route("/documents/title/:documentId/:title", documentsTitleRoute)
+  .route("/documents/:documentId", documentsDocumentIdRoute)
 
   // Files
   .route("/files", filesRoute)

@@ -1,0 +1,183 @@
+{
+    "addContext": {
+        "description": "Create a new prompt to provide instructions to the LLM that you can reuse across different requests.",
+        "addFiles": "Add files",
+        "addDocuments": "Add documents",
+        "addPrompts": "Add prompts",
+        "searchFiles": "Search files",
+        "searchDocuments": "Search documents",
+        "searchPrompts": "Search prompts",
+        "search": "Search"
+    },
+    "addPromptForm": {
+        "cancel": "Cancel",
+        "content": "Content",
+        "contentPlaceholder": "Enter your instructions here...",
+        "create": "Create",
+        "creating": "Creating prompt...",
+        "errorSaving": "Failed to save document. Please try again later.",
+        "name": "Name",
+        "promptName": "Prompt Name",
+        "success": "Prompt created 🎉"
+    },
+    "chatItem": {
+        "addToFavourites": "Add to favourites",
+        "defaultTitle": "Chat",
+        "delete": "Delete",
+        "fork": "Fork chat",
+        "more": "More",
+        "removeFromFavorites": "Remove from Favorites",
+        "rename": "Rename"
+    },
+    "chatSearch": {
+        "searchChats": "Search chats..."
+    },
+    "codeBlock": {
+        "copy": "Copy",
+        "edit": "Edit",
+        "loading": "Loading code block..."
+    },
+    "deleteForm": {
+        "title": {
+            "document": "Delete document",
+            "chat": "Delete chat"
+        },
+        "description": {
+            "document": "Are you sure you want to delete this document? This action cannot be undone. This will permanently delete the document and all associated data.",
+            "chat": "Are you sure you want to delete this chat? This action cannot be undone. This will permanently delete the chat and all associated data."
+        },
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "deleted": {
+            "document": "Document deleted!",
+            "chat": "Chat deleted!"
+        },
+        "error": {
+            "document": "Failed to delete document. Please try again later.",
+            "chat": "Failed to delete chat. Please try again later."
+        }
+    },
+    "editorHeader": {
+        "diffView": "Diff view",
+        "accept": "Accept",
+        "deny": "Deny",
+        "markdown": "Markdown",
+        "latex": "Latex",
+        "save": "Save",
+        "saving": "Saving...",
+        "noContentToSave": "No content to save",
+        "failedToSave": "Failed to save document",
+        "setTitle": "Set title",
+        "saveDescription": "Saving this file will overwrite files with the same title. After saving, the document will be accessible under 'Documents'",
+        "generatingPdf": "Generating PDF...",
+        "downloadedAs": "Downloaded as {filename}",
+        "failedToGeneratePdf": "Failed to generate PDF",
+        "untitledDocument": "Untitled document"
+    },
+    "filterableList": {
+        "errorLoading": "Error loading {type}",
+        "noResultsFound": "No results found",
+        "maxItemsError": "You can only select up to {maxItems} items"
+    },
+    "loadButton": {
+        "load": "Load",
+        "searchFiles": "Search files",
+        "searchDocuments": "Search documents"
+    },
+    "loadButtonLists": {
+        "selectFolderFirst": "Please select a folder first"
+    },
+    "multimodal": {
+        "placeholder": "Ask a question...",
+        "dropFiles": "Drop files here",
+        "webSearch": "Web Search",
+        "attachFiles": "Attach files",
+        "captureScreenshot": "Capture screenshot",
+        "voiceInput": "Voice input",
+        "stopRecording": "Stop recording",
+        "sendMessage": "Send message",
+        "stopGeneration": "Stop generation"
+    },
+    "navHistory": {
+        "more": "More",
+        "history": "History",
+        "quickSearch": "Quick Search",
+        "favorites": "Favorites",
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "last7Days": "Last 7 days",
+        "last30Days": "Last 30 days",
+        "older": "Older",
+        "addingToFavorites": "Adding chat to favourites...",
+        "addedToFavorites": "Chat added to favourites",
+        "failedToAddToFavorites": "Failed to add chat to favourites",
+        "removingFromFavorites": "Removing chat from favourites...",
+        "removedFromFavorites": "Chat removed from favourites",
+        "failedToRemoveFromFavorites": "Failed to remove chat from favourites",
+        "deletingChat": "Deleting chat...",
+        "chatDeleted": "Chat deleted successfully",
+        "failedToDeleteChat": "Failed to delete chat",
+        "forkingChat": "Forking chat...",
+        "chatForked": "Chat forked successfully",
+        "failedToForkChat": "Failed to fork chat",
+        "forkFromHere": "Fork from here",
+        "chatRenamed": "Chat renamed!",
+        "errorLoadingConversations": "There was an error loading your conversations. Please try again.",
+        "noConversationsYet": "Your conversations will appear here once you start chatting!"
+    },
+    "navMain": {
+        "newChat": "New chat",
+        "temporaryChat": "Temporary chat",
+        "chatLabel": "Chat",
+        "searchLabel": "Search",
+        "documentsLabel": "Documents"
+    },
+    "pdfViewer": {
+        "noPdfSelected": "No PDF selected",
+        "authenticating": "Authenticating...",
+        "failedToLoadPdf": "Failed to load PDF"
+    },
+    "reasoningButton": {
+        "reasoning": "Reasoning",
+        "reasonedForAFewSeconds": "Reasoned for a few seconds"
+    },
+    "renameForm": {
+        "title": {
+            "document": "Rename document",
+            "chat": "Rename chat"
+        },
+        "description": {
+            "document": "Enter a new title for your document",
+            "chat": "Enter a new title for your chat"
+        },
+        "newTitle": "New Title",
+        "placeholder": {
+            "document": "Document title",
+            "chat": "Chat title"
+        },
+        "cancel": "Cancel",
+        "rename": "Rename",
+        "renaming": "Renaming...",
+        "error": {
+            "document": "Failed to rename document. Please try again later.",
+            "chat": "Failed to rename chat. Please try again later."
+        }
+    },
+    "saveDocumentForm": {
+        "cancel": "Cancel",
+        "error": "Failed to save document. Please try again later.",
+        "save": "Save",
+        "saved": "Document saved!",
+        "saving": "Saving...",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Document title"
+    },
+    "searchSelection": {
+        "chats": "Search for chats...",
+        "folders": "Search for courses...",
+        "files": "Search for files...",
+        "documents": "Search for documents...",
+        "prompts": "Search for prompts..."
+    }
+}

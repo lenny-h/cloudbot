@@ -33,7 +33,7 @@ export function buildMetadataFilter(
       return {
         type: "eq",
         key: "filename",
-        value: filenames[0]!,
+        value: filenames[0],
       };
     }
 
@@ -57,7 +57,7 @@ export function buildMetadataFilter(
       return {
         type: "eq",
         key: "folder",
-        value: folderPaths[0]!,
+        value: folderPaths[0],
       };
     }
 

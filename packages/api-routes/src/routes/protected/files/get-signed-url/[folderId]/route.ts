@@ -101,6 +101,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       name: filename,
       owner: user.id,
       size: fileSize,
+      format: fileType,
       visibility: folder.visibility,
     });
 

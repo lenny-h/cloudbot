@@ -1,0 +1,183 @@
+{
+    "addContext": {
+        "description": "Erstellen Sie einen neuen Prompt, um Anweisungen für das LLM bereitzustellen, die Sie für verschiedene Anfragen wiederverwenden können.",
+        "addFiles": "Dateien hinzufügen",
+        "addDocuments": "Dokumente hinzufügen",
+        "addPrompts": "Prompts hinzufügen",
+        "searchFiles": "Dateien suchen",
+        "searchDocuments": "Dokumente suchen",
+        "searchPrompts": "Prompts suchen",
+        "search": "Suche"
+    },
+    "addPromptForm": {
+        "cancel": "Abbrechen",
+        "content": "Inhalt",
+        "contentPlaceholder": "Geben Sie hier Ihre Anweisungen ein...",
+        "create": "Erstellen",
+        "creating": "Prompt wird erstellt...",
+        "errorSaving": "Fehler beim Speichern des Dokuments. Bitte versuchen Sie es später erneut.",
+        "name": "Name",
+        "promptName": "Name des Prompts",
+        "success": "Prompt erstellt 🎉"
+    },
+    "chatItem": {
+        "addToFavourites": "Zu Favoriten hinzufügen",
+        "defaultTitle": "Chat",
+        "delete": "Löschen",
+        "fork": "Chat verzweigen",
+        "more": "Mehr",
+        "removeFromFavorites": "Aus Favoriten entfernen",
+        "rename": "Umbenennen"
+    },
+    "chatSearch": {
+        "searchChats": "Search chats..."
+    },
+    "codeBlock": {
+        "copy": "Kopieren",
+        "edit": "Bearbeiten",
+        "loading": "Code-Block wird geladen..."
+    },
+    "deleteForm": {
+        "title": {
+            "document": "Dokument löschen",
+            "chat": "Chat löschen"
+        },
+        "description": {
+            "document": "Sind Sie sicher, dass Sie dieses Dokument löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle zugehörigen Daten werden dauerhaft gelöscht.",
+            "chat": "Sind Sie sicher, dass Sie diesen Chat löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle zugehörigen Daten werden dauerhaft gelöscht."
+        },
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "deleting": "Wird gelöscht...",
+        "deleted": {
+            "document": "Dokument gelöscht!",
+            "chat": "Chat gelöscht!"
+        },
+        "error": {
+            "document": "Fehler beim Löschen des Dokuments. Bitte versuchen Sie es später erneut.",
+            "chat": "Fehler beim Löschen des Chats. Bitte versuchen Sie es später erneut."
+        }
+    },
+    "editorHeader": {
+        "diffView": "Diff-Ansicht",
+        "accept": "Akzeptieren",
+        "deny": "Ablehnen",
+        "markdown": "Markdown",
+        "latex": "Latex",
+        "save": "Speichern",
+        "saving": "Wird gespeichert...",
+        "noContentToSave": "Kein Inhalt zum Speichern",
+        "failedToSave": "Fehler beim Speichern des Dokuments",
+        "setTitle": "Titel festlegen",
+        "saveDescription": "Wenn Sie diese Datei speichern, werden Dateien mit demselben Titel überschrieben. Nach dem Speichern ist das Dokument unter 'Dokumente' zugänglich",
+        "generatingPdf": "PDF wird erstellt...",
+        "downloadedAs": "Heruntergeladen als {filename}",
+        "failedToGeneratePdf": "Fehler beim Erstellen des PDFs",
+        "untitledDocument": "Unbenanntes Dokument"
+    },
+    "filterableList": {
+        "errorLoading": "Fehler beim Laden von {type}",
+        "noResultsFound": "Keine Ergebnisse gefunden",
+        "maxItemsError": "Sie können nur bis zu {maxItems} Elemente auswählen"
+    },
+    "loadButton": {
+        "load": "Laden",
+        "searchFiles": "Dateien suchen",
+        "searchDocuments": "Dokumente suchen"
+    },
+    "loadButtonLists": {
+        "selectFolderFirst": "Bitte wählen Sie zuerst einen Ordner aus"
+    },
+    "multimodal": {
+        "placeholder": "Fragen Sie etwas...",
+        "dropFiles": "Dateien hier ablegen",
+        "webSearch": "Websuche",
+        "attachFiles": "Dateien anhängen",
+        "captureScreenshot": "Screenshot aufnehmen",
+        "voiceInput": "Spracheingabe",
+        "stopRecording": "Aufnahme stoppen",
+        "sendMessage": "Nachricht senden",
+        "stopGeneration": "Nachricht stoppen"
+    },
+    "navHistory": {
+        "more": "Mehr",
+        "history": "Verlauf",
+        "quickSearch": "Schnellsuche",
+        "favorites": "Favoriten",
+        "today": "Heute",
+        "yesterday": "Gestern",
+        "last7Days": "Letzte 7 Tage",
+        "last30Days": "Letzte 30 Tage",
+        "older": "Älter",
+        "addingToFavorites": "Chat wird zu Favoriten hinzugefügt...",
+        "addedToFavorites": "Chat zu Favoriten hinzugefügt",
+        "failedToAddToFavorites": "Fehler beim Hinzufügen des Chats zu den Favoriten",
+        "removingFromFavorites": "Chat wird aus Favoriten entfernt...",
+        "removedFromFavorites": "Chat aus Favoriten entfernt",
+        "failedToRemoveFromFavorites": "Fehler beim Entfernen des Chats aus den Favoriten",
+        "deletingChat": "Chat wird gelöscht...",
+        "chatDeleted": "Chat erfolgreich gelöscht",
+        "failedToDeleteChat": "Fehler beim Löschen des Chats",
+        "forkingChat": "Chat wird verzweigt...",
+        "chatForked": "Chat erfolgreich verzweigt",
+        "failedToForkChat": "Fehler beim Verzweigen des Chats",
+        "forkFromHere": "Von hier verzweigen",
+        "chatRenamed": "Chat umbenannt!",
+        "errorLoadingConversations": "Beim Laden Ihrer Gespräche ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+        "noConversationsYet": "Ihre Gespräche werden hier angezeigt, sobald Sie mit dem Chatten beginnen!"
+    },
+    "navMain": {
+        "chatLabel": "Chat",
+        "documentsLabel": "Dokumente",
+        "newChat": "Neuer Chat",
+        "searchLabel": "Suche",
+        "temporaryChat": "Temporärer Chat"
+    },
+    "pdfViewer": {
+        "noPdfSelected": "Kein PDF ausgewählt",
+        "authenticating": "Authentifizierung...",
+        "failedToLoadPdf": "PDF konnte nicht geladen werden"
+    },
+    "reasoningButton": {
+        "reasoning": "Denken",
+        "reasonedForAFewSeconds": "Einige Sekunden lang überlegt"
+    },
+    "renameForm": {
+        "title": {
+            "document": "Dokument umbenennen",
+            "chat": "Chat umbenennen"
+        },
+        "description": {
+            "document": "Geben Sie einen neuen Titel für Ihr Dokument ein",
+            "chat": "Geben Sie einen neuen Titel für Ihren Chat ein"
+        },
+        "newTitle": "Neuer Titel",
+        "placeholder": {
+            "document": "Dokumenttitel",
+            "chat": "Chat Titel"
+        },
+        "cancel": "Abbrechen",
+        "rename": "Umbenennen",
+        "renaming": "Wird umbenannt...",
+        "error": {
+            "document": "Fehler beim Umbenennen des Dokuments. Bitte versuchen Sie es später erneut.",
+            "chat": "Fehler beim Umbenennen des Chats. Bitte versuchen Sie es später erneut."
+        }
+    },
+    "saveDocumentForm": {
+        "cancel": "Abbrechen",
+        "error": "Fehler beim Speichern des Dokuments. Bitte versuchen Sie es später erneut.",
+        "save": "Speichern",
+        "saved": "Dokument gespeichert!",
+        "saving": "Speichert...",
+        "titleLabel": "Titel",
+        "titlePlaceholder": "Dokumenttitel"
+    },
+    "searchSelection": {
+        "chats": "Chats suchen...",
+        "folders": "Ordner suchen...",
+        "files": "Dateien suchen...",
+        "documents": "Dokumente suchen...",
+        "prompts": "Prompts suchen..."
+    }
+}

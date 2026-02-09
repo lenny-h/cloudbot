@@ -1,0 +1,211 @@
+import { useWebTranslations } from "@/contexts/web-translations";
+import { type ArtifactKind } from "@workspace/api-routes/schemas/artifact-schema";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { useInfiniteQueryWithRPC } from "@workspace/ui/hooks/use-infinite-query";
+import { Check, Loader2 } from "lucide-react";
+import { KeyboardEvent, memo, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+
+export interface ListItem {
+  id: string;
+  name?: string;
+  title?: string;
+  kind?: ArtifactKind;
+  private?: boolean;
+  [key: string]: any;
+}
+
+interface FilterableListProps<T extends ListItem> {
+  open: boolean;
+  inputValue: string;
+  queryKey: string[];
+  queryFn: (params: { pageParam?: number }) => Promise<T[]>;
+  ilikeQueryFn: (prefix: string) => Promise<T[]>;
+  selectedItems: T[];
+  onToggleItem: (item: T) => void;
+  disabledMessage?: string;
+  enabled?: boolean;
+  maxItems?: number;
+}
+
+export const FilterableList = memo(
+  <T extends ListItem>({
+    open,
+    inputValue,
+    queryKey,
+    queryFn,
+    ilikeQueryFn,
+    selectedItems,
+    onToggleItem,
+    disabledMessage,
+    enabled = true,
+    maxItems = 5,
+  }: FilterableListProps<T>) => {
+    const { webT } = useWebTranslations();
+
+    const [ilikeItems, setIlikeItems] = useState<T[]>([]);
+    const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+    const listRef = useRef<HTMLDivElement>(null);
+
+    const {
+      data: items,
+      isPending,
+      error,
+      inViewRef,
+      hasNextPage,
+      isFetchingNextPage,
+    } = useInfiniteQueryWithRPC({
+      queryKey,
+      queryFn,
+      enabled: open && enabled,
+    });
+
+    const itemsToDisplay = inputValue.trim().length > 1 ? ilikeItems : items;
+
+    useEffect(() => {
+      setSelectedIndex(-1);
+    }, [inputValue]);
+
+    useEffect(() => {
+      const delayDebounce = setTimeout(() => {
+        if (inputValue.trim().length > 1) {
+          fetchItems(inputValue);
+        }
+      }, 250);
+
+      return () => clearTimeout(delayDebounce);
+    }, [inputValue]);
+
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent<Document>) => {
+        if (!open || !itemsToDisplay?.length) return;
+
+        switch (e.key) {
+          case "ArrowDown":
+            e.preventDefault();
+            setSelectedIndex((prev) =>
+              prev < itemsToDisplay.length - 1 ? prev + 1 : prev,
+            );
+            break;
+          case "ArrowUp":
+            e.preventDefault();
+            setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+            break;
+          case "Enter":
+            e.preventDefault();
+            if (selectedIndex >= 0 && selectedIndex < itemsToDisplay.length) {
+              const item = itemsToDisplay[selectedIndex];
+              toggleItem(item as T);
+            }
+            break;
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown as any);
+      return () => window.removeEventListener("keydown", handleKeyDown as any);
+    }, [open, itemsToDisplay, selectedIndex]);
+
+    useEffect(() => {
+      if (selectedIndex >= 0 && listRef.current) {
+        const selectedElement = listRef.current.children[
+          selectedIndex
+        ] as HTMLElement;
+        if (selectedElement) {
+          selectedElement.scrollIntoView({ block: "nearest" });
+        }
+      }
+    }, [selectedIndex]);
+
+    const toggleItem = (item: T) => {
+      const itemIncluded = selectedItems.map((i) => i.id).includes(item.id);
+
+      if (!itemIncluded && selectedItems.length >= maxItems) {
+        toast.error(
+          webT.filterableList.maxItemsError.replace(
+            "{maxItems}",
+            maxItems.toString(),
+          ),
+        );
+        return;
+      }
+
+      onToggleItem(item);
+    };
+
+    const fetchItems = async (prefix: string) => {
+      if (!enabled) {
+        return;
+      }
+
+      const items = await ilikeQueryFn(prefix);
+
+      setIlikeItems(items);
+    };
+
+    if (!enabled && disabledMessage) {
+      return (
+        <div className="h-56 space-y-1 overflow-y-auto pr-1">
+          <p className="text-muted-foreground py-8 text-center text-sm">
+            {disabledMessage}
+          </p>
+        </div>
+      );
+    }
+
+    if (isPending) {
+      return (
+        <div className="h-56 space-y-1 overflow-y-auto pr-1">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              className="bg-muted/50 flex h-8 justify-between rounded-lg border p-2"
+            />
+          ))}
+        </div>
+      );
+    }
+
+    if (error || !items || !itemsToDisplay) {
+      return (
+        <div className="h-56 space-y-1 overflow-y-auto pr-1">
+          <p className="text-muted-foreground py-8 text-center text-sm">
+            {webT.filterableList.errorLoading.replace("{type}", queryKey[0])}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="h-56 space-y-1 overflow-y-auto pr-1" ref={listRef}>
+        {itemsToDisplay.map((item, index) => (
+          <div
+            key={item.id}
+            className={`hover:bg-muted/50 flex cursor-pointer items-center justify-between rounded-lg border p-2 transition-colors ${
+              index === selectedIndex ? "bg-muted" : ""
+            }`}
+            onClick={() => {
+              toggleItem(item as T);
+            }}
+          >
+            <h3 className="font-medium">
+              {"name" in item ? item.name : item.title}
+            </h3>
+            {selectedItems.map((i) => i.id).includes(item.id) && (
+              <Check className="size-4 text-green-500" />
+            )}
+          </div>
+        ))}
+        {itemsToDisplay.length === 0 && (
+          <p className="text-muted-foreground py-8 text-center text-sm">
+            {webT.filterableList.noResultsFound}
+          </p>
+        )}
+        {hasNextPage && (
+          <div ref={inViewRef} className="flex h-8 items-center justify-center">
+            {isFetchingNextPage && <Loader2 className="size-4 animate-spin" />}
+          </div>
+        )}
+      </div>
+    );
+  },
+);
