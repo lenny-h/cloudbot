@@ -1,0 +1,158 @@
+import { useChatControl } from "@/contexts/chat-control-context";
+import { useWebTranslations } from "@/contexts/web-translations";
+import { type CustomUIMessage } from "@workspace/api-routes/types/custom-ui-message";
+import { Button } from "@workspace/ui/components/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
+import { apiFetcher } from "@workspace/ui/lib/fetcher";
+import { ChatRequestOptions } from "ai";
+import equal from "fast-deep-equal";
+import { X } from "lucide-react";
+import { Dispatch, memo, SetStateAction, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
+import { toast } from "sonner";
+import { SendButton } from "./send-button";
+
+export type MessageEditorProps = {
+  chatId: string;
+  message: CustomUIMessage;
+  setMessages: (
+    messages:
+      | CustomUIMessage[]
+      | ((messages: CustomUIMessage[]) => CustomUIMessage[]),
+  ) => void;
+  setMode: Dispatch<SetStateAction<"view" | "edit">>;
+  regenerate: (
+    chatRequestOptions?: {
+      messageId?: string | undefined;
+    } & ChatRequestOptions,
+  ) => Promise<void>;
+};
+
+const PureMessageEditor = ({
+  chatId,
+  message,
+  setMode,
+  setMessages,
+  regenerate,
+}: MessageEditorProps) => {
+  const { sharedT } = useSharedTranslations();
+  const { webT } = useWebTranslations();
+
+  const { selectedChatModel, isTemporary, reasoningEnabled, webSearchEnabled } =
+    useChatControl();
+
+  const textParts = message.parts.filter((part) => part.type === "text");
+  const fileParts = message.parts.filter((part) => part.type === "file");
+  const textContent = textParts.map((part) => part.text).join("\n");
+
+  const [draftContent, setDraftContent] = useState(textContent);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+
+    try {
+      await apiFetcher(
+        (client) =>
+          client.messages["delete-trailing"][":messageId"].$delete({
+            param: { messageId: message.id },
+          }),
+        sharedT.apiCodes,
+      );
+
+      setIsSubmitting(false);
+      setMode("view");
+
+      setMessages((messages) => {
+        const index = messages.findIndex((m) => m.id === message.id);
+
+        if (index !== -1 && index < messages.length - 1) {
+          const updatedMessage = {
+            ...message,
+            parts: [{ type: "text", text: draftContent }, ...fileParts],
+          } as CustomUIMessage;
+
+          return [
+            ...messages.slice(0, index),
+            updatedMessage,
+            messages[index + 1],
+          ];
+        }
+
+        return messages;
+      });
+
+      await regenerate({
+        messageId: message.id,
+        body: {
+          modelIdx: selectedChatModel.id,
+          isTemporary: isTemporary,
+          reasoning: selectedChatModel.reasoning && reasoningEnabled,
+          webSearch: webSearchEnabled,
+        },
+      });
+    } catch (error) {
+      setIsSubmitting(false);
+      setMode("view");
+
+      toast.error(webT.messageEditor.failedToUpdate);
+    }
+  };
+
+  return (
+    <>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            className="text-muted-foreground rounded-full opacity-0 group-hover/message:opacity-100"
+            onClick={() => {
+              setMode("view");
+            }}
+          >
+            <X />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{webT.messageEditor.cancel}</TooltipContent>
+      </Tooltip>
+      <div className="border-primary flex w-3/4 space-x-2 rounded-xl border px-3 py-2">
+        <TextareaAutosize
+          autoFocus
+          value={draftContent}
+          onChange={(event) => setDraftContent(event.target.value)}
+          rows={1}
+          tabIndex={0}
+          className={"w-full resize-none outline-none"}
+          onKeyDown={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+
+              if (!isSubmitting) {
+                handleSubmit();
+              }
+            }
+          }}
+        />
+        <div className="flex flex-col justify-end">
+          <SendButton
+            input={draftContent}
+            submitForm={handleSubmit}
+            uploadQueue={[]}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const MessageEditor = memo(PureMessageEditor, (prevProps, nextProps) => {
+  if (prevProps.chatId !== nextProps.chatId) return false;
+  if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
+
+  return true;
+});

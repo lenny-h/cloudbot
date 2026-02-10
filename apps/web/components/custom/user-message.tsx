@@ -1,0 +1,133 @@
+"use client";
+
+import * as m from "motion/react-m";
+
+import { useWebTranslations } from "@/contexts/web-translations";
+import { type CustomUIMessage } from "@workspace/api-routes/types/custom-ui-message";
+import { Button } from "@workspace/ui/components/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip";
+import { type ChatRequestOptions } from "ai";
+import equal from "fast-deep-equal";
+import { Copy, Pencil } from "lucide-react";
+import { LazyMotion } from "motion/react";
+import { memo, useState } from "react";
+import { toast } from "sonner";
+import { useCopyToClipboard } from "usehooks-ts";
+import { AttachmentPreview } from "./attachment-preview";
+import { MessageEditor } from "./message-editor";
+
+const loadFeatures = () => import("@/lib/features").then((res) => res.default);
+
+interface UserMessageProps {
+  chatId: string;
+  message: CustomUIMessage;
+  setMessages: (
+    messages:
+      | CustomUIMessage[]
+      | ((messages: CustomUIMessage[]) => CustomUIMessage[]),
+  ) => void;
+  regenerate: (
+    chatRequestOptions?: {
+      messageId?: string | undefined;
+    } & ChatRequestOptions,
+  ) => Promise<void>;
+}
+
+function PureUserMessage({
+  chatId,
+  message,
+  setMessages,
+  regenerate,
+}: UserMessageProps) {
+  const { webT } = useWebTranslations();
+  const [_, copyToClipboard] = useCopyToClipboard();
+  const [mode, setMode] = useState<"view" | "edit">("view");
+
+  // Extract text parts from the message
+  const textParts = message.parts.filter((part) => part.type === "text");
+  const textContent = textParts.map((part) => part.text).join("\n");
+
+  const attachments = message.metadata?.attachments;
+
+  return (
+    <LazyMotion features={loadFeatures}>
+      <m.article
+        className="mx-auto w-full max-w-183.75"
+        initial={{ y: 5, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        data-role={message.role}
+      >
+        <div className="group/message flex flex-col space-y-1">
+          {attachments && attachments.length > 0 && (
+            <div className="flex flex-row justify-end gap-2">
+              {attachments.map((attachment, index) => {
+                return (
+                  <AttachmentPreview key={index} attachment={attachment} />
+                );
+              })}
+            </div>
+          )}
+          <div className="flex w-full items-center justify-end space-x-2">
+            {mode === "view" ? (
+              <>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-muted-foreground size-6 opacity-0 group-hover/message:opacity-100"
+                      onClick={async () => {
+                        await copyToClipboard(textContent);
+                        toast.success(webT.messageActions.copiedToClipboard);
+                      }}
+                    >
+                      <Copy className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{webT.messageActions.copy}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-muted-foreground size-6 opacity-0 group-hover/message:opacity-100"
+                      onClick={() => {
+                        setMode("edit");
+                      }}
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {webT.messageActions.editMessage}
+                  </TooltipContent>
+                </Tooltip>
+                <div className="bg-muted w-fit max-w-3/4 rounded-2xl px-4 py-2 whitespace-pre-wrap">
+                  {textContent}
+                </div>
+              </>
+            ) : (
+              <MessageEditor
+                chatId={chatId}
+                message={message}
+                setMessages={setMessages}
+                setMode={setMode}
+                regenerate={regenerate}
+              />
+            )}
+          </div>
+        </div>
+      </m.article>
+    </LazyMotion>
+  );
+}
+
+export const UserMessage = memo(PureUserMessage, (prevProps, nextProps) => {
+  if (prevProps.chatId !== nextProps.chatId) return false;
+  if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
+
+  return true;
+});

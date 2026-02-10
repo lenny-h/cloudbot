@@ -19,15 +19,10 @@ import React, {
   type ChangeEvent,
 } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import {
-  Attachment as AttachmentComponent,
-  AttachmentPreview,
-  AttachmentRemove,
-  Attachments,
-} from "../ai-elements/attachments";
+import { AttachmentPreview } from "./attachment-preview";
+import { TextAreaControl } from "./chat-control";
 import { ContextFiles } from "./context-files";
 import { Textarea } from "./text-area";
-import { TextAreaControl } from "./text-area-control";
 
 interface MultimodalInputProps {
   sendMessage: (
@@ -273,39 +268,22 @@ const PureMultimodalInput = ({
       )}
 
       {(attachments.length > 0 || uploadQueue.length > 0) && (
-        <div className="flex flex-row items-end gap-2 overflow-x-scroll border-b p-1">
-          <Attachments variant="grid">
-            {attachments.map((attachment, index) => (
-              <AttachmentComponent
-                key={index}
-                data={{
-                  id: `attachment-${index}`,
-                  type: "file",
-                  filename: attachment.filename,
-                  mediaType: attachment.mediaType,
-                  url: attachment.previewUrl,
-                }}
-                onRemove={() => handleRemoveAttachment(index)}
-              >
-                <AttachmentPreview />
-                <AttachmentRemove />
-              </AttachmentComponent>
-            ))}
+        <div className="flex flex-row items-end gap-2 overflow-x-scroll border-b p-2">
+          {attachments.map((attachment, index) => (
+            <AttachmentPreview
+              key={index}
+              attachment={attachment}
+              onRemove={() => handleRemoveAttachment(index)}
+            />
+          ))}
 
-            {uploadQueue.map((filename, index) => (
-              <AttachmentComponent
-                key={filename}
-                data={{
-                  id: `uploading-${index}`,
-                  type: "file",
-                  filename,
-                  mediaType: "",
-                }}
-              >
-                <AttachmentPreview />
-              </AttachmentComponent>
-            ))}
-          </Attachments>
+          {uploadQueue.map((filename) => (
+            <AttachmentPreview
+              key={filename}
+              attachment={{ filename, mediaType: "image/png" as const }}
+              isUploading
+            />
+          ))}
         </div>
       )}
 

@@ -21,6 +21,7 @@ import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/
 import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/route.js";
 import filesIlike from "./files/ilike/route.js";
 import filesRoute from "./files/route.js";
+import filterRoute from "./filter/[chatId]/route.js";
 import foldersFolderIdRoute from "./folders/[...folderId]/route.js";
 import foldersIlike from "./folders/ilike/route.js";
 import foldersRequestAccessRoute from "./folders/request-access/route.js";
@@ -69,6 +70,9 @@ const protectedApiRouter = new Hono()
   .route("/files/get-signed-url/:folderId", filesGetSignedUrlFolderRoute)
   .route("/files/ilike", filesIlike)
   .route("/files/:fileId", filesFileIdRoute)
+
+  // Filter
+  .route("/filter/:chatId", filterRoute)
 
   // Folders
   .route("/folders", foldersRoute)

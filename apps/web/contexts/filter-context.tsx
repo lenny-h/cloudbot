@@ -12,7 +12,7 @@ interface Props {
   children: ReactNode;
 }
 
-interface ContextFilter {
+export interface ContextFilter {
   prompts: Array<{ id: string; name: string }>;
   folders: Array<{ id: string; name: string }>;
   files: Array<{ id: string; name: string }>;

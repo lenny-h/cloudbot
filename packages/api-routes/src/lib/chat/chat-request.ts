@@ -11,7 +11,7 @@ import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { type UserLocation } from "../../types/user-location.js";
 import { getChatById } from "../queries/chats.js";
 import { getMessagesByChatId } from "../queries/messages.js";
-import { tools } from "../tools/index.js";
+import { mockedTools } from "../tools/index.js";
 
 const logger = createLogger("chat-request");
 
@@ -136,7 +136,7 @@ export class ChatRequest {
         messages,
         dataSchemas,
         metadataSchema,
-        tools,
+        tools: mockedTools,
       });
     } catch (error) {
       logger.warn("Message validation failed", {

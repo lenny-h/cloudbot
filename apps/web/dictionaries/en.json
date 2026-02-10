@@ -121,6 +121,23 @@
     "loadButtonLists": {
         "selectFolderFirst": "Please select a folder first"
     },
+    "messageActions": {
+        "copy": "Copy message",
+        "readAloud": "Read aloud",
+        "stopReading": "Stop reading",
+        "retry": "Retry",
+        "like": "Like",
+        "dislike": "Dislike",
+        "editor": "Editor",
+        "copiedToClipboard": "Copied to clipboard!",
+        "retryFailed": "Failed to process retry operation. Please try again.",
+        "failedRead": "Failed to read message",
+        "editMessage": "Edit message"
+    },
+    "messageEditor": {
+        "cancel": "Cancel",
+        "failedToUpdate": "Failed to update message"
+    },
     "multimodal": {
         "placeholder": "Ask a question...",
         "dropFiles": "Drop files here",

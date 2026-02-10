@@ -28,7 +28,6 @@ export const CodeBlock = ({
   ...props
 }: CodeBlockProps) => {
   const { webT } = useWebTranslations();
-
   const { panelRef, codeEditorRef } = useRefs();
   const [, setEditorMode] = useEditor();
 

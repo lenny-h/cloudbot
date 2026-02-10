@@ -1,4 +1,4 @@
-import { type ContextFilter } from "@workspace/api-routes/schemas/context-filter-schema";
+import { type ContextFilter } from "@/contexts/filter-context";
 import { type PanelImperativeHandle } from "react-resizable-panels";
 
 export function capitalizeFirstLetter(string: string): string {

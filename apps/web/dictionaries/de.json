@@ -121,6 +121,23 @@
     "loadButtonLists": {
         "selectFolderFirst": "Bitte wählen Sie zuerst einen Ordner aus"
     },
+    "messageActions": {
+        "copy": "Nachricht kopieren",
+        "readAloud": "Vorlesen",
+        "stopReading": "Vorlesen stoppen",
+        "retry": "Erneut versuchen",
+        "like": "Positiv",
+        "dislike": "Negativ",
+        "editor": "Editor",
+        "copiedToClipboard": "In die Zwischenablage kopiert!",
+        "retryFailed": "Wiederholungsaktion fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "failedRead": "Fehler beim Vorlesen der Nachricht",
+        "editMessage": "Nachricht bearbeiten"
+    },
+    "messageEditor": {
+        "cancel": "Abbrechen",
+        "failedToUpdate": "Nachricht konnte nicht aktualisiert werden"
+    },
     "multimodal": {
         "placeholder": "Fragen Sie etwas...",
         "dropFiles": "Dateien hier ablegen",
