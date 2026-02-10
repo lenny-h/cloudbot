@@ -15,7 +15,7 @@ import { DefaultChatTransport } from "ai";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocalStorage } from "usehooks-ts";
-import { type EditorContent } from "../editors/text-editor";
+import { type EditorContent } from "../editors/main/text-editor";
 import { ChatHeader } from "./chat-header";
 import { Greeting } from "./greeting";
 import { Messages } from "./messages";

@@ -1,5 +1,6 @@
 "use client";
 
+import { type EditorContent } from "@/contexts/editor-context";
 import { cpp } from "@codemirror/lang-cpp";
 import { java } from "@codemirror/lang-java";
 import { python } from "@codemirror/lang-python";
@@ -9,7 +10,7 @@ import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { memo, useEffect, useRef } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { type EditorContent } from "./text-editor";
+import { syncCodeEditorContentToLocalStorage } from "../helper-functions/sync-code-editor-content";
 
 type EditorProps = {
   codeEditorRef: React.RefObject<EditorView | null>;
@@ -54,17 +55,3 @@ export const CodeEditor = memo(({ codeEditorRef: editorRef }: EditorProps) => {
     <div className="not-prose relative size-full text-sm" ref={containerRef} />
   );
 });
-
-export function syncCodeEditorContentToLocalStorage(
-  editorRef: React.RefObject<EditorView | null>,
-  setLocalStorageInput: React.Dispatch<React.SetStateAction<EditorContent>>,
-) {
-  if (!editorRef.current) return;
-
-  const content = editorRef.current.state.doc.toString();
-
-  setLocalStorageInput((prev) => ({
-    ...prev,
-    content,
-  }));
-}

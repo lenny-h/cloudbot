@@ -9,11 +9,22 @@ import React, {
 } from "react";
 
 export type EditorMode = "pdf" | ArtifactKind;
+export type DocumentIdentifier = {
+  id?: string;
+  title: string;
+};
+export type EditorContent = DocumentIdentifier & {
+  content: string;
+};
 
-type EditorContextType = [
-  EditorMode,
-  React.Dispatch<React.SetStateAction<EditorMode>>,
-];
+interface EditorContextType {
+  editorMode: EditorMode;
+  setEditorMode: React.Dispatch<React.SetStateAction<EditorMode>>;
+  documentIdentifier: DocumentIdentifier;
+  setDocumentIdentifier: React.Dispatch<
+    React.SetStateAction<DocumentIdentifier>
+  >;
+}
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
@@ -23,9 +34,21 @@ interface Props {
 
 export function EditorProvider({ children }: Props) {
   const [editorMode, setEditorMode] = useState<EditorMode>("text");
+  const [documentIdentifier, setDocumentIdentifier] =
+    useState<DocumentIdentifier>({
+      id: undefined,
+      title: "",
+    });
 
   return (
-    <EditorContext.Provider value={[editorMode, setEditorMode]}>
+    <EditorContext.Provider
+      value={{
+        editorMode,
+        setEditorMode,
+        documentIdentifier,
+        setDocumentIdentifier,
+      }}
+    >
       {children}
     </EditorContext.Provider>
   );

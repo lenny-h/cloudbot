@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { documents } from "@workspace/server/drizzle/schema/schema.js";
+import { diffs, documents } from "@workspace/server/drizzle/schema/schema.js";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { type ArtifactKind } from "../../schemas/artifact-schema.js";
@@ -39,6 +39,31 @@ export async function saveDocument({
   });
 }
 
+export async function saveDiff({
+  id,
+  documentId,
+  previousText,
+  newText,
+  kind,
+  userId,
+}: {
+  id: string;
+  documentId: string;
+  previousText: string;
+  newText: string;
+  kind: ArtifactKind;
+  userId: string;
+}) {
+  await db.insert(diffs).values({
+    id,
+    documentId,
+    previousText,
+    newText,
+    kind,
+    owner: userId,
+  });
+}
+
 /**
  * Get the latest version of each document by the given IDs.
  * Documents have a composite PK (id, createdAt), so we pick the most recent.
@@ -55,9 +80,7 @@ export async function getLatestDocumentsByIds({
   const results = await db
     .select()
     .from(documents)
-    .where(
-      and(inArray(documents.id, ids), eq(documents.owner, userId)),
-    )
+    .where(and(inArray(documents.id, ids), eq(documents.owner, userId)))
     .orderBy(desc(documents.createdAt));
 
   // Keep only the latest version per document ID

@@ -221,7 +221,7 @@ export const MessageActions = memo(
                   resizeEditor(panelRef, false);
 
                   const { updateTextEditorWithDispatch } =
-                    await import("@/components/editors/text-editor");
+                    await import("@/components/editors/main/text-editor");
                   updateTextEditorWithDispatch(textEditorRef, content);
                 }}
               >

@@ -8,7 +8,7 @@ import {
   type Transaction,
 } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
-import { debounce } from "./helper-functions";
+import { debounce } from "./helper-functions/debounce";
 
 export const COMPLETION_PLUGIN_KEY = new PluginKey<CompletionState>(
   "completion",

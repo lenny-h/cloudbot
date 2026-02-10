@@ -1,6 +1,7 @@
 import { useEditor } from "@/contexts/editor-context";
 import { useWebTranslations } from "@/contexts/web-translations";
 import { useQueryClient } from "@tanstack/react-query";
+import { type Document } from "@workspace/server/drizzle/schema/schema";
 import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,
@@ -18,29 +19,17 @@ import { DeleteForm } from "../custom/delete-form";
 import { RenameForm, type RenameFormData } from "../custom/rename-form";
 
 interface EditorDropdownMenuProps {
-  editorContent: {
-    id?: string;
-    title: string;
-    content: string;
-  };
-  setEditorContent: (content: {
-    title: string;
-    content: string;
-    id?: string;
-  }) => void;
   clearEditor: () => void;
 }
 
 export const EditorDropdownMenu = ({
-  editorContent,
-  setEditorContent,
   clearEditor,
 }: EditorDropdownMenuProps) => {
   const { sharedT } = useSharedTranslations();
   const { webT } = useWebTranslations();
   const queryClient = useQueryClient();
 
-  const [editorMode] = useEditor();
+  const { editorMode, documentIdentifier, setDocumentIdentifier } = useEditor();
   const [autocomplete, setAutocomplete] = useLocalStorage<{
     text: boolean;
   }>("autocomplete", {
@@ -51,20 +40,20 @@ export const EditorDropdownMenu = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const onSubmit = async (values: RenameFormData) => {
-    if (values.title === editorContent.title) {
-      setRenameDialogOpen(false);
-      return;
+    if (!documentIdentifier.id) {
+      throw new Error("Document Id is missing");
     }
 
-    if (!editorContent.id) {
-      throw new Error("Document Id is missing");
+    if (values.title === documentIdentifier.title) {
+      setRenameDialogOpen(false);
+      return;
     }
 
     await apiFetcher(
       (client) =>
         client["documents"]["title"][":documentId"][":title"].$patch({
           param: {
-            documentId: editorContent.id!,
+            documentId: documentIdentifier.id!,
             title: values.title,
           },
         }),
@@ -73,20 +62,20 @@ export const EditorDropdownMenu = ({
   };
 
   const handleRename = (values: RenameFormData) => {
-    setEditorContent({
-      ...editorContent,
+    setDocumentIdentifier({
+      id: documentIdentifier.id,
       title: values.title,
     });
     setRenameDialogOpen(false);
 
     queryClient.setQueryData(
       ["documents"],
-      (oldData: { pages: Array<CustomDocument[]>; pageParams: number[] }) => {
+      (oldData: { pages: Array<Document[]>; pageParams: number[] }) => {
         if (!oldData) return oldData;
         return {
           pages: oldData.pages.map((page) =>
             page.map((doc) =>
-              doc.id === editorContent.id
+              doc.id === documentIdentifier.id
                 ? { ...doc, title: values.title }
                 : doc,
             ),
@@ -100,7 +89,7 @@ export const EditorDropdownMenu = ({
   };
 
   const handleDelete = async (deletedId?: string) => {
-    if (editorMode === "pdf" || !deletedId) {
+    if (!deletedId) {
       return;
     }
 
@@ -112,15 +101,13 @@ export const EditorDropdownMenu = ({
       sharedT.apiCodes,
     );
 
-    setEditorContent({
+    setDocumentIdentifier({
       id: undefined,
       title: "",
-      content: "",
     });
     clearEditor();
 
     setDeleteDialogOpen(false);
-
     removeFromInfiniteCache(queryClient, ["documents"], deletedId);
   };
 
@@ -133,15 +120,8 @@ export const EditorDropdownMenu = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {editorContent.id && (
+          {documentIdentifier.id && (
             <>
-              <DropdownMenuItem
-                className="cursor-pointer text-red-500 focus:text-red-400"
-                onClick={() => setDeleteDialogOpen(true)}
-              >
-                <Trash2 className="mr-2 size-4" />
-                <span>{webT.editorDropdownMenu.delete}</span>
-              </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => setRenameDialogOpen(true)}
@@ -149,15 +129,21 @@ export const EditorDropdownMenu = ({
                 <Pencil className="mr-2 size-4" />
                 <span>{webT.editorDropdownMenu.rename}</span>
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer text-red-500 focus:text-red-400"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash2 className="mr-2 size-4" />
+                <span>{webT.editorDropdownMenu.delete}</span>
+              </DropdownMenuItem>
             </>
           )}
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
-              setEditorContent({
+              setDocumentIdentifier({
                 id: undefined,
                 title: "",
-                content: "",
               });
               clearEditor();
             }}
@@ -188,14 +174,14 @@ export const EditorDropdownMenu = ({
         setRenameDialogOpen={setRenameDialogOpen}
         onSubmit={onSubmit}
         handleSuccess={handleRename}
-        defaultTitle={editorContent.title}
+        defaultTitle={documentIdentifier.title}
         type="document"
       />
 
       <DeleteForm
         deleteDialogOpen={deleteDialogOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
-        onDelete={() => handleDelete(editorContent.id)}
+        onDelete={() => handleDelete(documentIdentifier.id)}
         type="document"
       />
     </>

@@ -1,8 +1,8 @@
 "use client";
 
 import { EditorHeader } from "@/components/editors/editor-header";
-import { PdfHeader } from "@/components/editors/pdf-header";
-import { PDFViewer } from "@/components/sidebars/pdf-viewer";
+import { PdfHeader } from "@/components/editors/main/pdf-header";
+import { PDFViewer } from "@/components/editors/main/pdf-viewer";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
 import {
@@ -44,24 +44,24 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ResizablePanelGroup direction="horizontal">
+    <ResizablePanelGroup orientation="horizontal">
       <ResizablePanel className="h-svh" defaultSize={100} collapsible>
         {children}
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel
         className="flex h-svh min-w-0 flex-col"
-        ref={panelRef}
+        collapsible
         defaultSize={0}
-        onResize={(size) => {
-          setSize(size);
-          if (size < minSize) {
+        onResize={(panelSize) => {
+          setSize(panelSize.asPercentage);
+          if (panelSize.asPercentage < minSize) {
             panelRef.current?.collapse();
-          } else if (size >= maxSize) {
+          } else if (panelSize.asPercentage >= maxSize) {
             panelRef.current?.resize(100);
           }
         }}
-        collapsible
+        panelRef={panelRef}
       >
         {editorMode === "pdf" ? (
           <>

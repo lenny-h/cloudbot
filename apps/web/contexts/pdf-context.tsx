@@ -79,12 +79,10 @@ function setCachedUrl(folderId: string, fileId: string, url: string): void {
 
 export function PDFProvider({ children }: { children: ReactNode }) {
   const { sharedT } = useSharedTranslations();
+  const { setEditorMode } = useEditor();
 
   const [currentFilename, setCurrentFilename] = useState<string | null>(null);
   const [currentPdfUrl, setCurrentPdfUrl] = useState<string | null>(null);
-
-  const [, setEditorMode] = useEditor();
-
   const [isFetching, setIsFetching] = useState(false);
 
   const getSignedUrl = useCallback(

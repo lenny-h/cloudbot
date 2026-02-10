@@ -27,7 +27,7 @@ import { Check, Copy, Download, X } from "lucide-react";
 import { DOMSerializer } from "prosemirror-model";
 import { memo, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useCopyToClipboard, useLocalStorage } from "usehooks-ts";
+import { useCopyToClipboard } from "usehooks-ts";
 import { EditorDropdownMenu } from "./editor-dropdown-menu";
 import { LoadButton } from "./load-button";
 import { ModeSwitcher } from "./mode-switcher";
@@ -37,15 +37,13 @@ import {
   mathMarkdownSerializer,
 } from "./prosemirror-math/utils/text-serializer";
 import { SaveDocumentForm } from "./save-document-form";
-import { type EditorContent } from "./text-editor";
 
 export const EditorHeader = memo(() => {
   const { sharedT } = useSharedTranslations();
   const { webT } = useWebTranslations();
 
   const { panelRef, textEditorRef, codeEditorRef } = useRefs();
-  const [editorMode] = useEditor();
-
+  const { editorMode, documentIdentifier } = useEditor();
   const { isBlocked } = useDiff();
   const { isDiff, handleDiffAction } = useDiffActions();
 
@@ -54,36 +52,24 @@ export const EditorHeader = memo(() => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
 
-  const [localTextEditorContent, setLocalTextEditorContent] =
-    useLocalStorage<EditorContent>("text-editor-input", {
-      id: undefined,
-      title: "",
-      content: "",
-    });
-  const [localCodeEditorContent, setLocalCodeEditorContent] =
-    useLocalStorage<EditorContent>("text-editor-input", {
-      id: undefined,
-      title: "",
-      content: "",
-    });
-
-  const editorContent =
-    editorMode === "text" ? localTextEditorContent : localCodeEditorContent;
-  const setEditorContent =
-    editorMode === "text"
-      ? setLocalTextEditorContent
-      : setLocalCodeEditorContent;
-
   const saveDocument = useCallback(
-    async (savedId?: string) => {
-      if (isSaving || !savedId) return;
+    async (idToSave?: string) => {
+      if (isSaving || !idToSave) return;
 
-      const content =
-        editorMode === "text"
-          ? textEditorRef.current?.state.doc
+      let content: string | undefined;
+
+      switch (editorMode) {
+        case "text":
+          content = textEditorRef.current?.state.doc
             ? mathMarkdownSerializer.serialize(textEditorRef.current.state.doc)
-            : ""
-          : codeEditorRef.current?.state.doc.toString();
+            : "";
+          break;
+        case "code":
+          content = codeEditorRef.current?.state.doc.toString();
+          break;
+        default:
+          content = "";
+      }
 
       if (!content) {
         toast.error(webT.editorHeader.noContentToSave);
@@ -96,7 +82,7 @@ export const EditorHeader = memo(() => {
         await apiFetcher(
           (client) =>
             client["documents"][":documentId"].$patch({
-              param: { documentId: savedId },
+              param: { documentId: idToSave },
               json: { content },
             }),
           sharedT.apiCodes,
@@ -114,8 +100,8 @@ export const EditorHeader = memo(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        if (editorContent.id) {
-          saveDocument(editorContent.id);
+        if (documentIdentifier.id) {
+          saveDocument(documentIdentifier.id);
         } else {
           setSaveDialogOpen(true);
         }
@@ -124,7 +110,7 @@ export const EditorHeader = memo(() => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [editorContent, saveDocument]);
+  }, [documentIdentifier, saveDocument]);
 
   const handleCopy = useCallback(
     (format?: "markdown" | "latex") => {
@@ -147,7 +133,8 @@ export const EditorHeader = memo(() => {
 
   const handlePdfDownload = useCallback(async () => {
     if (editorMode === "text" && textEditorRef.current) {
-      const title = editorContent.title || webT.editorHeader.untitledDocument;
+      const title =
+        documentIdentifier.title || webT.editorHeader.untitledDocument;
       const filename = `${title.replace(/\s+/g, "-").toLowerCase()}.pdf`;
 
       const contentElement = document.createElement("div");
@@ -168,7 +155,9 @@ export const EditorHeader = memo(() => {
             },
             credentials: "include",
             body: JSON.stringify({
-              ...(editorContent.title && { title: editorContent.title }),
+              ...(documentIdentifier.title && {
+                title: documentIdentifier.title,
+              }),
               content: contentElement.innerHTML,
             }),
           },
@@ -194,18 +183,16 @@ export const EditorHeader = memo(() => {
         toast.error(webT.editorHeader.failedToGeneratePdf, { id: toastId });
       }
     }
-  }, [editorMode, textEditorRef, editorContent.title]);
+  }, [editorMode, textEditorRef, documentIdentifier.title]);
 
-  const clearEditor = useCallback(() => {
+  const clearEditor = useCallback(async () => {
     if (editorMode === "text") {
-      const {
-        updateTextEditorWithDispatch,
-      } = require("@workspace/ui/editors/text-editor");
+      const { updateTextEditorWithDispatch } =
+        await import("@/components/editors/helper-functions/update-text-editor-with-dispatch");
       updateTextEditorWithDispatch(textEditorRef, "");
     } else if (editorMode === "code") {
-      const {
-        updateCodeEditorWithDispatch,
-      } = require("@workspace/ui/editors/utils");
+      const { updateCodeEditorWithDispatch } =
+        await import("@/components/editors/helper-functions/update-code-editor-with-dispatch");
       updateCodeEditorWithDispatch(codeEditorRef, "");
     }
   }, [editorMode, textEditorRef, codeEditorRef]);
@@ -217,7 +204,7 @@ export const EditorHeader = memo(() => {
       </Button>
 
       <div className="flex-1 truncate text-left text-lg font-semibold">
-        {isDiff ? webT.editorHeader.diffView : editorContent.title}
+        {isDiff ? webT.editorHeader.diffView : documentIdentifier.title}
       </div>
 
       {isDiff ? (
@@ -282,11 +269,11 @@ export const EditorHeader = memo(() => {
           )}
 
           <ButtonGroup>
-            {editorContent.id ? (
+            {documentIdentifier.id ? (
               <Button
                 className="px-2"
                 disabled={isSaving || isBlocked}
-                onClick={() => saveDocument(editorContent.id)}
+                onClick={() => saveDocument(documentIdentifier.id)}
                 variant="outline"
               >
                 {isSaving ? webT.editorHeader.saving : webT.editorHeader.save}
@@ -311,20 +298,12 @@ export const EditorHeader = memo(() => {
                       {webT.editorHeader.saveDescription}
                     </DialogDescription>
                   </DialogHeader>
-                  <SaveDocumentForm
-                    onClose={() => setSaveDialogOpen(false)}
-                    editorContent={editorContent}
-                    setEditorContent={setEditorContent}
-                  />
+                  <SaveDocumentForm onClose={() => setSaveDialogOpen(false)} />
                 </DialogContent>
               </Dialog>
             )}
 
-            <EditorDropdownMenu
-              editorContent={editorContent}
-              setEditorContent={setEditorContent}
-              clearEditor={clearEditor}
-            />
+            <EditorDropdownMenu clearEditor={clearEditor} />
           </ButtonGroup>
         </>
       )}

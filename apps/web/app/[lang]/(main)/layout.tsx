@@ -1,16 +1,12 @@
 "use client";
 
 import { SidebarLeft } from "@/components/sidebars/sidebar-left";
-import { AutocompleteProvider } from "@/contexts/autocomplete-context";
-import { CSResultsProvider } from "@/contexts/classic-search-results";
+import { ChatControlProvider } from "@/contexts/chat-control-context";
 import { DiffProvider } from "@/contexts/diff-context";
 import { EditorProvider } from "@/contexts/editor-context";
 import { FilterProvider } from "@/contexts/filter-context";
 import { PDFProvider } from "@/contexts/pdf-context";
 import { RefsProvider } from "@/contexts/refs-context";
-import { ChatModelProvider } from "@/contexts/selected-chat-model";
-import { VSResultsProvider } from "@/contexts/semantic-search-results";
-import { TempChatProvider } from "@/contexts/temporary-chat-context";
 import { type User } from "@workspace/server/drizzle/schema/auth-schema";
 import {
   SidebarInset,
@@ -30,7 +26,6 @@ export default function MainLayout({
 }) {
   const { data, isPending } = client.useSession();
   const { locale } = useSharedTranslations();
-
   const router = useRouter();
 
   const [defaultLeftOpen, setDefaultLeftOpen] = useState(false);
@@ -62,28 +57,20 @@ export default function MainLayout({
   return (
     <UserProvider user={user as User}>
       <RefsProvider>
-        <EditorProvider>
-          <DiffProvider>
-            <PDFProvider>
-              <ChatModelProvider>
-                <TempChatProvider>
-                  <AutocompleteProvider>
-                    <CSResultsProvider>
-                      <VSResultsProvider>
-                        <FilterProvider>
-                          <SidebarProvider defaultOpen={defaultLeftOpen}>
-                            <SidebarLeft />
-                            <SidebarInset>{children}</SidebarInset>
-                          </SidebarProvider>
-                        </FilterProvider>
-                      </VSResultsProvider>
-                    </CSResultsProvider>
-                  </AutocompleteProvider>
-                </TempChatProvider>
-              </ChatModelProvider>
-            </PDFProvider>
-          </DiffProvider>
-        </EditorProvider>
+        <ChatControlProvider>
+          <FilterProvider>
+            <EditorProvider>
+              <DiffProvider>
+                <PDFProvider>
+                  <SidebarProvider defaultOpen={defaultLeftOpen}>
+                    <SidebarLeft />
+                    <SidebarInset>{children}</SidebarInset>
+                  </SidebarProvider>
+                </PDFProvider>
+              </DiffProvider>
+            </EditorProvider>
+          </FilterProvider>
+        </ChatControlProvider>
       </RefsProvider>
     </UserProvider>
   );

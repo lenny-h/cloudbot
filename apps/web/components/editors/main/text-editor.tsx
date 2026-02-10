@@ -1,25 +1,18 @@
 "use client";
 
+import { type EditorContent } from "@/contexts/editor-context";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { exampleSetup } from "prosemirror-example-setup";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { memo, useEffect, useRef } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { createCompletionPlugin } from "./completion-plugin";
-import { buildDocumentFromContent } from "./helper-functions";
-import { plugins, textEditorSchema } from "./prosemirror-math/config";
+import { createCompletionPlugin } from "../completion-plugin";
+import { buildDocumentFromContent } from "../helper-functions/build-document-from-content";
+import { syncTextEditorContentToLocalStorage } from "../helper-functions/sync-text-editor-content";
+import { plugins, textEditorSchema } from "../prosemirror-math/config";
+import { mathTextSerializer } from "../prosemirror-math/utils/text-serializer";
 import "./prosemirror-math/styles.css";
-import {
-  mathMarkdownSerializer,
-  mathTextSerializer,
-} from "./prosemirror-math/utils/text-serializer";
-
-export type EditorContent = {
-  id?: string;
-  title: string;
-  content: string;
-};
 
 type EditorProps = {
   textEditorRef: React.RefObject<EditorView | null>;
@@ -43,7 +36,7 @@ export const TextEditor = memo(({ textEditorRef: editorRef }: EditorProps) => {
     console.log("Initializing text editor");
 
     if (containerRef.current && !editorRef.current) {
-      const state = EditorState.create({
+      const startState = EditorState.create({
         doc: buildDocumentFromContent(localStorageInput.content),
         plugins: [
           ...exampleSetup({ schema: textEditorSchema, menuBar: false }),
@@ -54,7 +47,7 @@ export const TextEditor = memo(({ textEditorRef: editorRef }: EditorProps) => {
       });
 
       editorRef.current = new EditorView(containerRef.current, {
-        state,
+        state: startState,
         clipboardTextSerializer: (slice) => {
           return mathTextSerializer.serializeSlice(slice);
         },
@@ -103,46 +96,3 @@ export const TextEditor = memo(({ textEditorRef: editorRef }: EditorProps) => {
     />
   );
 });
-
-export function syncTextEditorContentToLocalStorage(
-  editorRef: React.RefObject<EditorView | null>,
-  setLocalStorageInput: React.Dispatch<React.SetStateAction<EditorContent>>,
-) {
-  if (!editorRef.current) return;
-
-  const content = mathMarkdownSerializer.serialize(editorRef.current.state.doc);
-
-  setLocalStorageInput((prev) => ({
-    ...prev,
-    content,
-  }));
-}
-
-export function updateTextEditorWithDispatch(
-  editorRef: React.RefObject<EditorView | null>,
-  content: string,
-) {
-  if (!editorRef.current) return;
-
-  const newDoc = buildDocumentFromContent(content);
-  const tr = editorRef.current.state.tr.replaceWith(
-    0,
-    editorRef.current.state.doc.content.size,
-    newDoc.content,
-  );
-  editorRef.current.dispatch(tr);
-}
-
-export function appendContentToTextEditor(
-  editorRef: React.RefObject<EditorView | null>,
-  contentToAppend: string,
-) {
-  if (!editorRef.current) return;
-
-  const newDoc = buildDocumentFromContent(contentToAppend);
-  const tr = editorRef.current.state.tr.insert(
-    editorRef.current.state.doc.content.size,
-    newDoc.content,
-  );
-  editorRef.current.dispatch(tr);
-}

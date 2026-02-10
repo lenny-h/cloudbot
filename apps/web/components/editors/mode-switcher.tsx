@@ -10,7 +10,7 @@ import { ChevronDownIcon, CodeIcon, File, FileText } from "lucide-react";
 import { memo } from "react";
 
 export const ModeSwitcher = memo(() => {
-  const [editorMode, setEditorMode] = useEditor();
+  const { editorMode, setEditorMode } = useEditor();
 
   return (
     <DropdownMenu>

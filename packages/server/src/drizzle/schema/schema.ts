@@ -126,7 +126,7 @@ export const diffs = sqliteTable("diffs", {
     .references(() => documents.id),
   previousText: text("previous_text").notNull(),
   newText: text("new_text").notNull(),
-  description: text("description"),
+  kind: text("kind", { enum: ["text", "code", "sheet"] }),
   isResolved: integer("is_resolved", { mode: "boolean" })
     .notNull()
     .default(false),

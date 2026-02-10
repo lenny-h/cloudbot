@@ -1,12 +1,10 @@
-"use client";
-
 import { DOMParser } from "prosemirror-model";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import { textEditorSchema } from "./prosemirror-math/config";
+import { textEditorSchema } from "../prosemirror-math/config";
 
 /**
  * Processes diff markers in content and converts them to HTML ins/del tags
@@ -59,28 +57,3 @@ export const buildDocumentFromContent = (content: string) => {
 
   return parser.parse(tempContainer);
 };
-
-export function debounce<F extends (...args: any[]) => any>(
-  func: F,
-  waitMilliseconds: number,
-): F & { cancel: () => void } {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-  const debounced = function (this: any, ...args: any[]) {
-    const context = this;
-
-    const later = () => {
-      timeoutId = undefined;
-      func.apply(context, args);
-    };
-
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(later, waitMilliseconds);
-  } as F & { cancel: () => void };
-
-  debounced.cancel = function () {
-    clearTimeout(timeoutId);
-  };
-
-  return debounced;
-}

@@ -4,11 +4,11 @@ import { usePdf } from "@/contexts/pdf-context";
 import { useRefs } from "@/contexts/refs-context";
 import { Button } from "@workspace/ui/components/button";
 import { X } from "lucide-react";
-import { ModeSwitcher } from "../editors/mode-switcher";
-import { LoadButton } from "./load-button";
+import { LoadButton } from "../load-button";
+import { ModeSwitcher } from "../mode-switcher";
 
 export const PdfHeader = () => {
-  const { currentFileName } = usePdf();
+  const { currentFilename } = usePdf();
   const { panelRef } = useRefs();
 
   return (
@@ -18,7 +18,7 @@ export const PdfHeader = () => {
       </Button>
 
       <span className="flex-1 truncate text-lg font-semibold">
-        {currentFileName || "PDF Document"}
+        {currentFilename || "PDF Document"}
       </span>
 
       <ModeSwitcher />
