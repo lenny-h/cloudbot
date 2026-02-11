@@ -10,7 +10,7 @@ import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { memo, useEffect, useRef } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { syncCodeEditorContentToLocalStorage } from "../helper-functions/sync-code-editor-content";
+import { syncEditorContentToLocalStorage } from "../helper-functions/sync-editor-content";
 
 type EditorProps = {
   codeEditorRef: React.RefObject<EditorView | null>;
@@ -43,7 +43,7 @@ export const CodeEditor = memo(({ codeEditorRef: editorRef }: EditorProps) => {
 
     return () => {
       if (editorRef.current) {
-        syncCodeEditorContentToLocalStorage(editorRef, setLocalStorageInput);
+        syncEditorContentToLocalStorage("code", editorRef, setLocalStorageInput);
 
         editorRef.current.destroy();
         editorRef.current = null;

@@ -28,8 +28,8 @@ export const CodeBlock = ({
   ...props
 }: CodeBlockProps) => {
   const { webT } = useWebTranslations();
+  const { setEditorMode } = useEditor();
   const { panelRef, codeEditorRef } = useRefs();
-  const [, setEditorMode] = useEditor();
 
   const [copied, setCopied] = useState(false);
   const [edited, setEdited] = useState(false);
@@ -70,7 +70,9 @@ export const CodeBlock = ({
               setEditorMode("code");
               resizeEditor(panelRef, false);
 
-              updateCodeEditorWithDispatch(codeEditorRef, String(children));
+              const { updateEditorWithDispatch } =
+                await import("@/components/editors/helper-functions/update-editor-with-dispatch");
+              updateEditorWithDispatch("code", codeEditorRef, String(children));
 
               setEdited(true);
               setTimeout(() => {

@@ -1,4 +1,5 @@
 import { useEditor } from "@/contexts/editor-context";
+import { useRefs } from "@/contexts/refs-context";
 import { useWebTranslations } from "@/contexts/web-translations";
 import { useQueryClient } from "@tanstack/react-query";
 import { type Document } from "@workspace/server/drizzle/schema/schema";
@@ -13,23 +14,29 @@ import { Switch } from "@workspace/ui/components/switch";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { apiFetcher, removeFromInfiniteCache } from "@workspace/ui/lib/fetcher";
 import { FilePlus, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { DeleteForm } from "../custom/delete-form";
 import { RenameForm, type RenameFormData } from "../custom/rename-form";
+import { clearEditor } from "./helper-functions/clear-editor";
 
 interface EditorDropdownMenuProps {
   clearEditor: () => void;
 }
 
-export const EditorDropdownMenu = ({
-  clearEditor,
-}: EditorDropdownMenuProps) => {
+export const EditorDropdownMenu = memo(() => {
   const { sharedT } = useSharedTranslations();
   const { webT } = useWebTranslations();
   const queryClient = useQueryClient();
+  const { textEditorRef, codeEditorRef } = useRefs();
 
-  const { editorMode, documentIdentifier, setDocumentIdentifier } = useEditor();
+  const {
+    editorMode,
+    textDocumentIdentifier,
+    setTextDocumentIdentifier,
+    codeDocumentIdentifier,
+    setCodeDocumentIdentifier,
+  } = useEditor();
   const [autocomplete, setAutocomplete] = useLocalStorage<{
     text: boolean;
   }>("autocomplete", {
@@ -38,6 +45,20 @@ export const EditorDropdownMenu = ({
 
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  let documentIdentifier;
+  let setDocumentIdentifier;
+
+  switch (editorMode) {
+    case "text":
+      documentIdentifier = textDocumentIdentifier;
+      setDocumentIdentifier = setTextDocumentIdentifier;
+      break;
+    default:
+      documentIdentifier = codeDocumentIdentifier;
+      setDocumentIdentifier = setCodeDocumentIdentifier;
+      break;
+  }
 
   const onSubmit = async (values: RenameFormData) => {
     if (!documentIdentifier.id) {
@@ -101,11 +122,11 @@ export const EditorDropdownMenu = ({
       sharedT.apiCodes,
     );
 
+    await clearEditor(editorMode, textEditorRef, codeEditorRef);
     setDocumentIdentifier({
       id: undefined,
       title: "",
     });
-    clearEditor();
 
     setDeleteDialogOpen(false);
     removeFromInfiniteCache(queryClient, ["documents"], deletedId);
@@ -145,7 +166,7 @@ export const EditorDropdownMenu = ({
                 id: undefined,
                 title: "",
               });
-              clearEditor();
+              clearEditor(editorMode, textEditorRef, codeEditorRef);
             }}
           >
             <FilePlus className="mr-2 size-4" />
@@ -186,4 +207,4 @@ export const EditorDropdownMenu = ({
       />
     </>
   );
-};
+});

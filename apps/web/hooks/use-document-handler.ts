@@ -41,21 +41,18 @@ export function useDocumentHandler() {
 
         setEditorMode(documentKind);
 
+        const { updateEditorWithDispatch } =
+          await import("@/components/editors/helper-functions/update-editor-with-dispatch");
+
         if (documentKind === "text") {
-          // Dynamically load the text editor update helper only when needed
-          const { updateTextEditorWithDispatch } =
-            await import("@/components/editors/helper-functions/update-text-editor-with-dispatch");
-          updateTextEditorWithDispatch(textEditorRef, document.content);
+          updateEditorWithDispatch("text", textEditorRef, document.content);
 
           setDocumentIdentifier({
             id: documentId,
             title: documentTitle,
           });
         } else {
-          // Dynamically load the code editor update helper only when needed
-          const { updateCodeEditorWithDispatch } =
-            await import("@/components/editors/helper-functions/update-code-editor-with-dispatch");
-          updateCodeEditorWithDispatch(codeEditorRef, document.content);
+          updateEditorWithDispatch("code", codeEditorRef, document.content);
 
           setDocumentIdentifier({
             id: documentId,
@@ -94,6 +91,9 @@ export function useDocumentHandler() {
 
         setEditorMode(documentKind);
 
+        const { updateEditorWithDispatch } =
+          await import("@/components/editors/helper-functions/update-editor-with-dispatch");
+
         if (documentKind === "text") {
           textDiffPrev.current = textEditorRef.current.state;
 
@@ -103,10 +103,8 @@ export function useDocumentHandler() {
           // Disable editing for the diff view
           textEditorRef.current.setProps({ editable: () => false });
 
-          // Dynamically load the text editor update helper only when needed
-          const { updateTextEditorWithDispatch } =
-            await import("@/components/editors/helper-functions/update-text-editor-with-dispatch");
-          updateTextEditorWithDispatch(
+          updateEditorWithDispatch(
+            "text",
             textEditorRef,
             createDiffViewString(diffResult, true),
           );
@@ -135,9 +133,8 @@ export function useDocumentHandler() {
           ]);
           codeEditorRef.current.dispatch({ effects: effect });
 
-          const { updateCodeEditorWithDispatch } =
-            await import("@/components/editors/helper-functions/update-code-editor-with-dispatch");
-          updateCodeEditorWithDispatch(
+          updateEditorWithDispatch(
+            "code",
             codeEditorRef,
             createDiffViewString(diffResult, true),
           );

@@ -12,84 +12,86 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { streamText } from "ai";
-import { HTTPException } from "hono/http-exception";
-import { artifactModelIdx } from "../../providers/models.js";
-import { sheetPrompt, updateDocumentPrompt } from "../../providers/prompts.js";
-import { getModel } from "../../providers/providers.js";
-import { createDocumentHandler } from "./artifact-server.js";
+// Maybe add sheet document handler later
 
-export const sheetDocumentHandler = createDocumentHandler<"sheet">({
-  kind: "sheet",
-  onCreateDocument: async ({ title, dataStream, env }) => {
-    let draftContent = "";
+// import { streamText } from "ai";
+// import { HTTPException } from "hono/http-exception";
+// import { artifactModelIdx } from "../../providers/models.js";
+// import { sheetPrompt, updateDocumentPrompt } from "../../providers/prompts.js";
+// import { getModel } from "../../providers/providers.js";
+// import { createDocumentHandler } from "./artifact-server.js";
 
-    const config = await getModel(env, artifactModelIdx);
+// export const sheetDocumentHandler = createDocumentHandler<"sheet">({
+//   kind: "sheet",
+//   onCreateDocument: async ({ title, dataStream, env }) => {
+//     let draftContent = "";
 
-    const { fullStream } = streamText({
-      model: config.model,
-      system: sheetPrompt,
-      prompt: title,
-    });
+//     const config = await getModel(env, artifactModelIdx);
 
-    for await (const delta of fullStream) {
-      const { type } = delta;
+//     const { fullStream } = streamText({
+//       model: config.model,
+//       system: sheetPrompt,
+//       prompt: title,
+//     });
 
-      if (type === "text-delta") {
-        const { text: csv } = delta;
+//     for await (const delta of fullStream) {
+//       const { type } = delta;
 
-        if (csv) {
-          dataStream.write({
-            type: "data-sheetDelta",
-            data: csv,
-            transient: true,
-          });
+//       if (type === "text-delta") {
+//         const { text: csv } = delta;
 
-          draftContent = csv;
-        }
-      }
-    }
+//         if (csv) {
+//           dataStream.write({
+//             type: "data-sheetDelta",
+//             data: csv,
+//             transient: true,
+//           });
 
-    dataStream.write({
-      type: "data-sheetDelta",
-      data: draftContent,
-      transient: true,
-    });
+//           draftContent = csv;
+//         }
+//       }
+//     }
 
-    return draftContent;
-  },
-  onUpdateDocument: async ({ document, description, dataStream, env }) => {
-    if (!document.content)
-      throw new HTTPException(500, { message: "INTERNAL_SERVER_ERROR" });
+//     dataStream.write({
+//       type: "data-sheetDelta",
+//       data: draftContent,
+//       transient: true,
+//     });
 
-    let draftContent = "";
+//     return draftContent;
+//   },
+//   onUpdateDocument: async ({ document, description, dataStream, env }) => {
+//     if (!document.content)
+//       throw new HTTPException(500, { message: "INTERNAL_SERVER_ERROR" });
 
-    const config = await getModel(env, artifactModelIdx);
+//     let draftContent = "";
 
-    const { fullStream } = streamText({
-      model: config.model,
-      system: updateDocumentPrompt(document.content, "sheet"),
-      prompt: description,
-    });
+//     const config = await getModel(env, artifactModelIdx);
 
-    for await (const delta of fullStream) {
-      const { type } = delta;
+//     const { fullStream } = streamText({
+//       model: config.model,
+//       system: updateDocumentPrompt(document.content, "sheet"),
+//       prompt: description,
+//     });
 
-      if (type === "text-delta") {
-        const { text: csv } = delta;
+//     for await (const delta of fullStream) {
+//       const { type } = delta;
 
-        if (csv) {
-          dataStream.write({
-            type: "data-sheetDelta",
-            data: csv,
-            transient: true,
-          });
+//       if (type === "text-delta") {
+//         const { text: csv } = delta;
 
-          draftContent = csv;
-        }
-      }
-    }
+//         if (csv) {
+//           dataStream.write({
+//             type: "data-sheetDelta",
+//             data: csv,
+//             transient: true,
+//           });
 
-    return draftContent;
-  },
-});
+//           draftContent = csv;
+//         }
+//       }
+//     }
+
+//     return draftContent;
+//   },
+// });

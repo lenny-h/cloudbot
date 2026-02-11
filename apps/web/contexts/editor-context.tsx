@@ -20,8 +20,12 @@ export type EditorContent = DocumentIdentifier & {
 interface EditorContextType {
   editorMode: EditorMode;
   setEditorMode: React.Dispatch<React.SetStateAction<EditorMode>>;
-  documentIdentifier: DocumentIdentifier;
-  setDocumentIdentifier: React.Dispatch<
+  textDocumentIdentifier: DocumentIdentifier;
+  setTextDocumentIdentifier: React.Dispatch<
+    React.SetStateAction<DocumentIdentifier>
+  >;
+  codeDocumentIdentifier: DocumentIdentifier;
+  setCodeDocumentIdentifier: React.Dispatch<
     React.SetStateAction<DocumentIdentifier>
   >;
 }
@@ -34,7 +38,12 @@ interface Props {
 
 export function EditorProvider({ children }: Props) {
   const [editorMode, setEditorMode] = useState<EditorMode>("text");
-  const [documentIdentifier, setDocumentIdentifier] =
+  const [textDocumentIdentifier, setTextDocumentIdentifier] =
+    useState<DocumentIdentifier>({
+      id: undefined,
+      title: "",
+    });
+  const [codeDocumentIdentifier, setCodeDocumentIdentifier] =
     useState<DocumentIdentifier>({
       id: undefined,
       title: "",
@@ -45,8 +54,10 @@ export function EditorProvider({ children }: Props) {
       value={{
         editorMode,
         setEditorMode,
-        documentIdentifier,
-        setDocumentIdentifier,
+        textDocumentIdentifier,
+        setTextDocumentIdentifier,
+        codeDocumentIdentifier,
+        setCodeDocumentIdentifier,
       }}
     >
       {children}

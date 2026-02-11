@@ -228,8 +228,8 @@ export abstract class ChatHandler {
       execute: async ({ writer }) => {
         if (createdChat) {
           writer.write({
-            type: "data-chat-created",
-            data: { id: createdChat.id },
+            type: "data-chatCreated",
+            data: { chatId: createdChat.id },
             transient: true,
           });
         }

@@ -54,9 +54,10 @@ export const MessageActions = memo(
     const { locale, sharedT } = useSharedTranslations();
     const { webT } = useWebTranslations();
     const queryClient = useQueryClient();
+
     const router = useRouter();
+    const { setEditorMode } = useEditor();
     const { panelRef, textEditorRef } = useRefs();
-    const [, setEditorMode] = useEditor();
 
     const {
       selectedChatModel,
@@ -220,9 +221,9 @@ export const MessageActions = memo(
                   setEditorMode("text");
                   resizeEditor(panelRef, false);
 
-                  const { updateTextEditorWithDispatch } =
-                    await import("@/components/editors/main/text-editor");
-                  updateTextEditorWithDispatch(textEditorRef, content);
+                  const { updateEditorWithDispatch } =
+                    await import("@/components/editors/helper-functions/update-editor-with-dispatch");
+                  updateEditorWithDispatch("text", textEditorRef, content);
                 }}
               >
                 <Pencil />

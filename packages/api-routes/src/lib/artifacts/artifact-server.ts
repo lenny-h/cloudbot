@@ -20,7 +20,7 @@ import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { generateUUID } from "../../utils/generate-uuid.js";
 import { saveDiff, saveDocument } from "../queries/documents.js";
 import { codeDocumentHandler } from "./code-server.js";
-import { sheetDocumentHandler } from "./sheet-server.js";
+// import { sheetDocumentHandler } from "./sheet-server.js";
 import { textDocumentHandler } from "./text-server.js";
 
 export type SaveDocumentProps = {
@@ -112,7 +112,7 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
 export const documentHandlersByArtifactKind: DocumentHandler[] = [
   textDocumentHandler,
   codeDocumentHandler,
-  sheetDocumentHandler,
+  // sheetDocumentHandler,
 ];
 
-export const artifactKinds = ["text", "code", "sheet"] as const;
+export const artifactKinds = ["text", "code"] as const; // Maybe add sheet later

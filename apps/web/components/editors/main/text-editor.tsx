@@ -9,7 +9,7 @@ import { memo, useEffect, useRef } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { createCompletionPlugin } from "../completion-plugin";
 import { buildDocumentFromContent } from "../helper-functions/build-document-from-content";
-import { syncTextEditorContentToLocalStorage } from "../helper-functions/sync-text-editor-content";
+import { syncEditorContentToLocalStorage } from "../helper-functions/sync-editor-content";
 import { plugins, textEditorSchema } from "../prosemirror-math/config";
 import { mathTextSerializer } from "../prosemirror-math/utils/text-serializer";
 import "./prosemirror-math/styles.css";
@@ -56,7 +56,7 @@ export const TextEditor = memo(({ textEditorRef: editorRef }: EditorProps) => {
 
     return () => {
       if (editorRef.current) {
-        syncTextEditorContentToLocalStorage(editorRef, setLocalStorageInput);
+        syncEditorContentToLocalStorage("text", editorRef, setLocalStorageInput);
 
         editorRef.current.destroy();
         editorRef.current = null;

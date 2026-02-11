@@ -185,18 +185,6 @@ export const EditorHeader = memo(() => {
     }
   }, [editorMode, textEditorRef, documentIdentifier.title]);
 
-  const clearEditor = useCallback(async () => {
-    if (editorMode === "text") {
-      const { updateTextEditorWithDispatch } =
-        await import("@/components/editors/helper-functions/update-text-editor-with-dispatch");
-      updateTextEditorWithDispatch(textEditorRef, "");
-    } else if (editorMode === "code") {
-      const { updateCodeEditorWithDispatch } =
-        await import("@/components/editors/helper-functions/update-code-editor-with-dispatch");
-      updateCodeEditorWithDispatch(codeEditorRef, "");
-    }
-  }, [editorMode, textEditorRef, codeEditorRef]);
-
   return (
     <div className="bg-sidebar flex h-14 items-center gap-2 overflow-x-auto border-b px-3">
       <Button variant="ghost" onClick={() => panelRef.current?.collapse()}>
@@ -303,7 +291,7 @@ export const EditorHeader = memo(() => {
               </Dialog>
             )}
 
-            <EditorDropdownMenu clearEditor={clearEditor} />
+            <EditorDropdownMenu />
           </ButtonGroup>
         </>
       )}

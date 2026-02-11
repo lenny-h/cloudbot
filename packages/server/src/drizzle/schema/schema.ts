@@ -106,7 +106,7 @@ export const documents = sqliteTable("documents", {
   id: text("id").primaryKey().notNull(),
   title: text("title").notNull(),
   content: text("content"),
-  kind: text("kind", { enum: ["text", "code", "sheet"] })
+  kind: text("kind", { enum: ["text", "code"] }) // Maybe add sheet later
     .notNull()
     .default("text"),
   owner: text("owner")
@@ -126,7 +126,7 @@ export const diffs = sqliteTable("diffs", {
     .references(() => documents.id),
   previousText: text("previous_text").notNull(),
   newText: text("new_text").notNull(),
-  kind: text("kind", { enum: ["text", "code", "sheet"] }),
+  kind: text("kind", { enum: ["text", "code"] }), // Maybe add sheet later
   isResolved: integer("is_resolved", { mode: "boolean" })
     .notNull()
     .default(false),

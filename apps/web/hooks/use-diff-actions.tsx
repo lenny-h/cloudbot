@@ -1,4 +1,3 @@
-import { buildDocumentFromContent } from "@/components/editors/helper-functions/build-document-from-content";
 import { useDiff } from "@/contexts/diff-context";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
@@ -24,13 +23,11 @@ export function useDiffActions() {
       if (!textEditorRef.current || !textDiffPrev.current) return;
 
       if (acceptChanges) {
-        const newDoc = buildDocumentFromContent(textDiffNext);
-
         const tr = textDiffPrev.current.tr;
         tr.replaceWith(
           0,
           textDiffPrev.current.doc.content.size,
-          newDoc.content,
+          textEditorRef.current.state.doc.content,
         );
 
         const newState = textDiffPrev.current.apply(tr);

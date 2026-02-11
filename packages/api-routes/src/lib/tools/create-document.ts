@@ -44,26 +44,12 @@ export const createDocument = ({
       const id = generateUUID();
 
       dataStream.write({
-        type: "data-id",
-        data: id,
-        transient: true,
-      });
-
-      dataStream.write({
-        type: "data-title",
-        data: title,
-        transient: true,
-      });
-
-      dataStream.write({
-        type: "data-kind",
-        data: kind,
-        transient: true,
-      });
-
-      dataStream.write({
-        type: "data-clear",
-        data: null,
+        type: "data-documentIdentifier",
+        data: {
+          id,
+          title,
+          kind,
+        },
         transient: true,
       });
 
@@ -84,7 +70,11 @@ export const createDocument = ({
         env,
       });
 
-      dataStream.write({ type: "data-finish", data: null, transient: true });
+      dataStream.write({
+        type: "data-createFinish",
+        data: kind,
+        transient: true,
+      });
 
       return {
         id,

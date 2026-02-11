@@ -25,7 +25,11 @@ type UpdateDocumentProps = {
   env: Bindings;
 };
 
-export const updateDocument = ({ userId, dataStream, env }: UpdateDocumentProps) =>
+export const updateDocument = ({
+  userId,
+  dataStream,
+  env,
+}: UpdateDocumentProps) =>
   tool({
     description: "Update a document with the given description.",
     inputSchema: z.object({
@@ -44,8 +48,12 @@ export const updateDocument = ({ userId, dataStream, env }: UpdateDocumentProps)
       }
 
       dataStream.write({
-        type: "data-clear",
-        data: null,
+        type: "data-documentIdentifier",
+        data: {
+          id,
+          title: document.title,
+          kind: document.kind,
+        },
         transient: true,
       });
 
@@ -66,7 +74,11 @@ export const updateDocument = ({ userId, dataStream, env }: UpdateDocumentProps)
         env,
       });
 
-      dataStream.write({ type: "data-finish", data: null, transient: true });
+      dataStream.write({
+        type: "data-updateFinish",
+        data: document.kind,
+        transient: true,
+      });
 
       return {
         id,
