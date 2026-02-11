@@ -12,7 +12,7 @@
     "@hono/node-server": "^1.19.9",
     "@workspace/api-routes": "workspace:*",
     "@workspace/server": "workspace:*",
-    "ai": "^6.0.69",
+    "ai": "^6.0.80",
     "drizzle-orm": "0.45.1",
     "hono": "^4.11.7"
   },

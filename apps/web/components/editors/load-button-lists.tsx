@@ -90,7 +90,11 @@ export const DocumentsList = memo(({ open, setOpen, inputValue }: Props) => {
 
   const handleItemClick = (item: ListItem) => {
     const document = item as Document;
-    handleDocumentClick(document.id, document.title, document.kind);
+    handleDocumentClick({
+      documentId: document.id,
+      documentTitle: document.title,
+      documentKind: document.kind,
+    });
     setOpen(false);
   };
 

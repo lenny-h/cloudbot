@@ -21,8 +21,8 @@ import { StepMap } from "prosemirror-transform";
 import { type Decoration, EditorView, type NodeView } from "prosemirror-view";
 
 // prosemirror-math
-import { collapseMathCmd } from "@workspace/ui/editors/prosemirror-math/commands/collapse-math-cmd";
-import { IMathPluginState } from "@workspace/ui/editors/prosemirror-math/math-plugin";
+import { collapseMathCmd } from "./commands/collapse-math-cmd";
+import { IMathPluginState } from "./math-plugin";
 
 // katex
 import { KatexOptions, render } from "katex";
@@ -67,7 +67,7 @@ export class MathView implements NodeView {
     view: EditorView,
     getPos: () => number | undefined,
     options: IMathViewOptions = {},
-    mathPluginKey: PluginKey<IMathPluginState>
+    mathPluginKey: PluginKey<IMathPluginState>,
   ) {
     // store arguments
     this._node = node;
@@ -81,7 +81,7 @@ export class MathView implements NodeView {
     // options
     this._katexOptions = Object.assign(
       { globalGroup: true, throwOnError: false },
-      options.katexOptions
+      options.katexOptions,
     );
     this._tagName = options.tagName || this._node.type.name.replace("_", "-");
 
@@ -155,7 +155,7 @@ export class MathView implements NodeView {
           this._innerView.dispatch(
             state.tr
               .replace(start, endB, node.slice(start, endA))
-              .setMeta("fromOutside", true)
+              .setMeta("fromOutside", true),
           );
         }
       }
@@ -267,7 +267,7 @@ export class MathView implements NodeView {
   openEditor() {
     if (this._innerView) {
       console.warn(
-        "[prosemirror-math] editor already open when openEditor was called"
+        "[prosemirror-math] editor already open when openEditor was called",
       );
       return;
     }
@@ -306,7 +306,7 @@ export class MathView implements NodeView {
             },
             Enter: chainCommands(
               newlineInCode,
-              collapseMathCmd(this._outerView, +1, false)
+              collapseMathCmd(this._outerView, +1, false),
             ),
             "Ctrl-Enter": collapseMathCmd(this._outerView, +1, false),
             ArrowLeft: collapseMathCmd(this._outerView, -1, true),
@@ -325,11 +325,11 @@ export class MathView implements NodeView {
 
     // request outer cursor position before math node was selected
     const maybePos = this._mathPluginKey.getState(
-      this._outerView.state
+      this._outerView.state,
     )?.prevCursorPos;
     if (maybePos === null || maybePos === undefined) {
       console.error(
-        "[prosemirror-math] Error:  Unable to fetch math plugin state from key."
+        "[prosemirror-math] Error:  Unable to fetch math plugin state from key.",
       );
     }
     const prevCursorPos: number = maybePos ?? 0;
@@ -338,7 +338,9 @@ export class MathView implements NodeView {
     const innerPos =
       prevCursorPos <= this._getPos()! ? 0 : this._node.nodeSize - 2;
     this._innerView.dispatch(
-      innerState.tr.setSelection(TextSelection.create(innerState.doc, innerPos))
+      innerState.tr.setSelection(
+        TextSelection.create(innerState.doc, innerPos),
+      ),
     );
 
     this._isEditing = true;

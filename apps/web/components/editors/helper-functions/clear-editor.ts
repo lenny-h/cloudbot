@@ -1,9 +1,10 @@
+import { type EditorMode } from "@/contexts/editor-context";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorView } from "prosemirror-view";
 import { type RefObject } from "react";
 
 export const clearEditor = async (
-  editorMode: "text" | "code" | "pdf",
+  editorMode: EditorMode,
   textEditorRef: RefObject<EditorView | null>,
   codeEditorRef: RefObject<CodeMirrorEditorView | null>,
 ) => {

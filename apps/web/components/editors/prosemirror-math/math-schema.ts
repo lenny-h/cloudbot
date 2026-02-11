@@ -1,15 +1,17 @@
 import { MarkSpec, NodeSpec, SchemaSpec } from "prosemirror-model";
 
-import { tableNodes } from "@workspace/ui/editors/prosemirror-tables/schema";
+import { tableNodes } from "../prosemirror-tables/schema";
 import {
   defaultBlockMathParseRules,
   defaultInlineMathParseRules,
-} from "@workspace/ui/editors/prosemirror-math/plugins/math-paste-rules";
+} from "./plugins/math-paste-rules";
 
 ////////////////////////////////////////////////////////////
 
-interface SchemaSpecJson<N extends string = any, M extends string = any>
-  extends SchemaSpec<N, M> {
+interface SchemaSpecJson<
+  N extends string = any,
+  M extends string = any,
+> extends SchemaSpec<N, M> {
   nodes: { [name in N]: NodeSpec };
   marks: { [name in M]: MarkSpec };
   topNode?: string;
@@ -19,7 +21,7 @@ interface SchemaSpecJson<N extends string = any, M extends string = any>
 
 // force typescript to infer generic type arguments for SchemaSpec
 function createSchemaSpec<N extends string = any, M extends string = any>(
-  spec: SchemaSpecJson<N, M>
+  spec: SchemaSpecJson<N, M>,
 ): SchemaSpecJson<N, M> {
   return spec;
 }

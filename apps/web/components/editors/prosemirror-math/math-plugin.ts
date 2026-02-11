@@ -11,7 +11,7 @@ import {
   Plugin as ProsePlugin,
 } from "prosemirror-state";
 import type { EditorView, NodeViewConstructor } from "prosemirror-view";
-import { MathView } from "@workspace/ui/editors/prosemirror-math/math-nodeview";
+import { MathView } from "./math-nodeview";
 
 ////////////////////////////////////////////////////////////
 
@@ -37,7 +37,7 @@ export function createMathView(displayMode: boolean): NodeViewConstructor {
   return (
     node: ProseNode,
     view: EditorView,
-    getPos: boolean | (() => number | undefined)
+    getPos: boolean | (() => number | undefined),
   ): MathView => {
     /** @todo is this necessary?
      * Docs says that for any function proprs, the current plugin instance
@@ -54,7 +54,7 @@ export function createMathView(displayMode: boolean): NodeViewConstructor {
       view,
       getPos as () => number,
       { katexOptions: { displayMode, macros: pluginState.macros } },
-      MATH_PLUGIN_KEY
+      MATH_PLUGIN_KEY,
     );
 
     return nodeView;

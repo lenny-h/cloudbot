@@ -1,10 +1,10 @@
-import { type EditorContent } from "@/contexts/editor-context";
+import { type EditorContent, type EditorMode } from "@/contexts/editor-context";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorView as ProseMirrorEditorView } from "prosemirror-view";
 import { mathMarkdownSerializer } from "../prosemirror-math/utils/text-serializer";
 
 export function syncEditorContentToLocalStorage(
-  editorMode: "code" | "text",
+  editorMode: EditorMode,
   editorRef: React.RefObject<
     CodeMirrorEditorView | ProseMirrorEditorView | null
   >,

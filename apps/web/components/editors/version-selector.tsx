@@ -1,6 +1,7 @@
 import { useDiff } from "@/contexts/diff-context";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
+import { useDiffActions } from "@/hooks/use-diff-actions";
 import { Button } from "@workspace/ui/components/button";
 import { ButtonGroup } from "@workspace/ui/components/button-group";
 import {
@@ -14,7 +15,8 @@ import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { History, RotateCcw } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { disableEditor } from "./helper-functions/disable-editor";
+import { loadVersionContent } from "./helper-functions/load-version-content";
+import { serializeEditorContent } from "./helper-functions/serialize-editor-content";
 
 interface VersionSelectorProps {
   documentId: string;
@@ -24,13 +26,13 @@ interface VersionSelectorProps {
 export const VersionSelector = memo(
   ({ documentId, isBlocked }: VersionSelectorProps) => {
     const { sharedT } = useSharedTranslations();
-    const { textEditorRef, codeEditorRef } = useRefs();
     const { editorMode } = useEditor();
+    const { textEditorRef, codeEditorRef } = useRefs();
     const { textDiffPrev, codeDiffPrev, setIsViewingVersion } = useDiff();
+    const { handleDiffAction } = useDiffActions();
 
     const [versionCount, setVersionCount] = useState(0);
     const [viewingVersion, setViewingVersion] = useState<number | null>(null);
-    const [versionContent, setVersionContent] = useState<string | null>(null);
     const [isLoadingVersion, setIsLoadingVersion] = useState(false);
 
     // Fetch version count when document changes
@@ -76,43 +78,19 @@ export const VersionSelector = memo(
             sharedT.apiCodes,
           );
 
-          setVersionContent(result.previousText);
           setViewingVersion(version);
 
-          // Store current editor state before loading version (similar to datastream handler)
-          if (editorMode === "text" && textEditorRef.current) {
-            textDiffPrev.current = textEditorRef.current.state;
+          // Store current editor state before loading version and update with version content
+          await loadVersionContent({
+            editorMode,
+            textDiffPrev,
+            textEditorRef,
+            codeDiffPrev,
+            codeEditorRef,
+            versionContent: result.previousText,
+          });
 
-            // Disable editor
-            disableEditor(editorMode, textEditorRef, codeEditorRef);
-
-            // Update editor with version content
-            const { updateEditorWithDispatch } =
-              await import("@/components/editors/helper-functions/update-editor-with-dispatch");
-            updateEditorWithDispatch(
-              "text",
-              textEditorRef,
-              result.previousText,
-            );
-
-            toast.info(`Viewing version ${version + 1}`);
-          } else if (editorMode === "code" && codeEditorRef.current) {
-            codeDiffPrev.current = codeEditorRef.current.state;
-
-            // Disable editor
-            disableEditor(editorMode, textEditorRef, codeEditorRef);
-
-            // Update editor with version content
-            const { updateEditorWithDispatch } =
-              await import("@/components/editors/helper-functions/update-editor-with-dispatch");
-            updateEditorWithDispatch(
-              "code",
-              codeEditorRef,
-              result.previousText,
-            );
-
-            toast.info(`Viewing version ${version + 1}`);
-          }
+          toast.info(`Viewing version ${version + 1}`);
         } catch (error) {
           toast.error("Failed to load version");
           setIsViewingVersion(false);
@@ -134,7 +112,19 @@ export const VersionSelector = memo(
     );
 
     const restoreVersion = useCallback(async () => {
-      if (!documentId || !versionContent) return;
+      if (!documentId) return;
+
+      // Read content directly from the editor
+      const content = serializeEditorContent({
+        editorMode,
+        textEditorRef,
+        codeEditorRef,
+      });
+
+      if (!content) {
+        toast.error("Failed to read editor content");
+        return;
+      }
 
       const toastId = toast.loading("Restoring version...");
       try {
@@ -142,7 +132,7 @@ export const VersionSelector = memo(
           (client) =>
             client["documents"][":documentId"].$patch({
               param: { documentId },
-              json: { content: versionContent },
+              json: { content },
             }),
           sharedT.apiCodes,
         );
@@ -158,13 +148,11 @@ export const VersionSelector = memo(
       }
     }, [
       documentId,
-      versionContent,
       editorMode,
       textEditorRef,
       codeEditorRef,
       setIsViewingVersion,
-      textDiffPrev,
-      codeDiffPrev,
+      handleDiffAction,
       sharedT.apiCodes,
     ]);
 

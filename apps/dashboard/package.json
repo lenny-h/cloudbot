@@ -14,7 +14,9 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.16.3",
     "@tanstack/react-query": "5.90.20",
+    "@workspace/server": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "1.4.18",
     "class-variance-authority": "^0.7.1",
@@ -37,7 +39,6 @@
     "@types/react-dom": "^19.2.3",
     "@workspace/api-routes": "workspace:*",
     "@workspace/eslint-config": "workspace:*",
-    "@workspace/server": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^5.9.3",

@@ -12,7 +12,8 @@ import { buildDocumentFromContent } from "../helper-functions/build-document-fro
 import { syncEditorContentToLocalStorage } from "../helper-functions/sync-editor-content";
 import { plugins, textEditorSchema } from "../prosemirror-math/config";
 import { mathTextSerializer } from "../prosemirror-math/utils/text-serializer";
-import "./prosemirror-math/styles.css";
+
+import "../prosemirror-math/styles.css";
 
 type EditorProps = {
   textEditorRef: React.RefObject<EditorView | null>;
@@ -56,7 +57,11 @@ export const TextEditor = memo(({ textEditorRef: editorRef }: EditorProps) => {
 
     return () => {
       if (editorRef.current) {
-        syncEditorContentToLocalStorage("text", editorRef, setLocalStorageInput);
+        syncEditorContentToLocalStorage(
+          "text",
+          editorRef,
+          setLocalStorageInput,
+        );
 
         editorRef.current.destroy();
         editorRef.current = null;

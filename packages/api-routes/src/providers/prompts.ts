@@ -23,7 +23,7 @@ export const sheetPrompt = `Generate well-structured CSV data with headers, real
 
 export function updateDocumentPrompt(
   currentContent: string,
-  kind: "code" | "text" | "sheet",
+  kind: "text" | "code" | "sheet",
 ): string {
   const kindInstructions = {
     text: `Update the document preserving tone, style, and structure. Make requested changes while maintaining coherence and readability.`,

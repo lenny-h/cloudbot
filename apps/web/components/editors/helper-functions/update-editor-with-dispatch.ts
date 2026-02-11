@@ -1,9 +1,10 @@
+import { type EditorMode } from "@/contexts/editor-context";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorView as ProseMirrorEditorView } from "prosemirror-view";
 import { buildDocumentFromContent } from "./build-document-from-content";
 
 export function updateEditorWithDispatch(
-  editorMode: "code" | "text",
+  editorMode: EditorMode,
   editorRef: React.RefObject<
     CodeMirrorEditorView | ProseMirrorEditorView | null
   >,

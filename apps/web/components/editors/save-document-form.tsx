@@ -40,7 +40,20 @@ export const SaveDocumentForm = memo(({ onClose }: SaveDocumentFormProps) => {
   const queryClient = useQueryClient();
 
   const { textEditorRef, codeEditorRef } = useRefs();
-  const { editorMode, documentIdentifier, setDocumentIdentifier } = useEditor();
+  const {
+    editorMode,
+    textDocumentIdentifier,
+    setTextDocumentIdentifier,
+    codeDocumentIdentifier,
+    setCodeDocumentIdentifier,
+  } = useEditor();
+
+  const documentIdentifier =
+    editorMode === "text" ? textDocumentIdentifier : codeDocumentIdentifier;
+  const setDocumentIdentifier =
+    editorMode === "text"
+      ? setTextDocumentIdentifier
+      : setCodeDocumentIdentifier;
 
   const form = useForm<TitleFormData>({
     resolver: zodResolver(titleFormSchema),

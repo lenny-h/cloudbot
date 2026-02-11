@@ -1,8 +1,3 @@
-import { textEditorSchema } from "@workspace/ui/editors/prosemirror-math/config";
-import {
-  SchemaMarkT,
-  SchemaNodeT,
-} from "@workspace/ui/editors/prosemirror-math/utils/types";
 import {
   defaultMarkdownSerializer,
   MarkdownSerializer,
@@ -16,6 +11,8 @@ import {
   Schema,
   Slice,
 } from "prosemirror-model";
+import { textEditorSchema } from "../config";
+import { type SchemaMarkT, type SchemaNodeT } from "./types";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +31,7 @@ class ProseMirrorTextSerializer<S extends Schema<any, any>> {
       nodes?: { [name in SchemaNodeT<S>]?: NodeSerializer<name> };
       marks?: { [name in SchemaMarkT<S>]?: MarkSerializer<name> };
     },
-    base?: ProseMirrorTextSerializer<S>
+    base?: ProseMirrorTextSerializer<S>,
   ) {
     // use base serializer as a fallback
     this.nodes = { ...base?.nodes, ...fns.nodes };
@@ -84,7 +81,7 @@ class ProseMirrorTextSerializer<S extends Schema<any, any>> {
           separated = true;
         }
       },
-      0
+      0,
     );
 
     return text;
@@ -137,7 +134,7 @@ export const mathMarkdownSerializer = new MarkdownSerializer(
       state.write(`\n\n$$\n${node.textContent}\n$$`);
     },
   },
-  defaultMarkdownSerializer.marks
+  defaultMarkdownSerializer.marks,
 );
 
 export const mathLatexSerializer = new MarkdownSerializer(
@@ -176,7 +173,7 @@ export const mathLatexSerializer = new MarkdownSerializer(
       const colSpec = "c".repeat(colCount);
 
       state.write(
-        `\n\\begin{table}[h]\n\\begin{tabular}{|${colSpec}|}\n\\hline\n`
+        `\n\\begin{table}[h]\n\\begin{tabular}{|${colSpec}|}\n\\hline\n`,
       );
 
       node.forEach((row) => {
@@ -196,7 +193,7 @@ export const mathLatexSerializer = new MarkdownSerializer(
           ? `\\section{${node.textContent}}`
           : node.attrs.level === 2
             ? `\\subsection{${node.textContent}}`
-            : `\\subsubsection{${node.textContent}}`
+            : `\\subsubsection{${node.textContent}}`,
       );
     },
 
@@ -225,5 +222,5 @@ export const mathLatexSerializer = new MarkdownSerializer(
       mixable: true,
       expelEnclosingWhitespace: true,
     },
-  }
+  },
 );

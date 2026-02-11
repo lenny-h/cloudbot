@@ -1,3 +1,4 @@
+import { type EditorMode } from "@/contexts/editor-context";
 import { type EditorState as CodeMirrorEditorState } from "@codemirror/state";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorState as ProseMirrorEditorState } from "prosemirror-state";
@@ -11,7 +12,7 @@ export async function finishDocumentCreation({
   codeDiffPrev,
   codeEditorRef,
 }: {
-  editorMode: "code" | "text" | "pdf";
+  editorMode: EditorMode;
   textDiffPrev: RefObject<ProseMirrorEditorState | undefined>;
   textEditorRef: RefObject<ProseMirrorEditorView | null>;
   codeDiffPrev: RefObject<CodeMirrorEditorState | undefined>;

@@ -1,8 +1,9 @@
+import { type EditorMode } from "@/contexts/editor-context";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorView } from "prosemirror-view";
 
 export const disableEditor = async (
-  editorMode: "text" | "code" | "pdf",
+  editorMode: EditorMode,
   textEditorRef: React.RefObject<EditorView | null>,
   codeEditorRef: React.RefObject<CodeMirrorEditorView | null>,
 ) => {

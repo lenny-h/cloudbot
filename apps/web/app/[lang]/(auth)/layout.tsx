@@ -1,8 +1,8 @@
 "use client";
 
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
-import { CentralLoadingScreen } from "@workspace/ui/custom-components/central-loading-screen";
 import { client } from "@workspace/ui/lib/auth-client";
+import { CentralLoadingScreen } from "@workspace/ui/shared-components/central-loading-screen";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

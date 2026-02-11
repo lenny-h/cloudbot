@@ -46,7 +46,7 @@ export const EditorHeader = memo(() => {
   const { panelRef, textEditorRef, codeEditorRef } = useRefs();
   const { editorMode, textDocumentIdentifier, codeDocumentIdentifier } =
     useEditor();
-  const { showDiffActions, isBlocked } = useDiff();
+  const { showDiffActions, isViewingVersion, isBlocked } = useDiff();
   const { handleDiffAction } = useDiffActions();
 
   const [_, copyToClipboard] = useCopyToClipboard();
@@ -257,7 +257,7 @@ export const EditorHeader = memo(() => {
             )}
           </ButtonGroup>
 
-          {!showDiffActions && <ModeSwitcher />}
+          {!showDiffActions && !isViewingVersion && <ModeSwitcher />}
 
           {!showDiffActions && (
             <LoadButton type={editorMode === "pdf" ? "files" : "documents"} />
