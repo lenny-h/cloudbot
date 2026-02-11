@@ -1,7 +1,9 @@
+import { adminApiRouter } from "@workspace/api-routes/routes/admin/index.js";
 import { protectedApiRouter } from "@workspace/api-routes/routes/protected/index.js";
 import { unprotectedApiRouter } from "@workspace/api-routes/routes/unprotected/index.js";
 import { auth } from "@workspace/server/auth-server.js";
 import { conditionalLogger } from "@workspace/server/logger/conditional-logger.js";
+import { adminMiddleware } from "@workspace/server/middleware/admin-middleware.js";
 import { authMiddleware } from "@workspace/server/middleware/auth-middleware.js";
 import { errorHandler } from "@workspace/server/middleware/error-handler.js";
 import { Hono } from "hono";
@@ -43,8 +45,14 @@ const app = new Hono()
     return auth.handler(c.req.raw);
   })
 
+  // Authentication middleware for admin routes
+  .use("/api/admin/*", adminMiddleware)
+
   // Authentication middleware for protected routes
   .use("/api/protected/*", authMiddleware)
+
+  // Admin routes
+  .route("/api/admin", adminApiRouter)
 
   // Unprotected routes
   .route("/api/public", unprotectedApiRouter)

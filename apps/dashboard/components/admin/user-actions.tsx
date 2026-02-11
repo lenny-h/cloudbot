@@ -1,6 +1,6 @@
 "use client";
 
-import { UserWithDetails } from "@/utils/users";
+import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details";
 import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,

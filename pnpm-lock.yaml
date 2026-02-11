@@ -133,6 +133,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.13)
+      '@workspace/api-routes':
+        specifier: workspace:*
+        version: link:../../packages/api-routes
       '@workspace/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config

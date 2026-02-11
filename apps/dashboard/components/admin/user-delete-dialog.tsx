@@ -1,10 +1,10 @@
 "use client";
 
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { deleteUser } from "@/utils/auth";
+import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteUser } from "@/utils/auth";
-import { UserWithDetails } from "@/utils/users";
-import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 interface UserDeleteDialogProps {
   user: UserWithDetails;

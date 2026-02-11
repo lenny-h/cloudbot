@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserWithDetails } from "@/utils/users";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Avatar,
   AvatarFallback,
@@ -41,7 +41,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
+import { adminApiFetcher } from "@workspace/ui/lib/fetcher";
 import { format } from "date-fns";
 import {
   Ban,
@@ -77,6 +78,7 @@ const getAccountIcon = (account: string) => {
 };
 
 export function UsersTable() {
+  const { sharedT } = useSharedTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -127,11 +129,11 @@ export function UsersTable() {
       if (debouncedEmail) params.set("email", debouncedEmail);
       params.set("page", String(page));
       params.set("limit", String(limit));
-      const response = await fetch(`/api/admin/users?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
-      }
-      return response.json();
+
+      return await adminApiFetcher(
+        (client) => client.users.$get({ query: Object.fromEntries(params) }),
+        sharedT.apiCodes,
+      );
     },
     staleTime: 0,
   });
@@ -289,6 +291,15 @@ export function UsersTable() {
 
   const { users, total, totalPages } = data;
 
+  // Transform serialized dates back to Date objects
+  // (API sends Date objects, but they're serialized to strings during JSON transport)
+  const transformedUsers = users.map((user) => ({
+    ...user,
+    banExpires: user.banExpires ? new Date(user.banExpires) : null,
+    lastSignIn: user.lastSignIn ? new Date(user.lastSignIn) : null,
+    createdAt: new Date(user.createdAt),
+  }));
+
   // Pagination logic for shadcn/ui Pagination
   const renderPagination = () => {
     if (totalPages <= 1) return null;
@@ -428,7 +439,7 @@ export function UsersTable() {
                     </TableCell>
                   </TableRow>
                 ))
-              : users.map((user: UserWithDetails) => (
+              : transformedUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-4">
@@ -558,14 +569,16 @@ export function UsersTable() {
       </div>
       <div className="flex items-center justify-between px-4 py-1">
         <div className="text-muted-foreground text-sm">
-          Showing {users.length} of {total} users
+          Showing {transformedUsers.length} of {total} users
         </div>
         {renderPagination()}
       </div>
       <UserAddDialog
         isOpen={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
-        onSuccess={() => queryClient.invalidateQueries({ queryKey: ["admin-users"] })}
+        onSuccess={() =>
+          queryClient.invalidateQueries({ queryKey: ["admin-users"] })
+        }
       />
     </div>
   );

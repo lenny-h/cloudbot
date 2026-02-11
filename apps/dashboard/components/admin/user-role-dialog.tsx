@@ -2,7 +2,7 @@
 
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { updateUserRole } from "@/utils/auth";
-import { UserWithDetails } from "@/utils/users";
+import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { Label } from "@workspace/ui/components/label";
 import {
   Select,

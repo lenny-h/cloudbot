@@ -1,4 +1,5 @@
 import { type QueryClient } from "@tanstack/react-query";
+import { type AdminApiType } from "@workspace/api-routes/routes/admin/index";
 import { type ProtectedApiType } from "@workspace/api-routes/routes/protected/index";
 import { type ClientResponse, hc } from "hono/client";
 import { checkResponse, type ErrorDictionary } from "./translation-utils";
@@ -17,6 +18,17 @@ function createProtectedApiClient() {
   );
 }
 
+function createAdminApiClient() {
+  return hc<AdminApiType>(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`, {
+    fetch: (input: RequestInfo | URL, init?: RequestInit) => {
+      return fetch(input, {
+        ...init,
+        credentials: "include",
+      });
+    },
+  });
+}
+
 /**
  * Type-safe fetcher using Hono client
  * @example
@@ -32,6 +44,26 @@ export async function apiFetcher<T>(
   errorDictionary: ErrorDictionary,
 ): Promise<T> {
   const client = createProtectedApiClient();
+  const response = await clientCallback(client);
+  await checkResponse(response, errorDictionary);
+  return response.json() as Promise<T>;
+}
+
+/**
+ * Type-safe fetcher for admin API endpoints using Hono client
+ * @example
+ * const data = await adminApiFetcher(
+ *   (client) => client.users.$get(),
+ *   errorDictionary
+ * );
+ */
+export async function adminApiFetcher<T>(
+  clientCallback: (
+    client: ReturnType<typeof createAdminApiClient>,
+  ) => Promise<ClientResponse<T>>,
+  errorDictionary: ErrorDictionary,
+): Promise<T> {
+  const client = createAdminApiClient();
   const response = await clientCallback(client);
   await checkResponse(response, errorDictionary);
   return response.json() as Promise<T>;

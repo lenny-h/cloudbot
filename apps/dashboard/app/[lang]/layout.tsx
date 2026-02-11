@@ -3,9 +3,10 @@ import { getDictionary } from "@/lib/dictionary";
 import { roboto } from "@/lib/fonts";
 import { getDictionary as getSharedDictionary } from "@workspace/ui/lib/dictionary";
 import { type Locale, i18n } from "@workspace/ui/lib/i18n.config";
-import "@workspace/ui/styles/globals.css";
 import { type Metadata } from "next";
 import { headers } from "next/headers";
+
+import "@workspace/ui/styles/globals.css";
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));

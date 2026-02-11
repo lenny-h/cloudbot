@@ -35,6 +35,7 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
+    "@workspace/api-routes": "workspace:*",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/server": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
