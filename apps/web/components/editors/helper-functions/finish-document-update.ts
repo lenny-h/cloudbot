@@ -20,29 +20,6 @@ export async function finishDocumentUpdate({
   codeEditorRef: RefObject<CodeMirrorEditorView | null>;
 }) {
   switch (editorMode) {
-    case "code": {
-      if (!codeDiffPrev.current || !codeEditorRef.current) {
-        console.warn(
-          "Code editor reference is null when processing finish event.",
-        );
-        return;
-      }
-
-      const prevContent = codeDiffPrev.current.doc.toString();
-      const content = codeEditorRef.current.state.doc.toString();
-
-      const { diffLines } = await import("@/components/editors/jsdiff/line");
-
-      const codeDiffResult = diffLines(prevContent, content);
-
-      updateEditorWithDispatch(
-        "code",
-        codeEditorRef,
-        createDiffViewString(codeDiffResult, true),
-      );
-
-      break;
-    }
     case "text": {
       if (!textDiffPrev.current || !textEditorRef.current) {
         console.warn(
@@ -69,6 +46,29 @@ export async function finishDocumentUpdate({
         "text",
         textEditorRef,
         createDiffViewString(textDiffResult, true),
+      );
+
+      break;
+    }
+    case "code": {
+      if (!codeDiffPrev.current || !codeEditorRef.current) {
+        console.warn(
+          "Code editor reference is null when processing finish event.",
+        );
+        return;
+      }
+
+      const prevContent = codeDiffPrev.current.doc.toString();
+      const content = codeEditorRef.current.state.doc.toString();
+
+      const { diffLines } = await import("@/components/editors/jsdiff/line");
+
+      const codeDiffResult = diffLines(prevContent, content);
+
+      updateEditorWithDispatch(
+        "code",
+        codeEditorRef,
+        createDiffViewString(codeDiffResult, true),
       );
 
       break;

@@ -21,9 +21,14 @@ export function DataStreamHandler({
   setDataStream: (stream: DataUIPart<CustomUIDataTypes>[]) => void;
 }) {
   const queryClient = useQueryClient();
-  const { editorMode, setEditorMode, setDocumentIdentifier } = useEditor();
+  const {
+    editorMode,
+    setEditorMode,
+    setTextDocumentIdentifier,
+    setCodeDocumentIdentifier,
+  } = useEditor();
   const { textEditorRef, codeEditorRef } = useRefs();
-  const { textDiffPrev, codeDiffPrev } = useDiff();
+  const { textDiffPrev, codeDiffPrev, setShowDiffActions } = useDiff();
 
   useEffect(() => {
     if (!dataStream?.length) {
@@ -68,8 +73,6 @@ export function DataStreamHandler({
 
               codeDiffPrev.current = codeEditorRef.current.state;
               break;
-            default:
-              break;
           }
 
           // Disable editor while streaming
@@ -77,7 +80,15 @@ export function DataStreamHandler({
           // Clear editor
           clearEditor(editorMode, textEditorRef, codeEditorRef);
 
-          setDocumentIdentifier({ id, title });
+          switch (kind) {
+            case "text":
+              setTextDocumentIdentifier({ id, title });
+              break;
+            case "code":
+              setCodeDocumentIdentifier({ id, title });
+              break;
+          }
+
           break;
 
         case "data-textDelta":
@@ -124,6 +135,10 @@ export function DataStreamHandler({
             codeDiffPrev,
             codeEditorRef,
           });
+
+          // Show diff actions
+          setShowDiffActions(true);
+
           break;
 
         case "data-fileGenerating":

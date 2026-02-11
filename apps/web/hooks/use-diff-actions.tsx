@@ -6,7 +6,7 @@ import { useCallback } from "react";
 export function useDiffActions() {
   const { editorMode } = useEditor();
   const { textEditorRef, codeEditorRef } = useRefs();
-  const { textDiffPrev, codeDiffPrev } = useDiff();
+  const { textDiffPrev, codeDiffPrev, setShowDiffActions } = useDiff();
 
   const handleTextDiffAction = useCallback(
     (acceptChanges: boolean) => {
@@ -62,13 +62,20 @@ export function useDiffActions() {
 
   const handleDiffAction = useCallback(
     (acceptChanges: boolean) => {
+      setShowDiffActions(false);
+
       if (editorMode === "text") {
         handleTextDiffAction(acceptChanges);
       } else {
         handleCodeDiffAction(acceptChanges);
       }
     },
-    [editorMode, handleTextDiffAction, handleCodeDiffAction],
+    [
+      editorMode,
+      handleTextDiffAction,
+      handleCodeDiffAction,
+      setShowDiffActions,
+    ],
   );
 
   return {

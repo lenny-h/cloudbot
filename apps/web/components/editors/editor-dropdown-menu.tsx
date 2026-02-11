@@ -20,10 +20,6 @@ import { DeleteForm } from "../custom/delete-form";
 import { RenameForm, type RenameFormData } from "../custom/rename-form";
 import { clearEditor } from "./helper-functions/clear-editor";
 
-interface EditorDropdownMenuProps {
-  clearEditor: () => void;
-}
-
 export const EditorDropdownMenu = memo(() => {
   const { sharedT } = useSharedTranslations();
   const { webT } = useWebTranslations();

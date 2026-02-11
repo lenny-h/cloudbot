@@ -18,6 +18,30 @@ export async function finishDocumentCreation({
   codeEditorRef: RefObject<CodeMirrorEditorView | null>;
 }) {
   switch (editorMode) {
+    case "text": {
+      if (!textDiffPrev.current || !textEditorRef.current) {
+        console.warn(
+          "Text editor reference is null when processing finish event.",
+        );
+        return;
+      }
+
+      const tr = textDiffPrev.current.tr;
+      tr.replaceWith(
+        0,
+        textDiffPrev.current.doc.content.size,
+        textEditorRef.current.state.doc.content,
+      );
+
+      const newState = textDiffPrev.current.apply(tr);
+      textEditorRef.current.updateState(newState);
+
+      // Re-enable editing after applying the new state
+      textEditorRef.current.setProps({ editable: () => true });
+      textDiffPrev.current = undefined;
+
+      break;
+    }
     case "code": {
       if (!codeDiffPrev.current || !codeEditorRef.current) {
         console.warn(
@@ -40,30 +64,6 @@ export async function finishDocumentCreation({
       codeEditorRef.current.setState(prevState);
       codeEditorRef.current.dispatch(transaction);
       codeDiffPrev.current = undefined;
-
-      break;
-    }
-    case "text": {
-      if (!textDiffPrev.current || !textEditorRef.current) {
-        console.warn(
-          "Text editor reference is null when processing finish event.",
-        );
-        return;
-      }
-
-      const tr = textDiffPrev.current.tr;
-      tr.replaceWith(
-        0,
-        textDiffPrev.current.doc.content.size,
-        textEditorRef.current.state.doc.content,
-      );
-
-      const newState = textDiffPrev.current.apply(tr);
-      textEditorRef.current.updateState(newState);
-
-      // Re-enable editing after applying the new state
-      textEditorRef.current.setProps({ editable: () => true });
-      textDiffPrev.current = undefined;
 
       break;
     }

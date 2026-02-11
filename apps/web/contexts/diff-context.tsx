@@ -8,11 +8,14 @@ import {
   type RefObject,
   useContext,
   useRef,
+  useState,
 } from "react";
 
 type DiffContextType = {
   textDiffPrev: RefObject<TextEditorState | undefined>;
   codeDiffPrev: RefObject<CodeEditorState | undefined>;
+  showDiffActions: boolean;
+  setShowDiffActions: React.Dispatch<React.SetStateAction<boolean>>;
   isBlocked: boolean;
 };
 
@@ -25,6 +28,7 @@ interface Props {
 export function DiffProvider({ children }: Props) {
   const textDiffPrev = useRef<TextEditorState | undefined>(undefined);
   const codeDiffPrev = useRef<CodeEditorState | undefined>(undefined);
+  const [showDiffActions, setShowDiffActions] = useState(false);
 
   const isBlocked =
     textDiffPrev.current !== undefined || codeDiffPrev.current !== undefined;
@@ -34,6 +38,8 @@ export function DiffProvider({ children }: Props) {
       value={{
         textDiffPrev,
         codeDiffPrev,
+        showDiffActions,
+        setShowDiffActions,
         isBlocked,
       }}
     >

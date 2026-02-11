@@ -5,15 +5,17 @@ import { mathMarkdownSerializer } from "../prosemirror-math/utils/text-serialize
 
 export function syncEditorContentToLocalStorage(
   editorMode: "code" | "text",
-  editorRef: React.RefObject<CodeMirrorEditorView | ProseMirrorEditorView | null>,
+  editorRef: React.RefObject<
+    CodeMirrorEditorView | ProseMirrorEditorView | null
+  >,
   setLocalStorageInput: React.Dispatch<React.SetStateAction<EditorContent>>,
 ) {
   if (!editorRef.current) return;
 
   switch (editorMode) {
-    case "code": {
-      const editor = editorRef.current as CodeMirrorEditorView;
-      const content = editor.state.doc.toString();
+    case "text": {
+      const editor = editorRef.current as ProseMirrorEditorView;
+      const content = mathMarkdownSerializer.serialize(editor.state.doc);
 
       setLocalStorageInput((prev) => ({
         ...prev,
@@ -21,9 +23,9 @@ export function syncEditorContentToLocalStorage(
       }));
       break;
     }
-    case "text": {
-      const editor = editorRef.current as ProseMirrorEditorView;
-      const content = mathMarkdownSerializer.serialize(editor.state.doc);
+    case "code": {
+      const editor = editorRef.current as CodeMirrorEditorView;
+      const content = editor.state.doc.toString();
 
       setLocalStorageInput((prev) => ({
         ...prev,

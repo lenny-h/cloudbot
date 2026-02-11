@@ -43,14 +43,18 @@ export const EditorHeader = memo(() => {
   const { webT } = useWebTranslations();
 
   const { panelRef, textEditorRef, codeEditorRef } = useRefs();
-  const { editorMode, documentIdentifier } = useEditor();
-  const { isBlocked } = useDiff();
-  const { isDiff, handleDiffAction } = useDiffActions();
+  const { editorMode, textDocumentIdentifier, codeDocumentIdentifier } =
+    useEditor();
+  const { showDiffActions, isBlocked } = useDiff();
+  const { handleDiffAction } = useDiffActions();
 
   const [_, copyToClipboard] = useCopyToClipboard();
   const [copied, setCopied] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+
+  const documentIdentifier =
+    editorMode === "text" ? textDocumentIdentifier : codeDocumentIdentifier;
 
   const saveDocument = useCallback(
     async (idToSave?: string) => {
@@ -110,7 +114,7 @@ export const EditorHeader = memo(() => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [documentIdentifier, saveDocument]);
+  }, [saveDocument]);
 
   const handleCopy = useCallback(
     (format?: "markdown" | "latex") => {
@@ -183,7 +187,7 @@ export const EditorHeader = memo(() => {
         toast.error(webT.editorHeader.failedToGeneratePdf, { id: toastId });
       }
     }
-  }, [editorMode, textEditorRef, documentIdentifier.title]);
+  }, [editorMode, textEditorRef]);
 
   return (
     <div className="bg-sidebar flex h-14 items-center gap-2 overflow-x-auto border-b px-3">
@@ -192,10 +196,12 @@ export const EditorHeader = memo(() => {
       </Button>
 
       <div className="flex-1 truncate text-left text-lg font-semibold">
-        {isDiff ? webT.editorHeader.diffView : documentIdentifier.title}
+        {showDiffActions
+          ? webT.editorHeader.diffView
+          : documentIdentifier.title}
       </div>
 
-      {isDiff ? (
+      {showDiffActions ? (
         <ButtonGroup>
           <Button onClick={() => handleDiffAction(true)}>
             {webT.editorHeader.accept}
@@ -250,9 +256,9 @@ export const EditorHeader = memo(() => {
             )}
           </ButtonGroup>
 
-          {!isDiff && <ModeSwitcher />}
+          {!showDiffActions && <ModeSwitcher />}
 
-          {!isDiff && (
+          {!showDiffActions && (
             <LoadButton type={editorMode === "pdf" ? "files" : "documents"} />
           )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { EditorHeader } from "@/components/editors/editor-header";
+import { EditorWrapper } from "@/components/editors/main/editor-wrapper";
 import { PdfHeader } from "@/components/editors/main/pdf-header";
 import { PDFViewer } from "@/components/editors/main/pdf-viewer";
 import { useEditor } from "@/contexts/editor-context";
@@ -10,7 +11,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@workspace/ui/components/resizable";
-import { EditorWrapper } from "@workspace/ui/custom-components/editor-wrapper";
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { useEffect } from "react";
 
@@ -20,7 +20,7 @@ import { useEffect } from "react";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const { panelRef, setSize } = useRefs();
-  const [editorMode] = useEditor();
+  const { editorMode } = useEditor();
 
   const isMobile = useIsMobile();
 
