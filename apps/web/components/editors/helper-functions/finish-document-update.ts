@@ -2,7 +2,7 @@ import { type EditorState as CodeMirrorEditorState } from "@codemirror/state";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorState as ProseMirrorEditorState } from "prosemirror-state";
 import { type EditorView as ProseMirrorEditorView } from "prosemirror-view";
-import { type Dispatch, type RefObject, type SetStateAction } from "react";
+import { type RefObject } from "react";
 import { createDiffViewString } from "./create-diff-view-string";
 import { updateEditorWithDispatch } from "./update-editor-with-dispatch";
 
@@ -10,18 +10,14 @@ export async function finishDocumentUpdate({
   editorMode,
   textDiffPrev,
   textEditorRef,
-  setTextDiffNext,
   codeDiffPrev,
   codeEditorRef,
-  setCodeDiffNext,
 }: {
   editorMode: "code" | "text" | "pdf";
   textDiffPrev: RefObject<ProseMirrorEditorState | undefined>;
   textEditorRef: RefObject<ProseMirrorEditorView | null>;
-  setTextDiffNext: Dispatch<SetStateAction<string>>;
   codeDiffPrev: RefObject<CodeMirrorEditorState | undefined>;
   codeEditorRef: RefObject<CodeMirrorEditorView | null>;
-  setCodeDiffNext: Dispatch<SetStateAction<string>>;
 }) {
   switch (editorMode) {
     case "code": {
@@ -37,7 +33,6 @@ export async function finishDocumentUpdate({
 
       const { diffLines } = await import("@/components/editors/jsdiff/line");
 
-      setCodeDiffNext(content);
       const codeDiffResult = diffLines(prevContent, content);
 
       updateEditorWithDispatch(
@@ -68,7 +63,6 @@ export async function finishDocumentUpdate({
         textEditorRef.current.state.doc,
       );
 
-      setTextDiffNext(content);
       const textDiffResult = diffSentences(prevContent, content);
 
       updateEditorWithDispatch(

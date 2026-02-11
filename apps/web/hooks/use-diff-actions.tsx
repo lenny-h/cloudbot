@@ -4,19 +4,9 @@ import { useRefs } from "@/contexts/refs-context";
 import { useCallback } from "react";
 
 export function useDiffActions() {
-  const { textEditorRef, codeEditorRef } = useRefs();
   const { editorMode } = useEditor();
-
-  const {
-    textDiffPrev,
-    textDiffNext,
-    setTextDiffNext,
-    codeDiffPrev,
-    codeDiffNext,
-    setCodeDiffNext,
-  } = useDiff();
-
-  const isDiff = editorMode === "text" ? textDiffNext : codeDiffNext;
+  const { textEditorRef, codeEditorRef } = useRefs();
+  const { textDiffPrev, codeDiffPrev } = useDiff();
 
   const handleTextDiffAction = useCallback(
     (acceptChanges: boolean) => {
@@ -40,9 +30,8 @@ export function useDiffActions() {
       }
 
       textDiffPrev.current = undefined;
-      setTextDiffNext("");
     },
-    [textEditorRef, textDiffPrev, textDiffNext, setTextDiffNext],
+    [textEditorRef, textDiffPrev],
   );
 
   const handleCodeDiffAction = useCallback(
@@ -56,7 +45,7 @@ export function useDiffActions() {
           changes: {
             from: 0,
             to: codeEditorRef.current.state.doc.length,
-            insert: codeDiffNext,
+            insert: codeEditorRef.current.state.doc.toString(),
           },
         });
 
@@ -67,9 +56,8 @@ export function useDiffActions() {
       }
 
       codeDiffPrev.current = undefined;
-      setCodeDiffNext("");
     },
-    [codeEditorRef, codeDiffPrev, codeDiffNext, setCodeDiffNext],
+    [codeEditorRef, codeDiffPrev],
   );
 
   const handleDiffAction = useCallback(
@@ -84,7 +72,6 @@ export function useDiffActions() {
   );
 
   return {
-    isDiff,
     handleDiffAction,
   };
 }

@@ -23,8 +23,7 @@ export function DataStreamHandler({
   const queryClient = useQueryClient();
   const { editorMode, setEditorMode, setDocumentIdentifier } = useEditor();
   const { textEditorRef, codeEditorRef } = useRefs();
-  const { textDiffPrev, setTextDiffNext, codeDiffPrev, setCodeDiffNext } =
-    useDiff();
+  const { textDiffPrev, codeDiffPrev } = useDiff();
 
   useEffect(() => {
     if (!dataStream?.length) {
@@ -122,10 +121,8 @@ export function DataStreamHandler({
             editorMode,
             textDiffPrev,
             textEditorRef,
-            setTextDiffNext,
             codeDiffPrev,
             codeEditorRef,
-            setCodeDiffNext,
           });
           break;
 
@@ -151,9 +148,7 @@ export function DataStreamHandler({
     textEditorRef,
     codeEditorRef,
     textDiffPrev,
-    setTextDiffNext,
     codeDiffPrev,
-    setCodeDiffNext,
   ]);
 
   return null;

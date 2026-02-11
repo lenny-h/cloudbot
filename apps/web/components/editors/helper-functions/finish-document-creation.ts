@@ -60,6 +60,8 @@ export async function finishDocumentCreation({
 
       const newState = textDiffPrev.current.apply(tr);
       textEditorRef.current.updateState(newState);
+
+      // Re-enable editing after applying the new state
       textEditorRef.current.setProps({ editable: () => true });
       textDiffPrev.current = undefined;
 
