@@ -37,6 +37,7 @@ import {
   mathMarkdownSerializer,
 } from "./prosemirror-math/utils/text-serializer";
 import { SaveDocumentForm } from "./save-document-form";
+import { VersionSelector } from "./version-selector";
 
 export const EditorHeader = memo(() => {
   const { sharedT } = useSharedTranslations();
@@ -260,6 +261,13 @@ export const EditorHeader = memo(() => {
 
           {!showDiffActions && (
             <LoadButton type={editorMode === "pdf" ? "files" : "documents"} />
+          )}
+
+          {!showDiffActions && documentIdentifier.id && (
+            <VersionSelector
+              documentId={documentIdentifier.id}
+              isBlocked={isBlocked}
+            />
           )}
 
           <ButtonGroup>

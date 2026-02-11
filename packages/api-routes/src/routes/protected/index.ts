@@ -16,6 +16,8 @@ import documentsDocumentIdRoute from "./documents/[documentId]/route.js";
 import documentsIlike from "./documents/ilike/route.js";
 import documentsRoute from "./documents/route.js";
 import documentsTitleRoute from "./documents/title/[documentId]/[title]/route.js";
+import documentsVersionRoute from "./documents/version/[documentId]/route.js";
+import documentsVersionsRoute from "./documents/versions/[documentId]/route.js";
 import filesFileIdRoute from "./files/[fileId]/route.js";
 import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/[fileId]/route.js";
 import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/route.js";
@@ -59,6 +61,8 @@ const protectedApiRouter = new Hono()
   .route("/documents", documentsRoute)
   .route("/documents/ilike", documentsIlike)
   .route("/documents/title/:documentId/:title", documentsTitleRoute)
+  .route("/documents/version/:documentId", documentsVersionRoute)
+  .route("/documents/versions/:documentId", documentsVersionsRoute)
   .route("/documents/:documentId", documentsDocumentIdRoute)
 
   // Files

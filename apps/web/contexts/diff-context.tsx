@@ -16,6 +16,8 @@ type DiffContextType = {
   codeDiffPrev: RefObject<CodeEditorState | undefined>;
   showDiffActions: boolean;
   setShowDiffActions: React.Dispatch<React.SetStateAction<boolean>>;
+  isViewingVersion: boolean;
+  setIsViewingVersion: React.Dispatch<React.SetStateAction<boolean>>;
   isBlocked: boolean;
 };
 
@@ -29,9 +31,12 @@ export function DiffProvider({ children }: Props) {
   const textDiffPrev = useRef<TextEditorState | undefined>(undefined);
   const codeDiffPrev = useRef<CodeEditorState | undefined>(undefined);
   const [showDiffActions, setShowDiffActions] = useState(false);
+  const [isViewingVersion, setIsViewingVersion] = useState(false);
 
   const isBlocked =
-    textDiffPrev.current !== undefined || codeDiffPrev.current !== undefined;
+    textDiffPrev.current !== undefined ||
+    codeDiffPrev.current !== undefined ||
+    isViewingVersion;
 
   return (
     <DiffContext.Provider
@@ -40,6 +45,8 @@ export function DiffProvider({ children }: Props) {
         codeDiffPrev,
         showDiffActions,
         setShowDiffActions,
+        isViewingVersion,
+        setIsViewingVersion,
         isBlocked,
       }}
     >

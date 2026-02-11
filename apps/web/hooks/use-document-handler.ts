@@ -12,9 +12,12 @@ import { toast } from "sonner";
 export function useDocumentHandler() {
   const { sharedT } = useSharedTranslations();
   const { panelRef, textEditorRef, codeEditorRef } = useRefs();
-  const { setEditorMode, setDocumentIdentifier } = useEditor();
-  const { textDiffPrev, setTextDiffNext, codeDiffPrev, setCodeDiffNext } =
-    useDiff();
+  const {
+    setEditorMode,
+    setTextDocumentIdentifier,
+    setCodeDocumentIdentifier,
+  } = useEditor();
+  const { textDiffPrev, codeDiffPrev, setShowDiffActions } = useDiff();
 
   const handleDocumentClick = ({
     documentId,
@@ -47,14 +50,14 @@ export function useDocumentHandler() {
         if (documentKind === "text") {
           updateEditorWithDispatch("text", textEditorRef, document.content);
 
-          setDocumentIdentifier({
+          setTextDocumentIdentifier({
             id: documentId,
             title: documentTitle,
           });
         } else {
           updateEditorWithDispatch("code", codeEditorRef, document.content);
 
-          setDocumentIdentifier({
+          setCodeDocumentIdentifier({
             id: documentId,
             title: documentTitle,
           });
@@ -97,7 +100,6 @@ export function useDocumentHandler() {
         if (documentKind === "text") {
           textDiffPrev.current = textEditorRef.current.state;
 
-          setTextDiffNext(newText);
           const diffResult = diffLines(newText, previousText);
 
           // Disable editing for the diff view
@@ -109,22 +111,18 @@ export function useDocumentHandler() {
             createDiffViewString(diffResult, true),
           );
 
-          setDocumentIdentifier({
+          setTextDocumentIdentifier({
             id: documentId,
             title: documentTitle,
           });
         } else {
           codeDiffPrev.current = codeEditorRef.current.state;
 
-          setCodeDiffNext(newText);
           const diffResult = diffLines(newText, previousText);
 
           // Dynamically Import StateEffect, EditorView
           const { StateEffect } = await import("@codemirror/state");
           const { EditorView } = await import("@codemirror/view");
-
-          codeDiffPrev.current = codeEditorRef.current.state;
-          setCodeDiffNext(newText);
 
           // Create a transaction that reconfigures the editable facet to false
           // This disables editing for the diff view
@@ -139,11 +137,13 @@ export function useDocumentHandler() {
             createDiffViewString(diffResult, true),
           );
 
-          setDocumentIdentifier({
+          setCodeDocumentIdentifier({
             id: documentId,
             title: documentTitle,
           });
         }
+
+        setShowDiffActions(true);
 
         resizeEditor(panelRef, false);
       })(),

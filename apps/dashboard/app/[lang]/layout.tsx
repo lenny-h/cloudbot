@@ -1,27 +1,25 @@
-import { Providers } from "@/components/custom/providers";
+import { Providers } from "@/components/landing/providers";
 import { getDictionary } from "@/lib/dictionary";
 import { roboto } from "@/lib/fonts";
 import { getDictionary as getSharedDictionary } from "@workspace/ui/lib/dictionary";
 import { type Locale, i18n } from "@workspace/ui/lib/i18n.config";
-import type { Metadata } from "next";
-import { headers } from "next/headers";
-
 import "@workspace/ui/styles/globals.css";
+import { type Metadata } from "next";
+import { headers } from "next/headers";
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
 
 export const metadata: Metadata = {
-  // metadataBase: new URL("https://nextgpt.cloud"),
-  applicationName: "NextGpt",
+  applicationName: "Cloudbot",
   title: {
-    default: "NextGpt",
-    template: "%s - NextGpt",
+    default: "Cloudbot",
+    template: "%s - Cloudbot",
   },
   description:
-    "NextGpt is a chatbot framework that can easily be hosted on Cloudflare.",
-  keywords: ["nextgpt", "chatbot"],
+    "Cloudbot is a chatbot framework that can easily be hosted on Cloudflare.",
+  keywords: ["cloudbot", "chatbot"],
   robots: {
     index: true,
     follow: true,
@@ -73,7 +71,7 @@ export default async function RootLayout({
       <body className={`${roboto.variable} antialiased`}>
         <Providers
           sharedTranslations={sharedDictionary}
-          webTranslations={dictionary}
+          dashboardTranslations={dictionary}
           locale={lang}
           attribute="class"
           defaultTheme="system"
