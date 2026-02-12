@@ -26,6 +26,19 @@ export const getModel = async (
   }
 
   switch (chatModel.provider) {
+    case "vercel-ai-gateway": {
+      const { gateway } = await import("ai");
+
+      return {
+        model: gateway(chatModel.name),
+        providerOptions: {
+          gateway: {
+            zeroDataRetention: true,
+          },
+        },
+      };
+    }
+
     case "workers-ai": {
       const { createWorkersAI } = await import("workers-ai-provider");
 
@@ -114,7 +127,7 @@ export const getModel = async (
     }
 
     case "google-vertex": {
-      const { vertex } = await import("@ai-sdk/google-vertex");
+      const { vertex } = await import("@ai-sdk/google-vertex/edge");
 
       return {
         model: vertex(chatModel.name),

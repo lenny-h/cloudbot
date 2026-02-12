@@ -19,7 +19,6 @@ import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { saveChat } from "../queries/chats.js";
 import { getLatestDocumentsByIds } from "../queries/documents.js";
 import { saveMessages } from "../queries/messages.js";
-import { StorageClient } from "../storage-client.js";
 import { type ChatRequest } from "./chat-request.js";
 
 const logger = createLogger("chat-handler");
@@ -148,14 +147,18 @@ export abstract class ChatHandler {
 
     // Process file attachments from R2
     if (attachments.length > 0) {
-      const storageClient = new StorageClient(this.env.YOUR_BUCKET);
-
       for (const attachment of attachments) {
         try {
-          const fileContent = await storageClient.downloadFile({
-            key: attachment.filename,
-          });
+          const file = await this.env.YOUR_BUCKET.get(attachment.filename);
 
+          if (!file) {
+            logger.warn("Attachment not found in R2", {
+              filename: attachment.filename,
+            });
+            continue;
+          }
+
+          const fileContent = await file.arrayBuffer();
           const base64Data = Buffer.from(fileContent).toString("base64");
           const dataUrl = `data:${attachment.mediaType};base64,${base64Data}`;
 

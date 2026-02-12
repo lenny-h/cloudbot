@@ -38,6 +38,7 @@
     "@types/react-dom": "^19.2.3",
     "@workspace/api-routes": "workspace:*",
     "@workspace/eslint-config": "workspace:*",
+    "@workspace/server": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^5.9.3",

@@ -15,6 +15,8 @@ type ExtractFromWebProps = {
 };
 
 type SearchProvider =
+  | "vercel-ai-perplexity"
+  | "vercel-ai-parallel"
   | "anthropic"
   | "azure"
   | "google"
@@ -46,6 +48,34 @@ export const extractFromWeb = ({
       let tools;
 
       switch (provider) {
+        case "vercel-ai-perplexity": {
+          const { gateway } = await import("ai");
+
+          tools = {
+            perplexity_search: gateway.tools.perplexitySearch({
+              maxResults: 8,
+              maxTokens: 50000,
+              maxTokensPerPage: 2048,
+              country: "US",
+            }),
+          };
+
+          break;
+        }
+
+        case "vercel-ai-parallel": {
+          const { gateway } = await import("ai");
+
+          tools = {
+            parallel_search: gateway.tools.parallelSearch({
+              mode: "one-shot",
+              maxResults: 8,
+            }),
+          };
+
+          break;
+        }
+
         case "anthropic": {
           const { anthropic } = await import("@ai-sdk/anthropic");
 
@@ -83,7 +113,7 @@ export const extractFromWeb = ({
         }
 
         case "google": {
-          const { vertex } = await import("@ai-sdk/google-vertex");
+          const { vertex } = await import("@ai-sdk/google-vertex/edge");
 
           tools = {
             google_search: vertex.tools.googleSearch({}),
@@ -93,7 +123,7 @@ export const extractFromWeb = ({
         }
 
         case "google-enterprise": {
-          const { vertex } = await import("@ai-sdk/google-vertex");
+          const { vertex } = await import("@ai-sdk/google-vertex/edge");
 
           tools = {
             enterprise_web_search: vertex.tools.enterpriseWebSearch({}),

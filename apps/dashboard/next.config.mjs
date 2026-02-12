@@ -15,7 +15,7 @@ const nextConfig = {
     ];
   },
   output: "standalone",
-  transpilePackages: ["@workspace/ui", "@workspace/api-routes"],
+  transpilePackages: ["@workspace/ui", "@workspace/server", "@workspace/api-routes"],
 };
 
 export default nextConfig;

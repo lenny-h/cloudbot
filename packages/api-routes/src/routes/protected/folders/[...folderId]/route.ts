@@ -1,7 +1,6 @@
 import * as z from "zod";
 
 import { deleteCourse } from "@workspace/api-routes/lib/queries/folders.js";
-import { StorageClient } from "@workspace/api-routes/lib/storage-client.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -58,8 +57,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       return c.json({ name: deletedCourseName });
     }
 
-    const storageClient = new StorageClient(c.env.YOUR_BUCKET);
-
     for (const file of courseFiles) {
       await db.delete(files).where(eq(files.id, file.id));
 
@@ -68,9 +65,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
           ? `${user.id}/${folderId}/${file.id}`
           : `${file.visibility}/${folderId}/${file.id}`;
 
-      await storageClient.deleteFile({
-        key,
-      });
+      await c.env.YOUR_BUCKET.delete(key);
     }
 
     const deletedCourseName = await deleteCourse({ folderId });

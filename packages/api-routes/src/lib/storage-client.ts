@@ -4,7 +4,6 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { type R2Bucket } from "@cloudflare/workers-types";
 
 /**
  * Cloudflare R2 Storage client.
@@ -14,28 +13,6 @@ import { type R2Bucket } from "@cloudflare/workers-types";
  *   since R2 bindings do not support presigning.
  */
 export class StorageClient {
-  private bucket: R2Bucket;
-
-  constructor(bucket: R2Bucket) {
-    this.bucket = bucket;
-  }
-
-  // ── Direct binding operations ──────────────────────────────────────
-
-  async downloadFile({ key }: { key: string }): Promise<ArrayBuffer> {
-    const object = await this.bucket.get(key);
-
-    if (!object) {
-      throw new Error(`File not found: ${key}`);
-    }
-
-    return object.arrayBuffer();
-  }
-
-  async deleteFile({ key }: { key: string }): Promise<void> {
-    await this.bucket.delete(key);
-  }
-
   // ── Signed URL operations (S3-compatible API) ──────────────────────
 
   private static s3Client: S3Client | null = null;

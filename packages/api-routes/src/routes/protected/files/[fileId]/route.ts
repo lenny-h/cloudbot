@@ -1,6 +1,5 @@
 import * as z from "zod";
 
-import { StorageClient } from "@workspace/api-routes/lib/storage-client.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -42,11 +41,9 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    const storageClient = new StorageClient(c.env.YOUR_BUCKET);
-
-    await storageClient.deleteFile({
-      key: `${file.visibility}/${file.folderId}/${file.id}`,
-    });
+    await c.env.YOUR_BUCKET.delete(
+      `${file.visibility}/${file.folderId}/${file.id}`,
+    );
 
     return c.json({ name: file.name });
   },
