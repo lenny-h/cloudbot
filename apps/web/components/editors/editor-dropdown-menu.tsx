@@ -42,19 +42,12 @@ export const EditorDropdownMenu = memo(() => {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  let documentIdentifier;
-  let setDocumentIdentifier;
-
-  switch (editorMode) {
-    case "text":
-      documentIdentifier = textDocumentIdentifier;
-      setDocumentIdentifier = setTextDocumentIdentifier;
-      break;
-    default:
-      documentIdentifier = codeDocumentIdentifier;
-      setDocumentIdentifier = setCodeDocumentIdentifier;
-      break;
-  }
+  const documentIdentifier =
+    editorMode === "text" ? textDocumentIdentifier : codeDocumentIdentifier;
+  const setDocumentIdentifier =
+    editorMode === "text"
+      ? setTextDocumentIdentifier
+      : setCodeDocumentIdentifier;
 
   const onSubmit = async (values: RenameFormData) => {
     if (!documentIdentifier.id) {
