@@ -23,7 +23,7 @@ import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/rout
 import filesIlike from "./files/ilike/route.js";
 import filesRoute from "./files/route.js";
 import filterRoute from "./filter/[chatId]/route.js";
-import foldersFolderIdRoute from "./folders/[...folderId]/route.js";
+import foldersDeleteRoute from "./folders/[...folderId]/route.js";
 import foldersIlike from "./folders/ilike/route.js";
 import foldersRequestAccessRoute from "./folders/request-access/route.js";
 import foldersRoute from "./folders/route.js";
@@ -82,7 +82,7 @@ const protectedApiRouter = new Hono()
   .route("/folders/ilike", foldersIlike)
   .route("/folders/request-access", foldersRequestAccessRoute)
   .route("/folders/validate-access", foldersValidateAccessRoute)
-  .route("/folders/*", foldersFolderIdRoute)
+  .route("/folders/:folderId", foldersDeleteRoute)
 
   // Messages
   .route("/messages/delete-trailing/:messageId", trailingMessagesRoute)

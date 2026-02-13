@@ -1,6 +1,7 @@
 "use client";
 
 import { useWebTranslations } from "@/contexts/web-translations";
+import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -8,7 +9,6 @@ import { useSharedTranslations } from "@workspace/ui/contexts/shared-translation
 import { useInfiniteQueryWithRPC } from "@workspace/ui/hooks/use-infinite-query";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { cn } from "@workspace/ui/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   FolderOpen,
   Globe,
@@ -32,17 +32,20 @@ const visibilityConfig = {
   private: {
     icon: Lock,
     color: "text-orange-500",
-    badgeClass: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
+    badgeClass:
+      "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
   },
   public: {
     icon: Globe,
     color: "text-green-500",
-    badgeClass: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+    badgeClass:
+      "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
   },
   protected: {
     icon: ShieldCheck,
     color: "text-blue-500",
-    badgeClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    badgeClass:
+      "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
   },
 };
 
@@ -76,14 +79,14 @@ export const FoldersPage = memo(() => {
 
   const handleDelete = async (folder: Folder) => {
     setDeletingId(folder.id);
-    const deletePromise = fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/protected/folders/${folder.id}`,
-      { method: "DELETE", credentials: "include" },
+
+    const deletePromise = apiFetcher(
+      (client) =>
+        client.folders[":folderId"].$delete({
+          param: { folderId: folder.id },
+        }),
+      sharedT.apiCodes,
     )
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to delete folder");
-        return res.json();
-      })
       .then(() => {
         queryClient.invalidateQueries({ queryKey: ["managed-folders"] });
         queryClient.invalidateQueries({ queryKey: ["upload-folders"] });
@@ -120,10 +123,7 @@ export const FoldersPage = memo(() => {
       {isPending ? (
         <div className="grid gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              className="bg-muted/50 h-16 rounded-lg border"
-            />
+            <Skeleton key={i} className="bg-muted/50 h-16 rounded-lg border" />
           ))}
         </div>
       ) : error || !folders ? (
@@ -165,7 +165,10 @@ export const FoldersPage = memo(() => {
                 </div>
                 <Badge
                   variant="outline"
-                  className={cn("shrink-0 text-xs capitalize", config.badgeClass)}
+                  className={cn(
+                    "shrink-0 text-xs capitalize",
+                    config.badgeClass,
+                  )}
                 >
                   {folder.visibility}
                 </Badge>

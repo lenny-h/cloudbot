@@ -1,5 +1,7 @@
 import * as z from "zod";
 
+import { itemsPerPageSchema } from "@workspace/api-routes/schemas/items-per-page-schema.js";
+import { pageNumberSchema } from "@workspace/api-routes/schemas/page-number-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { encryptApiKey } from "@workspace/api-routes/utils/encryption.js";
@@ -9,8 +11,6 @@ import { and, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
-import { itemsPerPageSchema } from "../../../schemas/items-per-page-schema.js";
-import { pageNumberSchema } from "../../../schemas/page-number-schema.js";
 import { createCourseSchema } from "./schema.js";
 
 const querySchema = z
@@ -74,23 +74,25 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
           ? await encryptApiKey(values.password, process.env.ENCRYPTION_KEY!)
           : undefined;
 
-      await db().transaction(async (tx) => {
-        const folderId = await db().insert(folders).values({
+      // Insert the folder
+      const [insertedFolder] = await db()
+        .insert(folders)
+        .values({
           name: values.name,
           owner: user.id,
           description: values.description,
           visibility: values.visibility,
           encryptedKey,
-        });
+        })
+        .returning({ id: folders.id });
 
-        // If the folder is protected, add the creator as a member
-        if (values.visibility === "protected") {
-          await tx.insert(courseUsers).values({
-            folderId,
-            userId: user.id,
-          });
-        }
-      });
+      // If the folder is protected, add the creator as a member
+      if (values.visibility === "protected") {
+        await db().insert(courseUsers).values({
+          folderId: insertedFolder.id,
+          userId: user.id,
+        });
+      }
 
       return c.json({ message: "Folder created" });
     },

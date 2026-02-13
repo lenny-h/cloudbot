@@ -1,5 +1,5 @@
 import { FoldersPage } from "@/components/custom/folders-page";
 
-export default function FoldersRoute() {
+export default function FolderPage() {
   return <FoldersPage />;
 }
