@@ -14,11 +14,11 @@
 /coverage
 
 # next.js
-/.next/
-/.open-next/
-/.turbo/
-/.wrangler/
-/out/
+.next/
+.open-next/
+.turbo/
+.wrangler/
+out/
 
 # production
 /build

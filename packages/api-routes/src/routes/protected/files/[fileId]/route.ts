@@ -41,7 +41,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    await c.env.YOUR_BUCKET.delete(
+    await c.env.TEST_BUCKET.delete(
       `${file.visibility}/${file.folderId}/${file.id}`,
     );
 

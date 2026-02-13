@@ -149,7 +149,7 @@ export abstract class ChatHandler {
     if (attachments.length > 0) {
       for (const attachment of attachments) {
         try {
-          const file = await this.env.YOUR_BUCKET.get(attachment.filename);
+          const file = await this.env.TEST_BUCKET.get(attachment.filename);
 
           if (!file) {
             logger.warn("Attachment not found in R2", {

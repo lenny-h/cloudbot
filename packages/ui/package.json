@@ -15,7 +15,7 @@
     "better-auth": "1.4.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "hono": "^4.11.7",
+    "hono": "^4.11.8",
     "lucide-react": "^0.563.0",
     "negotiator": "^1.0.0",
     "next": "16.1.6",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
-    "@turbo/gen": "^2.8.3",
+    "@turbo/gen": "2.8.3",
     "@types/negotiator": "^0.6.4",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.13",

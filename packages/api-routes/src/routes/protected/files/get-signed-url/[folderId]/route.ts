@@ -12,7 +12,7 @@ import {
   files,
   folders,
 } from "@workspace/server/drizzle/schema/schema.js";
-import { createLogger } from "@workspace/server/logger.js";
+import { createLogger } from "@workspace/server/logger/logger.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

@@ -1,4 +1,3 @@
-import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import {
   extractReasoningMiddleware,
   wrapLanguageModel,
@@ -78,12 +77,7 @@ export const getModel = async (
     }
 
     case "amazon-bedrock": {
-      const { createAmazonBedrock } = await import("@ai-sdk/amazon-bedrock");
-
-      const bedrock = createAmazonBedrock({
-        region: process.env.AWS_REGION,
-        credentialProvider: fromNodeProviderChain(),
-      });
+      const { bedrock } = await import("@ai-sdk/amazon-bedrock");
 
       const bedrockModel = bedrock(chatModel.name);
 

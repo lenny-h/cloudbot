@@ -1,4 +1,3 @@
-import "@workspace/server/types/hono.js";
 import { Hono } from "hono";
 
 // Import handlers

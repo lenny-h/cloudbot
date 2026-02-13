@@ -1,0 +1,25 @@
+name: cloudbot
+
+services:
+  # Keycloak for testing SSO integration
+  # Set valid redirect URI in Keycloak to http://localhost:3002/api/auth/sso/callback/keycloak-test
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - "8080:8080"
+    networks:
+      - default_network
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
+
+networks:
+  default_network:
+    driver: bridge

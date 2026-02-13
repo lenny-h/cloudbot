@@ -7,15 +7,15 @@
     ],
     "r2_buckets": [
         {
-            "binding": "YOUR_BUCKET",
-            "bucket_name": "your-bucket"
+            "binding": "TEST_BUCKET",
+            "bucket_name": "test-bucket"
         }
     ],
     "d1_databases": [
         {
             "binding": "BINDING_NAME",
-            "database_name": "YOUR_DB_NAME",
-            "database_id": "YOUR_DB_ID",
+            "database_name": "TEST_DB_NAME",
+            "database_id": "TEST_DB_ID",
             "migrations_dir": "./../packages/server/src/drizzle/migrations"
         }
     ],

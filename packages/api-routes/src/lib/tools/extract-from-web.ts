@@ -56,7 +56,7 @@ export const extractFromWeb = ({
               maxResults: 8,
               maxTokens: 50000,
               maxTokensPerPage: 2048,
-              country: "US",
+              country: userLocation.country,
             }),
           };
 
@@ -191,7 +191,7 @@ export const extractFromWeb = ({
           "Extract the following information from the web: " +
           informationToExtract,
         model: config.model,
-        tools,
+        tools: tools as any,
       });
 
       const sources =
