@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronsUpDown, LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { memo } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,12 +56,9 @@ export const NavUser = memo(() => {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={undefined} />
-                <AvatarFallback className="rounded-lg">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-muted-foreground">
+                {initials}
+              </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   {username ?? sharedT.navUser.noUsername}
@@ -80,12 +76,9 @@ export const NavUser = memo(() => {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={undefined} />
-                  <AvatarFallback className="rounded-lg">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-muted-foreground">
+                  {initials}
+                </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
                     {username ?? sharedT.navUser.unnamed}

@@ -30,7 +30,7 @@ export const AddContext = memo(({ type }: AddContextProps) => {
   const [inputValue, setInputValue] = useState("");
   const [addPromptFormOpen, setAddPromptFormOpen] = useState(false);
 
-  const shortcut = type === "files" ? "j" : type === "documents" ? "k" : "l";
+  const shortcut = type === "prompts" ? "m" : type === "files" ? "j" : "k";
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {

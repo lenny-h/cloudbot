@@ -39,6 +39,7 @@ export const EditorDropdownMenu = memo(() => {
     text: false,
   });
 
+  const [open, setOpen] = useState(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -123,7 +124,7 @@ export const EditorDropdownMenu = memo(() => {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
             <MoreVertical />
@@ -134,14 +135,20 @@ export const EditorDropdownMenu = memo(() => {
             <>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => setRenameDialogOpen(true)}
+                onClick={() => {
+                  setRenameDialogOpen(true);
+                  setOpen(false);
+                }}
               >
                 <Pencil className="mr-2 size-4" />
                 <span>{webT.editorDropdownMenu.rename}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer text-red-500 focus:text-red-400"
-                onClick={() => setDeleteDialogOpen(true)}
+                onClick={() => {
+                  setDeleteDialogOpen(true);
+                  setOpen(false);
+                }}
               >
                 <Trash2 className="mr-2 size-4" />
                 <span>{webT.editorDropdownMenu.delete}</span>
@@ -156,13 +163,23 @@ export const EditorDropdownMenu = memo(() => {
                 title: "",
               });
               clearEditor(editorMode, textEditorRef, codeEditorRef);
+              setOpen(false);
             }}
           >
             <FilePlus className="mr-2 size-4" />
             <span>{webT.editorDropdownMenu.new}</span>
           </DropdownMenuItem>
           {editorMode === "text" && (
-            <DropdownMenuItem className="flex cursor-pointer justify-between">
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setAutocomplete((prev) => ({
+                  ...prev,
+                  text: !prev.text,
+                }));
+              }}
+              className="flex cursor-pointer justify-between"
+            >
               <span>{webT.editorDropdownMenu.autocomplete}</span>
               <Switch
                 className="cursor-pointer"

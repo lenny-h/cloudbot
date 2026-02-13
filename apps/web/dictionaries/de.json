@@ -74,7 +74,7 @@
         "delete": "Löschen",
         "rename": "Umbenennen",
         "new": "Neu",
-        "autocomplete": "Autovervollständigung"
+        "autocomplete": "AI-Vorschläge"
     },
     "editorHeader": {
         "diffView": "Diff-Ansicht",
