@@ -42,7 +42,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         and(eq(folders.visibility, "private"), eq(folders.owner, user.id)),
       );
 
-      const result = await db
+      const result = await db()
         .select({
           id: folders.id,
           name: folders.name,
@@ -75,8 +75,8 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
           ? await encryptApiKey(values.password, process.env.ENCRYPTION_KEY!)
           : undefined;
 
-      await db.transaction(async (tx) => {
-        const folderId = await db.insert(folders).values({
+      await db().transaction(async (tx) => {
+        const folderId = await db().insert(folders).values({
           id: generateUUID(),
           name: values.name,
           owner: user.id,

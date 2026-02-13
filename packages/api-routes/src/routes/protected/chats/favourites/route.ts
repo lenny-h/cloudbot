@@ -31,7 +31,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const { pageNumber, itemsPerPage } = c.req.valid("query");
     const user = c.get("user");
 
-    const userChats = await db
+    const userChats = await db()
       .select()
       .from(chats)
       .where(and(eq(chats.userId, user.id), eq(chats.isFavourite, true)))

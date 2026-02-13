@@ -42,7 +42,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { pageNumber, itemsPerPage } = c.req.valid("query");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .select({
           id: documents.id,
           title: documents.title,
@@ -73,7 +73,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { title, content, kind } = c.req.valid("json");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .insert(documents)
         .values({
           id: generateUUID(),

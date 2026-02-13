@@ -5,7 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 
 export async function getMessageById({ messageId }: { messageId: string }) {
-  const result = await db
+  const result = await db()
     .select({ chatId: messages.chatId, createdAt: messages.createdAt })
     .from(messages)
     .where(eq(messages.id, messageId));
@@ -24,7 +24,7 @@ export async function getMessagesByChatId({
   chatId: string;
   messageCount: number;
 }) {
-  return (await db
+  return (await db()
     .select()
     .from(messages)
     .where(eq(messages.chatId, chatId))
@@ -44,7 +44,7 @@ export async function saveMessages({
     ...msg,
   }));
 
-  return await db
+  return await db()
     .insert(messages)
     .values(messagesToInsert)
     .onConflictDoUpdate({
@@ -61,7 +61,7 @@ export async function saveMessages({
 
 export async function deleteLastMessagePair({ chatId }: { chatId: string }) {
   // Delete the last two messages in the chat
-  const lastTwoMessages = await db
+  const lastTwoMessages = await db()
     .select()
     .from(messages)
     .where(eq(messages.chatId, chatId))
@@ -70,5 +70,5 @@ export async function deleteLastMessagePair({ chatId }: { chatId: string }) {
 
   const messageIdsToDelete = lastTwoMessages.map((msg) => msg.id);
 
-  await db.delete(messages).where(inArray(messages.id, messageIdsToDelete));
+  await db().delete(messages).where(inArray(messages.id, messageIdsToDelete));
 }

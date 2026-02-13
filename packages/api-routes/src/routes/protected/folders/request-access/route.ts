@@ -23,7 +23,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     const user = c.get("user");
 
     // Get folder details
-    const result = await db
+    const result = await db()
       .select({
         visibility: folders.visibility,
         encryptedKey: folders.encryptedKey,
@@ -49,7 +49,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     }
 
     // Check if user already has access
-    const existingAccess = await db
+    const existingAccess = await db()
       .select()
       .from(courseUsers)
       .where(
@@ -83,7 +83,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     }
 
     // Grant access
-    await db.insert(courseUsers).values({
+    await db().insert(courseUsers).values({
       folderId,
       userId: user.id,
     });

@@ -37,7 +37,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const user = c.get("user");
 
     // Verify document ownership
-    const document = await db
+    const document = await db()
       .select({ id: documents.id })
       .from(documents)
       .where(and(eq(documents.id, documentId), eq(documents.owner, user.id)))
@@ -48,7 +48,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     }
 
     // Get all diffs ordered by creation date (newest first)
-    const allDiffs = await db
+    const allDiffs = await db()
       .select({
         id: diffs.id,
       })
@@ -61,7 +61,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    const requestedDiff = await db
+    const requestedDiff = await db()
       .select({
         previousText: diffs.previousText,
         createdAt: diffs.createdAt,

@@ -37,7 +37,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const { folderIds, pageNumber, itemsPerPage } = c.req.valid("query");
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .select()
       .from(files)
       .where(inArray(files.folderId, folderIds))

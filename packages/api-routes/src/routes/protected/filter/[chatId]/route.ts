@@ -34,7 +34,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const user = c.get("user");
 
     // Check if the chat exists and belongs to the user
-    const chat = await db
+    const chat = await db()
       .select({ id: chats.id })
       .from(chats)
       .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)))
@@ -45,7 +45,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     }
 
     // Fetch the last user message for the given chatId
-    const lastMessageResult = await db
+    const lastMessageResult = await db()
       .select({
         metadata: messages.metadata,
       })
@@ -72,7 +72,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       await Promise.all([
         // Fetch prompt details if prompts exist
         contextFilter.prompts.length > 0
-          ? db
+          ? db()
               .select({
                 id: prompts.id,
                 name: prompts.name,
@@ -90,7 +90,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
           : Promise.resolve([]),
         // Fetch folder details if folders exist
         contextFilter.folders.length > 0
-          ? db
+          ? db()
               .select({
                 id: folders.id,
                 name: folders.name,
@@ -107,7 +107,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
           : Promise.resolve([]),
         // Fetch file details if files exist
         contextFilter.files.length > 0
-          ? db
+          ? db()
               .select({
                 id: files.id,
                 name: files.name,
@@ -124,7 +124,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
           : Promise.resolve([]),
         // Fetch document details if documents exist
         contextFilter.documents.length > 0
-          ? db
+          ? db()
               .select({
                 id: documents.id,
                 title: documents.title,

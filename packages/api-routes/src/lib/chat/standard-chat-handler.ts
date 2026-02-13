@@ -101,7 +101,7 @@ export class StandardChatHandler extends ChatHandler {
       // Check files if present
       if (contextFilter.files && contextFilter.files.length > 0) {
         const fileIds = contextFilter.files.map((f) => f.id);
-        const requestedFiles = await db
+        const requestedFiles = await db()
           .select({
             id: files.id,
             visibility: files.visibility,
@@ -130,7 +130,7 @@ export class StandardChatHandler extends ChatHandler {
       // Check folders only if no files are present
       else if (contextFilter.folders && contextFilter.folders.length > 0) {
         const folderIds = contextFilter.folders.map((c) => c.id);
-        const requestedCourses = await db
+        const requestedCourses = await db()
           .select({
             id: folders.id,
             visibility: folders.visibility,

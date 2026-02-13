@@ -31,7 +31,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    const result = await db
+    const result = await db()
       .select({
         id: messages.id,
         role: messages.role,

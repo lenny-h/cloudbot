@@ -30,7 +30,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().patch(
     const { documentId, title } = c.req.valid("param");
     const user = c.get("user");
 
-    await db
+    await db()
       .update(documents)
       .set({ title })
       .where(and(eq(documents.id, documentId), eq(documents.owner, user.id)));

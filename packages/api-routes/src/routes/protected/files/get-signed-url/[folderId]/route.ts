@@ -53,7 +53,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     const user = c.get("user");
 
     // Fetch the folder to check permissions and get visibility
-    const folder = await db
+    const folder = await db()
       .select()
       .from(folders)
       .where(eq(folders.id, folderId))
@@ -72,7 +72,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       hasAccess = true;
     } else if (folder.visibility === "protected") {
       // Protected folders require user to be in courseUsers or be the owner
-      const access = await db
+      const access = await db()
         .select()
         .from(courseUsers)
         .where(
@@ -95,7 +95,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
 
     // Create file entry with folder's visibility
     const fileId = generateUUID();
-    await db.insert(files).values({
+    await db().insert(files).values({
       id: fileId,
       folderId,
       name: filename,
@@ -123,7 +123,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       });
     } catch (error) {
       // Rollback: delete the file entry if signed URL generation fails
-      await db.delete(files).where(eq(files.id, fileId));
+      await db().delete(files).where(eq(files.id, fileId));
       logger.error("Failed to generate signed URL, file entry rolled back:", {
         error,
         fileId,

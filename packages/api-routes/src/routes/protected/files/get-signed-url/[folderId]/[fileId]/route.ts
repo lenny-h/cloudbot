@@ -32,7 +32,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const user = c.get("user");
 
     // Fetch the folder to check permissions
-    const folder = await db
+    const folder = await db()
       .select()
       .from(folders)
       .where(eq(folders.id, folderId))
@@ -51,7 +51,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       hasAccess = true;
     } else if (folder.visibility === "protected") {
       // Protected folders require user to be in courseUsers or be the owner
-      const access = await db
+      const access = await db()
         .select()
         .from(courseUsers)
         .where(

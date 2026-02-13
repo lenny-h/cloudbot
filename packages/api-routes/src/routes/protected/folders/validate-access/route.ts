@@ -22,7 +22,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     const user = c.get("user");
 
     // Check if folder exists and get its visibility
-    const result = await db
+    const result = await db()
       .select({
         visibility: folders.visibility,
         owner: folders.owner,
@@ -48,7 +48,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
 
     // For protected folders, check courseUsers table
     if (folder.visibility === "protected") {
-      const access = await db
+      const access = await db()
         .select()
         .from(courseUsers)
         .where(

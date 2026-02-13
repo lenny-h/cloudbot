@@ -25,7 +25,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
     const { fileId } = c.req.valid("param");
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .delete(files)
       .where(and(eq(files.id, fileId), eq(files.owner, user.id)))
       .returning({

@@ -46,7 +46,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { id, fav: isFavourite } = c.req.valid("query");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .update(chats)
         .set({ isFavourite })
         .where(and(eq(chats.id, id), eq(chats.userId, user.id)))

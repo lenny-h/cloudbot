@@ -5,7 +5,7 @@ import { type User } from "../drizzle/schema.js";
 
 export const adminMiddleware = async (c: Context, next: Next) => {
   try {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    const session = await auth().api.getSession({ headers: c.req.raw.headers });
 
     if (!session || !session.user) {
       throw new HTTPException(401, { message: "UNAUTHORIZED" });

@@ -26,7 +26,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
     const { folderId } = c.req.valid("param");
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .select({
         visibility: folders.visibility,
       })
@@ -39,7 +39,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    const courseFiles = await db
+    const courseFiles = await db()
       .select({
         id: files.id,
         visibility: files.visibility,
@@ -58,7 +58,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
     }
 
     for (const file of courseFiles) {
-      await db.delete(files).where(eq(files.id, file.id));
+      await db().delete(files).where(eq(files.id, file.id));
 
       const key =
         file.visibility === "private"

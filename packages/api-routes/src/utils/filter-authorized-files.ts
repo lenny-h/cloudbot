@@ -28,7 +28,7 @@ export async function filterAuthorizedFiles(
 
       // For protected files, check if user has access via courseUsers
       if (file.visibility === "protected") {
-        const access = await db
+        const access = await db()
           .select()
           .from(courseUsers)
           .where(

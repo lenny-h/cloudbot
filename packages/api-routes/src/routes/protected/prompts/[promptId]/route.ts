@@ -35,7 +35,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { content } = c.req.valid("json");
       const user = c.get("user");
 
-      await db
+      await db()
         .update(prompts)
         .set({ content })
         .where(and(eq(prompts.id, promptId), eq(prompts.userId, user.id)));
@@ -56,7 +56,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { promptId } = c.req.valid("param");
       const user = c.get("user");
 
-      const deletedPrompt = await db
+      const deletedPrompt = await db()
         .delete(prompts)
         .where(and(eq(prompts.id, promptId), eq(prompts.userId, user.id)))
         .returning({ name: prompts.name });

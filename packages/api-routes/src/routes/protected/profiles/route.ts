@@ -12,7 +12,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .get("/", async (c) => {
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .select({
         name: profiles.name,
         username: profiles.username,
@@ -40,7 +40,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { name, username } = c.req.valid("json");
       const user = c.get("user");
 
-      await db
+      await db()
         .update(profiles)
         .set({
           name,

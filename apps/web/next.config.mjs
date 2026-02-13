@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  transpilePackages: ["@workspace/ui", "@workspace/server", "@workspace/api-routes"],
+  transpilePackages: ["@workspace/ui"],
 };
 
 export default nextConfig;

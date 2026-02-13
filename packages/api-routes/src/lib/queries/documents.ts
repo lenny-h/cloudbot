@@ -5,7 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import { type ArtifactKind } from "../../schemas/artifact-schema.js";
 
 export async function getDocumentById({ id }: { id: string }) {
-  const result = await db
+  const result = await db()
     .select()
     .from(documents)
     .where(eq(documents.id, id))
@@ -30,7 +30,7 @@ export async function saveDocument({
   kind: ArtifactKind;
   userId: string;
 }) {
-  await db.insert(documents).values({
+  await db().insert(documents).values({
     id,
     title,
     content,
@@ -54,7 +54,7 @@ export async function saveDiff({
   kind: ArtifactKind;
   userId: string;
 }) {
-  await db.insert(diffs).values({
+  await db().insert(diffs).values({
     id,
     documentId,
     previousText,
@@ -77,7 +77,7 @@ export async function getLatestDocumentsByIds({
 }) {
   if (ids.length === 0) return [];
 
-  const results = await db
+  const results = await db()
     .select()
     .from(documents)
     .where(and(inArray(documents.id, ids), eq(documents.owner, userId)))

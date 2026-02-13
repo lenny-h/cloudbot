@@ -25,7 +25,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
     const { messageId } = c.req.valid("param");
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .select({
         chatId: messages.chatId,
         createdAt: messages.createdAt,
@@ -41,7 +41,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    await db
+    await db()
       .delete(messages)
       .where(
         and(

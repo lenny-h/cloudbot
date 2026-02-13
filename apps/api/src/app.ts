@@ -42,7 +42,7 @@ const app = new Hono()
 
   // Authentication routes
   .on(["POST", "GET"], "/api/auth/*", (c) => {
-    return auth.handler(c.req.raw);
+    return auth().handler(c.req.raw);
   })
 
   // Authentication middleware for admin routes

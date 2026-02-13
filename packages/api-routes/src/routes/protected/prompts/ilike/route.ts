@@ -25,7 +25,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const { prefix } = c.req.valid("query");
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .select({
         id: prompts.id,
         name: prompts.name,

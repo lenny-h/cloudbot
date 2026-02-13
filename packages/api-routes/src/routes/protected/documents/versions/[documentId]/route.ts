@@ -40,7 +40,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     //   }
 
     // Count the number of diffs (previous versions)
-    const result = await db
+    const result = await db()
       .select({ count: count() })
       .from(diffs)
       .where(eq(diffs.documentId, documentId));

@@ -109,7 +109,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     }
 
     // Get users from Better Auth
-    const result = await auth.api.listUsers({
+    const result = await auth().api.listUsers({
       headers: c.req.raw.headers,
       query,
     });
@@ -119,7 +119,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     }
 
     // Query separate tables to get accounts information
-    const accountsQuery = await db
+    const accountsQuery = await db()
       .select({
         userId: accounts.userId,
         providerId: accounts.providerId,
@@ -127,7 +127,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       .from(accounts);
 
     // Query session information
-    const sessionsQuery = await db
+    const sessionsQuery = await db()
       .select({
         userId: sessions.userId,
         createdAt: sessions.createdAt,

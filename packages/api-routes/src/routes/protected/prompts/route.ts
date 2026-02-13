@@ -13,7 +13,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .get("/", async (c) => {
     const user = c.get("user");
 
-    const result = await db
+    const result = await db()
       .select({
         id: prompts.id,
         name: prompts.name,
@@ -37,7 +37,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { name, content } = c.req.valid("json");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .select({ count: count() })
         .from(prompts)
         .where(eq(prompts.userId, user.id));
@@ -48,7 +48,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         throw new HTTPException(403, { message: "PROMPT_LIMIT_REACHED" });
       }
 
-      await db.insert(prompts).values({
+      await db().insert(prompts).values({
         id: generateUUID(),
         userId: user.id,
         name,

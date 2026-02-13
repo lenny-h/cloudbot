@@ -11,7 +11,7 @@ export async function getPromptsByIds({
 }) {
   if (ids.length === 0) return [];
 
-  return await db
+  return await db()
     .select()
     .from(prompts)
     .where(and(inArray(prompts.id, ids), eq(prompts.userId, userId)));

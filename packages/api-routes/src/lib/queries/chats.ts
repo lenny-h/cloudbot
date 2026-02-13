@@ -3,7 +3,7 @@ import { chats } from "@workspace/server/drizzle/schema.js";
 import { and, desc, eq, lt } from "drizzle-orm";
 
 export async function getChatById({ id }: { id: string }) {
-  const result = await db
+  const result = await db()
     .select({
       userId: chats.userId,
       title: chats.title,
@@ -20,7 +20,7 @@ export async function getChatById({ id }: { id: string }) {
 }
 
 export async function deleteChatById({ id }: { id: string }) {
-  await db.delete(chats).where(eq(chats.id, id));
+  await db().delete(chats).where(eq(chats.id, id));
 }
 
 export async function getFavouriteChatsByUserId({
@@ -38,7 +38,7 @@ export async function getFavouriteChatsByUserId({
       )
     : and(eq(chats.userId, id), eq(chats.isFavourite, true));
 
-  const query = db
+  const query = db()
     .select()
     .from(chats)
     .where(baseWhere)
@@ -57,7 +57,7 @@ export async function saveChat({
   userId: string;
   title: string;
 }) {
-  const result = await db
+  const result = await db()
     .insert(chats)
     .values({
       id,

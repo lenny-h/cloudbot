@@ -31,7 +31,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { documentId } = c.req.valid("param");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .select({
           content: documents.content,
         })
@@ -67,7 +67,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { content } = c.req.valid("json");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .update(documents)
         .set({ content })
         .where(and(eq(documents.id, documentId), eq(documents.owner, user.id)))
@@ -93,7 +93,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { documentId } = c.req.valid("param");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .delete(documents)
         .where(and(eq(documents.id, documentId), eq(documents.owner, user.id)))
         .returning({ id: documents.id });

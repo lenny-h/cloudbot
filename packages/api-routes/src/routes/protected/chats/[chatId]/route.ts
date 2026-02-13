@@ -26,7 +26,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { chatId } = c.req.valid("param");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .select()
         .from(chats)
         .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)))
@@ -52,7 +52,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { chatId } = c.req.valid("param");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .delete(chats)
         .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)));
 

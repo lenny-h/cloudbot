@@ -28,7 +28,7 @@ export async function filterAuthorizedCourses(
 
       // For protected folders, check if user has access via courseUsers
       if (folder.visibility === "protected") {
-        const access = await db
+        const access = await db()
           .select()
           .from(courseUsers)
           .where(

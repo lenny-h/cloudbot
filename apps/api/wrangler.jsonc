@@ -13,7 +13,7 @@
     ],
     "d1_databases": [
         {
-            "binding": "BINDING_NAME",
+            "binding": "YOUR_D1_DATABASE",
             "database_name": "TEST_DB_NAME",
             "database_id": "TEST_DB_ID",
             "migrations_dir": "./../packages/server/src/drizzle/migrations"

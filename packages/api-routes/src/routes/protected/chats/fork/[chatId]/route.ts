@@ -54,7 +54,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       // Get the last MAX_FORKED_MESSAGES messages up to and including the target message
       // Order by DESC to get the most recent ones, then reverse for chronological order
       // We use a subquery for the timestamp to avoid precision loss with JS Date
-      const recentMessages = await db
+      const recentMessages = await db()
         .select({
           role: messages.role,
           parts: messages.parts,
@@ -78,7 +78,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     } else {
       // Get the last MAX_FORKED_MESSAGES messages
       // Order by DESC to get the most recent ones, then reverse for chronological order
-      const recentMessages = await db
+      const recentMessages = await db()
         .select({
           role: messages.role,
           parts: messages.parts,
@@ -94,7 +94,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     }
 
     // Create new chat with "(Fork)" suffix
-    const newChatResult = await db
+    const newChatResult = await db()
       .insert(chats)
       .values({
         id: generateUUID(),
@@ -112,7 +112,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     // Copy messages to new chat
     if (messagesToCopy.length > 0) {
       const baseCreatedAt = new Date();
-      await db.insert(messages).values(
+      await db().insert(messages).values(
         messagesToCopy.map((msg, index) => ({
           id: generateUUID(),
           chatId: newChat.id,

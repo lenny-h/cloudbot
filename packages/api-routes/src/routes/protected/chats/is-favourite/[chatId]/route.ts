@@ -27,7 +27,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { chatId } = c.req.valid("param");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .select({ isFavourite: chats.isFavourite })
         .from(chats)
         .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)))
@@ -62,7 +62,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const { isFavourite } = c.req.valid("json");
       const user = c.get("user");
 
-      const result = await db
+      const result = await db()
         .update(chats)
         .set({ isFavourite })
         .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)));
