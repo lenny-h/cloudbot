@@ -12,6 +12,7 @@ import { Switch } from "@workspace/ui/components/switch";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import {
   FileText,
+  FolderOpen,
   MessageCircleDashed,
   MessageCirclePlus,
   Search,
@@ -93,6 +94,18 @@ export const NavMain = memo(() => {
           <Link href={`/${locale}/documents`}>
             <FileText />
             <span>{webT.navMain.documentsLabel}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild
+          isActive={pathname === `/${locale}/folders`}
+        >
+          <Link href={`/${locale}/folders`}>
+            <FolderOpen />
+            <span>{webT.navMain.foldersLabel}</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

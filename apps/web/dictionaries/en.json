@@ -113,6 +113,55 @@
         "foldersSelected": "{count} Ordner ausgewählt",
         "searchFolders": "Ordner suchen"
     },
+    "foldersPage": {
+        "title": "Folders",
+        "subtitle": "Manage your folders and upload files to them.",
+        "errorLoading": "Error loading folders",
+        "noFolders": "No folders yet",
+        "noFoldersDescription": "Create your first folder to start organizing files.",
+        "deleting": "Deleting folder...",
+        "deleted": "Folder deleted!",
+        "failedToDelete": "Failed to delete folder"
+    },
+    "createFolderDialog": {
+        "createFolder": "Create Folder",
+        "description": "Create a new folder to organize and share your files.",
+        "folderName": "Name",
+        "folderNamePlaceholder": "Enter folder name",
+        "folderDescription": "Description",
+        "folderDescriptionPlaceholder": "Describe what this folder is for...",
+        "visibility": "Visibility",
+        "visibilityOptions": {
+            "private": "Private",
+            "public": "Public",
+            "protected": "Protected"
+        },
+        "visibilityDescriptions": {
+            "private": "Only you can access and use files from this folder.",
+            "public": "Everyone can use files from this folder as context.",
+            "protected": "Users with the password can access files from this folder."
+        },
+        "password": "Password",
+        "passwordPlaceholder": "Min. 8 characters",
+        "cancel": "Cancel",
+        "create": "Create",
+        "creating": "Creating folder...",
+        "created": "Folder created!",
+        "failedToCreate": "Failed to create folder"
+    },
+    "uploadFileDialog": {
+        "uploadFiles": "Upload Files",
+        "selectFolder": "Select a Folder",
+        "selectFolderDescription": "Choose a folder to upload your files to.",
+        "uploadTo": "Upload to {folderName}",
+        "uploadDescription": "Drag and drop files or click to browse. Uploaded files inherit the folder's visibility.",
+        "errorLoadingFolders": "Error loading folders",
+        "noFolders": "No folders available. Create one first.",
+        "backToFolders": "Back",
+        "dropFiles": "Drop files here",
+        "dragAndDrop": "Drag & drop files here, or click to browse",
+        "maxFileSize": "Max 30 MB per file"
+    },
     "loadButton": {
         "load": "Load",
         "searchFiles": "Search files",
@@ -181,7 +230,8 @@
         "temporaryChat": "Temporary chat",
         "chatLabel": "Chat",
         "searchLabel": "Search",
-        "documentsLabel": "Documents"
+        "documentsLabel": "Documents",
+        "foldersLabel": "Folders"
     },
     "pdfViewer": {
         "noPdfSelected": "No PDF selected",

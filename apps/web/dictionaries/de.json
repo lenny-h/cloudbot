@@ -113,6 +113,55 @@
         "foldersSelected": "{count} folders selected",
         "searchFolders": "Search folders"
     },
+    "foldersPage": {
+        "title": "Ordner",
+        "subtitle": "Verwalten Sie Ihre Ordner und laden Sie Dateien hoch.",
+        "errorLoading": "Fehler beim Laden der Ordner",
+        "noFolders": "Noch keine Ordner",
+        "noFoldersDescription": "Erstellen Sie Ihren ersten Ordner, um Dateien zu organisieren.",
+        "deleting": "Ordner wird gelöscht...",
+        "deleted": "Ordner gelöscht!",
+        "failedToDelete": "Fehler beim Löschen des Ordners"
+    },
+    "createFolderDialog": {
+        "createFolder": "Ordner erstellen",
+        "description": "Erstellen Sie einen neuen Ordner, um Ihre Dateien zu organisieren und zu teilen.",
+        "folderName": "Name",
+        "folderNamePlaceholder": "Ordnername eingeben",
+        "folderDescription": "Beschreibung",
+        "folderDescriptionPlaceholder": "Beschreiben Sie, wofür dieser Ordner gedacht ist...",
+        "visibility": "Sichtbarkeit",
+        "visibilityOptions": {
+            "private": "Privat",
+            "public": "Öffentlich",
+            "protected": "Geschützt"
+        },
+        "visibilityDescriptions": {
+            "private": "Nur Sie können auf Dateien in diesem Ordner zugreifen.",
+            "public": "Jeder kann Dateien aus diesem Ordner als Kontext verwenden.",
+            "protected": "Benutzer mit dem Passwort können auf Dateien in diesem Ordner zugreifen."
+        },
+        "password": "Passwort",
+        "passwordPlaceholder": "Mind. 8 Zeichen",
+        "cancel": "Abbrechen",
+        "create": "Erstellen",
+        "creating": "Ordner wird erstellt...",
+        "created": "Ordner erstellt!",
+        "failedToCreate": "Fehler beim Erstellen des Ordners"
+    },
+    "uploadFileDialog": {
+        "uploadFiles": "Dateien hochladen",
+        "selectFolder": "Ordner auswählen",
+        "selectFolderDescription": "Wählen Sie einen Ordner, in den Sie Ihre Dateien hochladen möchten.",
+        "uploadTo": "Hochladen nach {folderName}",
+        "uploadDescription": "Dateien per Drag & Drop ablegen oder klicken zum Durchsuchen. Hochgeladene Dateien übernehmen die Sichtbarkeit des Ordners.",
+        "errorLoadingFolders": "Fehler beim Laden der Ordner",
+        "noFolders": "Keine Ordner verfügbar. Erstellen Sie zuerst einen.",
+        "backToFolders": "Zurück",
+        "dropFiles": "Dateien hier ablegen",
+        "dragAndDrop": "Dateien per Drag & Drop ablegen oder klicken zum Durchsuchen",
+        "maxFileSize": "Max. 30 MB pro Datei"
+    },
     "loadButton": {
         "load": "Laden",
         "searchFiles": "Dateien suchen",
@@ -179,6 +228,7 @@
     "navMain": {
         "chatLabel": "Chat",
         "documentsLabel": "Dokumente",
+        "foldersLabel": "Ordner",
         "newChat": "Neuer Chat",
         "searchLabel": "Suche",
         "temporaryChat": "Temporärer Chat"
