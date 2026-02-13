@@ -18,11 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
 import {
   GitHubIcon,
@@ -443,12 +438,13 @@ export function UsersTable() {
                   <TableRow key={user.id}>
                     <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-4">
-                        <Avatar>
-                          <AvatarImage src={user.avatarUrl} alt={user.name} />
-                          <AvatarFallback className="text-xs">
-                            {user.name.substring(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold">
+                          {user.name
+                            .split(" ")
+                            .map((word) => word[0])
+                            .join("")
+                            .toUpperCase()}
+                        </div>
                         <div className="flex flex-col">
                           <span className="text-foreground text-sm font-medium">
                             {user.name}

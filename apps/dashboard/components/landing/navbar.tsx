@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -24,6 +19,12 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   const isAdmin = session?.user?.role === "admin";
+
+  const initials = session?.user?.name
+    ?.split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 
   return (
     <nav className="border-border/40 bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
@@ -88,17 +89,9 @@ const Navbar = () => {
                     variant="ghost"
                     className="relative h-8 w-8 rounded-full"
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={session.user.image || ""}
-                        alt={session.user.name || ""}
-                      />
-                      <AvatarFallback className="text-xs">
-                        {session.user.name?.charAt(0)?.toUpperCase() ||
-                          session.user.email?.charAt(0)?.toUpperCase() ||
-                          "U"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold">
+                      {initials}
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>

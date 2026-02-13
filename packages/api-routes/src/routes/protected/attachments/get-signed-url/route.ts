@@ -31,6 +31,8 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
 
     const key = `attachments/${user.id}/${filename}`;
 
+    console.log("Generating signed URL with key:", key, "fileType:", fileType);
+
     const { url: signedUrl } = await StorageClient.getSignedUrlForUpload({
       bucket: "cloudbot-bucket",
       key,
