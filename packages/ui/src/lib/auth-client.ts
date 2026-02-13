@@ -29,6 +29,7 @@ export const client = createAuthClient({
     }),
   ],
   fetchOptions: {
+    credentials: "include", // Required for cross-origin cookie handling
     timeout: 30000, // 30 seconds timeout
     onError(e) {
       if (e.error.status === 429) {

@@ -10,7 +10,7 @@ export function resizeEditor(
   collapse?: boolean,
 ) {
   if (panelRef.current?.isCollapsed()) {
-    panelRef.current?.resize(50);
+    panelRef.current?.resize("50");
   } else if (collapse) {
     panelRef.current?.collapse();
   }

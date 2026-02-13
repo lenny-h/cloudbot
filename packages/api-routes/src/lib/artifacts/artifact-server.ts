@@ -17,7 +17,6 @@ import { type UIMessageStreamWriter } from "ai";
 import { type ArtifactKind } from "../../schemas/artifact-schema.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
-import { generateUUID } from "../../utils/generate-uuid.js";
 import { saveDiff, saveDocument } from "../queries/documents.js";
 import { codeDocumentHandler } from "./code-server.js";
 // import { sheetDocumentHandler } from "./sheet-server.js";
@@ -92,7 +91,6 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
 
       if (args.userId) {
         await saveDiff({
-          id: generateUUID(),
           documentId: args.document.id,
           previousText: args.document.content || "",
           newText: draftContent,

@@ -7,6 +7,10 @@ import { HTTPException } from "hono/http-exception";
 import { db } from "./drizzle/db.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "./send-email.js";
 
+console.log("Initializing auth server with the following configuration:");
+console.log(`Better Auth URL: ${process.env.BETTER_AUTH_URL}`);
+console.log(`Enable SSO: ${process.env.ENABLE_SSO}`);
+
 // Helper to build the auth instance with correct plugin typing
 function buildAuth() {
   // Build plugins array and include SSO only when ENABLE_SSO is "true"
@@ -23,7 +27,7 @@ function buildAuth() {
                 domain: process.env.SSO_DOMAIN!,
                 providerId: process.env.SSO_PROVIDER_ID!,
                 oidcConfig: {
-                  clientId: process.env.SSO_CLIENT_ID!,  
+                  clientId: process.env.SSO_CLIENT_ID!,
                   clientSecret: process.env.SSO_CLIENT_SECRET!,
                   issuer: process.env.SSO_ISSUER!,
                   authorizationEndpoint: process.env.SSO_AUTHORIZATION_ENDPOINT,
@@ -132,6 +136,14 @@ function buildAuth() {
       database: {
         generateId: false,
       },
+      ...(process.env.SITE_URL
+        ? {
+            crossSubDomainCookies: {
+              enabled: true,
+              domain: process.env.SITE_URL,
+            },
+          }
+        : {}),
     },
     logger: {
       disabled: false,
@@ -143,7 +155,7 @@ function buildAuth() {
 }
 
 export type Auth = ReturnType<typeof buildAuth>;
-export type Session = Auth['$Infer']['Session'];
+export type Session = Auth["$Infer"]["Session"];
 
 let _auth: Auth | null = null;
 

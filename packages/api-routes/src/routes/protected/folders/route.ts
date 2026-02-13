@@ -3,7 +3,6 @@ import * as z from "zod";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { encryptApiKey } from "@workspace/api-routes/utils/encryption.js";
-import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { courseUsers, folders } from "@workspace/server/drizzle/schema.js";
 import { and, eq, or } from "drizzle-orm";
@@ -77,7 +76,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
       await db().transaction(async (tx) => {
         const folderId = await db().insert(folders).values({
-          id: generateUUID(),
           name: values.name,
           owner: user.id,
           description: values.description,

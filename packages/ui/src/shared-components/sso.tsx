@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Key } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { memo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -29,8 +28,6 @@ type SSOFormData = z.infer<typeof ssoFormSchema>;
 export const SSO = memo(() => {
   const { sharedT, locale } = useSharedTranslations();
 
-  const router = useRouter();
-
   const form = useForm<SSOFormData>({
     resolver: zodResolver(ssoFormSchema),
     defaultValues: {
@@ -47,14 +44,13 @@ export const SSO = memo(() => {
         callbackURL: `${window.location.origin}/${locale}/`,
       },
       {
-        onSuccess() {
-          router.push(`/${locale}/`);
-        },
         onError(context) {
           throw new Error(context.error.message);
         },
       },
     );
+    // Note: Don't add onSuccess handler that redirects - the SSO method
+    // will redirect the browser to Keycloak automatically
 
     toast.promise(ssoLoginPromise, {
       loading: sharedT.sso.redirectingToSSO,

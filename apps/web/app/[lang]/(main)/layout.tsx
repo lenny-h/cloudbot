@@ -34,7 +34,7 @@ export default function MainLayout({
     if (!isPending && !data?.user) {
       router.push(`/${locale}/sign-in`);
     }
-  }, [data, isPending, locale]);
+  }, [isPending, data, locale]);
 
   useEffect(() => {
     const match = document.cookie
@@ -50,9 +50,9 @@ export default function MainLayout({
     return <CentralLoadingScreen />;
   }
 
-  console.log("Layout user data:", data);
-
   const user = data?.user;
+
+  console.log("Authenticated user:", user);
 
   return (
     <UserProvider user={user as User}>

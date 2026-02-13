@@ -7,14 +7,12 @@ import { adminMiddleware } from "@workspace/server/middleware/admin-middleware.j
 import { authMiddleware } from "@workspace/server/middleware/auth-middleware.js";
 import { errorHandler } from "@workspace/server/middleware/error-handler.js";
 import { Hono } from "hono";
-import { compress } from "hono/compress";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import { secureHeaders } from "hono/secure-headers";
 
 const app = new Hono()
   .use("*", requestId())
-  .use("*", compress())
   .use("*", secureHeaders())
 
   .use("*", conditionalLogger)

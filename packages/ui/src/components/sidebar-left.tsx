@@ -262,8 +262,8 @@ function SidebarTrigger({
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
-      size="icon"
-      className={cn("h-8 w-8", className)}
+      size="icon-lg"
+      className={className}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -334,7 +334,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sidebar-header"
       data-sidebar="header"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn("flex flex-col gap-2 mb-4", className)}
       {...props}
     />
   );

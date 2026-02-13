@@ -26,7 +26,7 @@ const PureSendButton: React.FC<SendButtonProps> = memo(
         <TooltipTrigger asChild>
           <Button
             className={cn(
-              "rounded-xl",
+              "rounded-full",
               isTemporary &&
                 "bg-background text-foreground hover:bg-background/85",
             )}

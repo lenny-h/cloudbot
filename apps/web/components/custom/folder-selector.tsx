@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
-import { cn } from "@workspace/ui/lib/utils";
 import { memo, useCallback, useEffect, useState } from "react";
 import { FolderKeyDialog } from "./folder-key-dialog";
 import { FoldersList } from "./folders-list";
@@ -69,14 +68,9 @@ export const FolderSelector = memo(() => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
-            className={cn(
-              "rounded-xl",
-              filter.folders.length === 0
-                ? "border-red-500"
-                : "border-green-500",
-            )}
+            className="rounded-xl"
             onClick={() => setOpen((open) => !open)}
-            variant="outline"
+            variant="secondary"
           >
             {webT.folderSelector.foldersSelected.replace(
               "{count}",

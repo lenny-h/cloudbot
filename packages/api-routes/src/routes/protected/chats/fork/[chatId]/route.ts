@@ -4,7 +4,6 @@ import { getChatById } from "@workspace/api-routes/lib/queries/chats.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
-import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { chats, messages } from "@workspace/server/drizzle/schema.js";
 import { and, desc, eq, lte, sql } from "drizzle-orm";
@@ -97,7 +96,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     const newChatResult = await db()
       .insert(chats)
       .values({
-        id: generateUUID(),
         userId: user.id,
         title: `${chat.title} (Fork)`,
         isFavourite: false,
@@ -112,16 +110,17 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
     // Copy messages to new chat
     if (messagesToCopy.length > 0) {
       const baseCreatedAt = new Date();
-      await db().insert(messages).values(
-        messagesToCopy.map((msg, index) => ({
-          id: generateUUID(),
-          chatId: newChat.id,
-          role: msg.role,
-          parts: msg.parts,
-          metadata: msg.metadata,
-          createdAt: new Date(baseCreatedAt.getTime() + index * 10), // Ensure order
-        })),
-      );
+      await db()
+        .insert(messages)
+        .values(
+          messagesToCopy.map((msg, index) => ({
+            chatId: newChat.id,
+            role: msg.role,
+            parts: msg.parts,
+            metadata: msg.metadata,
+            createdAt: new Date(baseCreatedAt.getTime() + index * 10), // Ensure order
+          })),
+        );
     }
 
     return c.json({

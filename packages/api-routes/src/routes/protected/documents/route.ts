@@ -5,7 +5,6 @@ import { itemsPerPageSchema } from "@workspace/api-routes/schemas/items-per-page
 import { pageNumberSchema } from "@workspace/api-routes/schemas/page-number-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
-import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { documents } from "@workspace/server/drizzle/schema.js";
 import { eq, sql } from "drizzle-orm";
@@ -76,7 +75,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       const result = await db()
         .insert(documents)
         .values({
-          id: generateUUID(),
           title,
           content,
           kind,

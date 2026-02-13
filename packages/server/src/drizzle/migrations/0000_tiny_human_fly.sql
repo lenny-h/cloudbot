@@ -116,6 +116,19 @@ CREATE TABLE `sessions` (
 --> statement-breakpoint
 CREATE UNIQUE INDEX `sessions_token_unique` ON `sessions` (`token`);--> statement-breakpoint
 CREATE INDEX `sessions_userId_idx` ON `sessions` (`user_id`);--> statement-breakpoint
+CREATE TABLE `sso_providers` (
+	`id` text PRIMARY KEY NOT NULL,
+	`issuer` text NOT NULL,
+	`oidc_config` text,
+	`saml_config` text,
+	`user_id` text,
+	`provider_id` text NOT NULL,
+	`organization_id` text,
+	`domain` text NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `sso_providers_provider_id_unique` ON `sso_providers` (`provider_id`);--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,

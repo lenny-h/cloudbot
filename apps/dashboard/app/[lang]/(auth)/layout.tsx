@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (!isPending && data?.user) {
       router.push(`/${locale}`);
     }
-  }, [data, isPending, locale]);
+  }, [isPending, data, locale]);
 
   if (isPending || data?.user) {
     return <CentralLoadingScreen />;

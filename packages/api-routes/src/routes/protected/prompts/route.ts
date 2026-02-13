@@ -1,6 +1,5 @@
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
-import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { prompts } from "@workspace/server/drizzle/schema.js";
 import { count, eq } from "drizzle-orm";
@@ -49,7 +48,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
       }
 
       await db().insert(prompts).values({
-        id: generateUUID(),
         userId: user.id,
         name,
         content,

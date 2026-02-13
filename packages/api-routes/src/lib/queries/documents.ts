@@ -40,14 +40,12 @@ export async function saveDocument({
 }
 
 export async function saveDiff({
-  id,
   documentId,
   previousText,
   newText,
   kind,
   userId,
 }: {
-  id: string;
   documentId: string;
   previousText: string;
   newText: string;
@@ -55,7 +53,6 @@ export async function saveDiff({
   userId: string;
 }) {
   await db().insert(diffs).values({
-    id,
     documentId,
     previousText,
     newText,

@@ -9,7 +9,9 @@ import {
 } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
-  id: text("id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: integer("email_verified", { mode: "boolean" })
@@ -36,7 +38,9 @@ export type User = InferSelectModel<typeof users>;
 export const sessions = sqliteTable(
   "sessions",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
     token: text("token").notNull().unique(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
@@ -58,7 +62,9 @@ export const sessions = sqliteTable(
 export const accounts = sqliteTable(
   "accounts",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
@@ -88,7 +94,9 @@ export const accounts = sqliteTable(
 export const verifications = sqliteTable(
   "verifications",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
@@ -102,6 +110,21 @@ export const verifications = sqliteTable(
   },
   (table) => [index("verifications_identifier_idx").on(table.identifier)],
 );
+
+export const ssoProviders = sqliteTable("sso_providers", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  issuer: text("issuer").notNull(),
+  oidcConfig: text("oidc_config"),
+  samlConfig: text("saml_config"),
+  userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+  providerId: text("provider_id").notNull().unique(),
+  organizationId: text("organization_id"),
+  domain: text("domain").notNull(),
+});
+
+export type SsoProvider = InferSelectModel<typeof ssoProviders>;
 
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
@@ -124,7 +147,10 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 
 // Chats table
 export const chats = sqliteTable("chats", {
-  id: text("id").primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -141,7 +167,10 @@ export type Chat = InferSelectModel<typeof chats>;
 
 // Messages table
 export const messages = sqliteTable("messages", {
-  id: text("id").primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
   chatId: text("chat_id")
     .notNull()
     .references(() => chats.id, { onDelete: "cascade" }),
@@ -157,7 +186,10 @@ export type Message = InferSelectModel<typeof messages>;
 
 // Folders table
 export const folders = sqliteTable("folders", {
-  id: text("id").primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull().unique(),
   owner: text("owner")
     .notNull()
@@ -194,7 +226,10 @@ export const courseUsers = sqliteTable(
 export const files = sqliteTable(
   "files",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .$defaultFn(() => crypto.randomUUID()),
     visibility: text("visibility", { enum: ["private", "protected", "public"] })
       .notNull()
       .default("private"),
@@ -217,7 +252,10 @@ export const files = sqliteTable(
 export type File = InferSelectModel<typeof files>;
 
 export const documents = sqliteTable("documents", {
-  id: text("id").primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
   title: text("title").notNull(),
   content: text("content"),
   kind: text("kind", { enum: ["text", "code"] }) // Maybe add sheet later
@@ -234,7 +272,10 @@ export const documents = sqliteTable("documents", {
 export type Document = InferSelectModel<typeof documents>;
 
 export const diffs = sqliteTable("diffs", {
-  id: text("id").primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
   documentId: text("document_id")
     .notNull()
     .references(() => documents.id),
@@ -255,7 +296,10 @@ export const diffs = sqliteTable("diffs", {
 export type Diff = InferSelectModel<typeof diffs>;
 
 export const prompts = sqliteTable("prompts", {
-  id: text("id").primaryKey().notNull(),
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),

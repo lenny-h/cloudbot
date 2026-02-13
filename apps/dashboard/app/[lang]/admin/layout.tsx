@@ -22,7 +22,7 @@ export default function AdminLayout({
         return notFound();
       }
     }
-  }, [data, isPending, router]);
+  }, [isPending, data, router]);
 
   if (isPending || !data?.user || data.user.role !== "admin") {
     return <CentralLoadingScreen />;

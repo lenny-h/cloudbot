@@ -112,7 +112,7 @@ export const ChatHeader = memo(
               </h1>
             ))}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <FolderSelector />
 
           {!isEmpty && !isTemporary && (
@@ -147,9 +147,9 @@ export const ChatHeader = memo(
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                size="icon"
-                className="size-8"
+                size="icon-lg"
                 onClick={() => {
+                  console.log("Toggling sidebar and resizing editor");
                   resizeEditor(panelRef, true);
                 }}
               >
