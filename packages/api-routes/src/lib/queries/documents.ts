@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { diffs, documents } from "@workspace/server/drizzle/schema/schema.js";
+import { diffs, documents } from "@workspace/server/drizzle/schema.js";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { type ArtifactKind } from "../../schemas/artifact-schema.js";

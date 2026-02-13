@@ -1,7 +1,7 @@
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { users as profiles } from "@workspace/server/drizzle/schema/auth-schema.js";
+import { users as profiles } from "@workspace/server/drizzle/schema.js";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

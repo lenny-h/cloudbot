@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { files, folders } from "@workspace/server/drizzle/schema/schema.js";
+import { files, folders } from "@workspace/server/drizzle/schema.js";
 import { createLogger } from "@workspace/server/logger/logger.js";
 import {
   stepCountIs,

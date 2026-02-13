@@ -26,17 +26,14 @@
 
 import * as z from "zod";
 
-import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details";
 import { itemsPerPageSchema } from "@workspace/api-routes/schemas/items-per-page-schema.js";
 import { pageNumberSchema } from "@workspace/api-routes/schemas/page-number-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
+import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { auth } from "@workspace/server/auth-server.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import {
-  accounts,
-  sessions,
-} from "@workspace/server/drizzle/schema/auth-schema.js";
+import { accounts, sessions } from "@workspace/server/drizzle/schema.js";
 import { desc } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

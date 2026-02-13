@@ -11,7 +11,7 @@ import {
   courseUsers,
   files,
   folders,
-} from "@workspace/server/drizzle/schema/schema.js";
+} from "@workspace/server/drizzle/schema.js";
 import { createLogger } from "@workspace/server/logger/logger.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";

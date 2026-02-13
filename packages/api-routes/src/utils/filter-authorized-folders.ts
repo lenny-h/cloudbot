@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { courseUsers } from "@workspace/server/drizzle/schema/schema.js";
+import { courseUsers } from "@workspace/server/drizzle/schema.js";
 import { and, eq } from "drizzle-orm";
 
 export type FolderMetadata = {

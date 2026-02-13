@@ -1,4 +1,4 @@
-import { type Chat } from "@workspace/server/drizzle/schema/schema.js";
+import { type Chat } from "@workspace/server/drizzle/schema.js";
 import { createLogger } from "@workspace/server/logger/logger.js";
 import {
   convertToModelMessages,

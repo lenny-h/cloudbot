@@ -2,7 +2,7 @@ import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
 import { useWebTranslations } from "@/contexts/web-translations";
 import { useQueryClient } from "@tanstack/react-query";
-import { type Document } from "@workspace/server/drizzle/schema/schema";
+import { type Document } from "@workspace/server/drizzle/schema";
 import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,

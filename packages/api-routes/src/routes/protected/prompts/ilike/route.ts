@@ -4,7 +4,7 @@ import { prefixSchema } from "@workspace/api-routes/schemas/prefix-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { prompts } from "@workspace/server/drizzle/schema/schema.js";
+import { prompts } from "@workspace/server/drizzle/schema.js";
 import { and, eq, ilike } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

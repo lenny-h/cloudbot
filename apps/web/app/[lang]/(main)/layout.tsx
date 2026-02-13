@@ -7,7 +7,7 @@ import { EditorProvider } from "@/contexts/editor-context";
 import { FilterProvider } from "@/contexts/filter-context";
 import { PDFProvider } from "@/contexts/pdf-context";
 import { RefsProvider } from "@/contexts/refs-context";
-import { type User } from "@workspace/server/drizzle/schema/auth-schema";
+import { type User } from "@workspace/server/drizzle/schema";
 import {
   SidebarInset,
   SidebarProvider,

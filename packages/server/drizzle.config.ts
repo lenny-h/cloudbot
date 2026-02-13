@@ -13,7 +13,7 @@ if (!accountId || !databaseId || !token) {
 
 export default defineConfig({
   out: "./src/drizzle/migrations",
-  schema: "./src/drizzle/schema",
+  schema: "./src/drizzle/schema.ts",
   dialect: "sqlite",
   driver: "d1-http",
   dbCredentials: {

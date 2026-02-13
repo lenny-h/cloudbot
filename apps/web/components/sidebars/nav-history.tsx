@@ -2,7 +2,7 @@
 
 import { useWebTranslations } from "@/contexts/web-translations";
 import { useQueryClient } from "@tanstack/react-query";
-import { type Chat } from "@workspace/server/drizzle/schema/schema";
+import { type Chat } from "@workspace/server/drizzle/schema";
 import {
   SidebarGroup,
   SidebarGroupContent,

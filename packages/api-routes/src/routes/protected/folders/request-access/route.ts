@@ -2,10 +2,7 @@ import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { decryptApiKey } from "@workspace/api-routes/utils/encryption.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import {
-  courseUsers,
-  folders,
-} from "@workspace/server/drizzle/schema/schema.js";
+import { courseUsers, folders } from "@workspace/server/drizzle/schema.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

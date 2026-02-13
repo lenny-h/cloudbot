@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { type Document } from "@workspace/server/drizzle/schema/schema.js";
+import { type Document } from "@workspace/server/drizzle/schema.js";
 import { type UIMessageStreamWriter } from "ai";
 import { type ArtifactKind } from "../../schemas/artifact-schema.js";
 import { type Bindings } from "../../types/bindings.js";

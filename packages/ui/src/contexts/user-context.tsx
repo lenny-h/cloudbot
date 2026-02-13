@@ -1,6 +1,6 @@
 "use client";
 
-import { type User } from "@workspace/server/drizzle/schema/auth-schema";
+import { type User } from "@workspace/server/drizzle/schema";
 import { ReactNode, createContext, useContext } from "react";
 
 interface Props {

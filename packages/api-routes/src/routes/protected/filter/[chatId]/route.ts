@@ -12,7 +12,7 @@ import {
   folders,
   messages,
   prompts,
-} from "@workspace/server/drizzle/schema/schema.js";
+} from "@workspace/server/drizzle/schema.js";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

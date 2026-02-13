@@ -6,7 +6,7 @@ import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { chats, messages } from "@workspace/server/drizzle/schema/schema.js";
+import { chats, messages } from "@workspace/server/drizzle/schema.js";
 import { and, desc, eq, lte, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";

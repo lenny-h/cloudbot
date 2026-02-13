@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { prompts } from "@workspace/server/drizzle/schema/schema.js";
+import { prompts } from "@workspace/server/drizzle/schema.js";
 import { and, eq, inArray } from "drizzle-orm";
 
 export async function getPromptsByIds({

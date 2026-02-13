@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { messages } from "@workspace/server/drizzle/schema/schema.js";
+import { messages } from "@workspace/server/drizzle/schema.js";
 import { desc, eq, inArray, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
