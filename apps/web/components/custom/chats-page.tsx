@@ -8,12 +8,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { useInfiniteQueryWithRPC } from "@workspace/ui/hooks/use-infinite-query";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
-import {
-  Loader2,
-  MessageSquare,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Loader2, MessageSquare, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { memo, useEffect, useState } from "react";
 import { DeleteForm } from "./delete-form";
@@ -160,29 +155,30 @@ export const ChatsPage = memo(() => {
       ) : (
         <div className="grid gap-2">
           {displayChats.map((chat) => (
-            <div
+            <Link
               key={chat.id}
+              href={`/${locale}/chat/${chat.id}`}
               className="hover:bg-muted/30 group flex items-center gap-3 rounded-lg border p-3 transition-colors"
             >
               <div className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-blue-500/10 text-blue-600 dark:text-blue-400">
                 <MessageSquare className="size-4" />
               </div>
-              <Link
-                href={`/${locale}/chat/${chat.id}`}
-                className="flex-1 overflow-hidden"
-              >
+              <div className="flex-1 overflow-hidden">
                 <h3 className="truncate font-medium">
                   {chat.title || "Untitled Chat"}
                 </h3>
                 <p className="text-muted-foreground text-xs">
                   {formatDate(chat.createdAt)}
                 </p>
-              </Link>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-destructive shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                onClick={() => confirmDelete(chat)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmDelete(chat);
+                }}
                 disabled={deletingId === chat.id}
               >
                 {deletingId === chat.id ? (
@@ -191,7 +187,7 @@ export const ChatsPage = memo(() => {
                   <Trash2 className="size-4" />
                 )}
               </Button>
-            </div>
+            </Link>
           ))}
           {!ilikeResults && hasNextPage && (
             <div

@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 
 // Import handlers
+import artifactsGetSignedUrlRoute from "./artifacts/get-signed-url/[fileId]/[extension]/route.js";
 import attachmentsGetSignedUrlRoute from "./attachments/get-signed-url/route.js";
 import chatRoute from "./chat/route.js";
 import chatsByIdRoute from "./chats/[chatId]/route.js";
@@ -23,7 +24,7 @@ import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/rout
 import filesIlike from "./files/ilike/route.js";
 import filesRoute from "./files/route.js";
 import filterRoute from "./filter/[chatId]/route.js";
-import foldersDeleteRoute from "./folders/[...folderId]/route.js";
+import foldersDeleteRoute from "./folders/[folderId]/route.js";
 import foldersIlike from "./folders/ilike/route.js";
 import foldersRequestAccessRoute from "./folders/request-access/route.js";
 import foldersRoute from "./folders/route.js";
@@ -38,6 +39,12 @@ import promptsRoute from "./prompts/route.js";
 // Important: Move routes with slugs to the end to prevent route conflicts
 
 const protectedApiRouter = new Hono()
+  // Artifacts
+  .route(
+    "/artifacts/get-signed-url/:fileId/:extension",
+    artifactsGetSignedUrlRoute,
+  )
+
   // Attachments
   .route("/attachments/get-signed-url", attachmentsGetSignedUrlRoute)
 

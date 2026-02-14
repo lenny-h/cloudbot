@@ -21,7 +21,7 @@ interface ToolExtractFromWebProps {
   part: ToolUIPart<{
     extractFromWeb: {
       input: { informationToExtract: string };
-      output: { response?: string; error?: string };
+      output: { extractedInformation: string };
     };
   }>;
 }
@@ -98,16 +98,18 @@ export function ToolExtractFromWeb({ part }: ToolExtractFromWebProps) {
             </div>
           )}
 
-          {output && state === "output-available" && output.response && (
-            <div className="space-y-1.5">
-              <div className="text-muted-foreground text-xs font-medium">
-                Response
+          {output &&
+            state === "output-available" &&
+            output.extractedInformation && (
+              <div className="space-y-1.5">
+                <div className="text-muted-foreground text-xs font-medium">
+                  Extracted Information
+                </div>
+                <div className="bg-background rounded border p-3 text-sm whitespace-pre-wrap">
+                  {output.extractedInformation}
+                </div>
               </div>
-              <div className="bg-background rounded border p-3 text-sm whitespace-pre-wrap">
-                {output.response}
-              </div>
-            </div>
-          )}
+            )}
         </div>
       </CollapsibleContent>
     </Collapsible>

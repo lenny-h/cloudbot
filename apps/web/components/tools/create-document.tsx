@@ -1,16 +1,20 @@
 "use client";
 
+import { useViewDocument } from "@/hooks/use-view-document";
+import { type ArtifactKind } from "@workspace/api-routes/schemas/artifact-schema";
 import { Badge } from "@workspace/ui/components/badge";
+import { Button } from "@workspace/ui/components/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@workspace/ui/components/collapsible";
 import { cn } from "@workspace/ui/lib/utils";
-import { ToolUIPart } from "ai";
+import { type ToolUIPart } from "ai";
 import {
   CheckCircle2,
   ChevronDown,
+  Eye,
   FilePlus,
   Loader2,
   XCircle,
@@ -20,8 +24,13 @@ import { useState } from "react";
 interface ToolCreateDocumentProps {
   part: ToolUIPart<{
     createDocument: {
-      input: { title: string; content: string };
-      output: { documentId: string };
+      input: { title: string; kind: ArtifactKind; description: string };
+      output: {
+        id: string;
+        title: string;
+        kind: ArtifactKind;
+        message: string;
+      };
     };
   }>;
 }
@@ -29,6 +38,7 @@ interface ToolCreateDocumentProps {
 export function ToolCreateDocument({ part }: ToolCreateDocumentProps) {
   const [isOpen, setIsOpen] = useState(part.state === "output-available");
   const { state, input, output } = part;
+  const { viewDocument } = useViewDocument();
 
   const getStatusBadge = () => {
     if (state === "input-streaming" || state === "input-available") {
@@ -98,26 +108,38 @@ export function ToolCreateDocument({ part }: ToolCreateDocumentProps) {
 
               <div className="space-y-1.5">
                 <div className="text-muted-foreground text-xs font-medium">
-                  Content
+                  Kind
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {input.kind}
+                </Badge>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="text-muted-foreground text-xs font-medium">
+                  Description
                 </div>
                 <div className="bg-muted/30 max-h-60 overflow-y-auto rounded border p-3">
                   <pre className="font-mono text-xs whitespace-pre-wrap">
-                    {input.content}
+                    {input.description}
                   </pre>
                 </div>
               </div>
-            </>
-          )}
 
-          {output && state === "output-available" && output.documentId && (
-            <div className="rounded border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950/20">
-              <div className="text-muted-foreground mb-1 text-xs font-medium">
-                Document Id
-              </div>
-              <code className="font-mono text-sm text-green-700 dark:text-green-400">
-                {output.documentId}
-              </code>
-            </div>
+              {output && state === "output-available" && (
+                <Button
+                  onClick={() =>
+                    viewDocument(output.id, output.kind, output.title)
+                  }
+                  className="w-full"
+                  size="sm"
+                  variant="outline"
+                >
+                  <Eye className="mr-2 size-4" />
+                  View Document
+                </Button>
+              )}
+            </>
           )}
         </div>
       </CollapsibleContent>

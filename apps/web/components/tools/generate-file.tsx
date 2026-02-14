@@ -7,6 +7,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@workspace/ui/components/collapsible";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
+import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { cn } from "@workspace/ui/lib/utils";
 import { type ToolUIPart } from "ai";
 import {
@@ -17,20 +19,55 @@ import {
   Loader2,
   XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 interface ToolGenerateFileProps {
   part: ToolUIPart<{
     generateFile: {
-      input: { fileName: string; content: string };
-      output: { fileUrl?: string; error?: string };
+      input: { title: string; format: string; description: string };
+      output: {
+        fileId: string;
+        filename: string;
+        format: string;
+        contentType: string;
+        size: number;
+        message: string;
+      };
     };
   }>;
 }
 
 export function ToolGenerateFile({ part }: ToolGenerateFileProps) {
-  const [isOpen, setIsOpen] = useState(part.state === "output-available");
   const { state, input, output } = part;
+  const { sharedT } = useSharedTranslations();
+
+  const [isOpen, setIsOpen] = useState(part.state === "output-available");
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = useCallback(async () => {
+    if (!output) return;
+    setIsDownloading(true);
+    try {
+      const extension = output.filename.split(".").pop() ?? "";
+      const { signedUrl } = await apiFetcher(
+        (client) =>
+          client.artifacts["get-signed-url"][":fileId"][":extension"].$get({
+            param: { fileId: output.fileId, extension },
+          }),
+        sharedT.apiCodes,
+      );
+      window.open(signedUrl, "_blank");
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [output, sharedT.apiCodes]);
+
+  const humanFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 B";
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+  };
 
   const getStatusBadge = () => {
     if (state === "input-streaming" || state === "input-available") {
@@ -93,39 +130,67 @@ export function ToolGenerateFile({ part }: ToolGenerateFileProps) {
             <>
               <div className="space-y-1.5">
                 <div className="text-muted-foreground text-xs font-medium">
-                  File Name
+                  Title
                 </div>
-                <code className="bg-muted/50 rounded px-2 py-1 font-mono text-sm">
-                  {input.fileName}
-                </code>
+                <div className="text-sm font-medium">{input.title}</div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="space-y-1.5">
+                  <div className="text-muted-foreground text-xs font-medium">
+                    Format
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {input.format}
+                  </Badge>
+                </div>
               </div>
 
               <div className="space-y-1.5">
                 <div className="text-muted-foreground text-xs font-medium">
-                  Content
+                  Description
                 </div>
                 <div className="bg-muted/30 max-h-60 overflow-y-auto rounded border p-3">
                   <pre className="font-mono text-xs whitespace-pre-wrap">
-                    {input.content}
+                    {input.description}
                   </pre>
                 </div>
               </div>
             </>
           )}
 
-          {output && state === "output-available" && output.fileUrl && (
-            <div className="rounded border border-cyan-200 bg-cyan-50 p-3 dark:border-cyan-900 dark:bg-cyan-950/20">
-              <Button size="sm" variant="outline" className="gap-2" asChild>
-                <a
-                  href={output.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
+          {output && state === "output-available" && (
+            <div className="space-y-3 rounded border border-cyan-200 bg-cyan-50 p-3 dark:border-cyan-900 dark:bg-cyan-950/20">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                <div>
+                  <div className="text-muted-foreground text-xs font-medium">Filename</div>
+                  <code className="font-mono text-sm">{output.filename}</code>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-xs font-medium">Format</div>
+                  <Badge variant="outline" className="text-xs">{output.format}</Badge>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-xs font-medium">Size</div>
+                  <div className="text-sm">{humanFileSize(output.size)}</div>
+                </div>
+              </div>
+              <div className="pt-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2"
+                  onClick={handleDownload}
+                  disabled={isDownloading}
                 >
-                  <Download className="size-4" />
-                  Download File
-                </a>
-              </Button>
+                  {isDownloading ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Download className="size-4" />
+                  )}
+                  Download
+                </Button>
+              </div>
             </div>
           )}
         </div>

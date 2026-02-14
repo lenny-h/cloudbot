@@ -1,9 +1,7 @@
 "use client";
 
-import { useEditor } from "@/contexts/editor-context";
-import { useRefs } from "@/contexts/refs-context";
 import { useWebTranslations } from "@/contexts/web-translations";
-import { resizeEditor } from "@/lib/utils";
+import { useViewDocument } from "@/hooks/use-view-document";
 import { useQueryClient } from "@tanstack/react-query";
 import { type ArtifactKind } from "@workspace/api-routes/schemas/artifact-schema";
 import { Badge } from "@workspace/ui/components/badge";
@@ -16,7 +14,6 @@ import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { cn } from "@workspace/ui/lib/utils";
 import { Code, FileText, Loader2, Search, Trash2 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
-import { toast } from "sonner";
 import { DeleteForm } from "./delete-form";
 
 interface Document {
@@ -46,12 +43,7 @@ export const DocumentsPage = memo(() => {
   const { sharedT, locale } = useSharedTranslations();
   const { webT } = useWebTranslations();
   const queryClient = useQueryClient();
-  const { panelRef, textEditorRef, codeEditorRef } = useRefs();
-  const {
-    setEditorMode,
-    setTextDocumentIdentifier,
-    setCodeDocumentIdentifier,
-  } = useEditor();
+  const { viewDocument } = useViewDocument();
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -127,43 +119,7 @@ export const DocumentsPage = memo(() => {
     }
   };
 
-  const handleViewDocument = (doc: Document) => {
-    toast.promise(
-      (async () => {
-        const document = await apiFetcher(
-          (client) =>
-            client["documents"][":documentId"].$get({
-              param: { documentId: doc.id },
-            }),
-          sharedT.apiCodes,
-        );
 
-        if (!document.content) {
-          throw new Error("Document content is empty");
-        }
-
-        setEditorMode(doc.kind);
-
-        const { updateEditorWithDispatch } =
-          await import("@/components/editors/helper-functions/update-editor-with-dispatch");
-
-        if (doc.kind === "text") {
-          updateEditorWithDispatch("text", textEditorRef, document.content);
-          setTextDocumentIdentifier({ id: doc.id, title: doc.title });
-        } else {
-          updateEditorWithDispatch("code", codeEditorRef, document.content);
-          setCodeDocumentIdentifier({ id: doc.id, title: doc.title });
-        }
-
-        resizeEditor(panelRef, false);
-      })(),
-      {
-        loading: "Loading document...",
-        success: "Document loaded successfully",
-        error: (error) => "Error loading document: " + error,
-      },
-    );
-  };
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString(locale, {
@@ -238,7 +194,7 @@ export const DocumentsPage = memo(() => {
                 </div>
                 <button
                   className="flex-1 cursor-pointer overflow-hidden text-left"
-                  onClick={() => handleViewDocument(doc)}
+                  onClick={() => viewDocument(doc.id, doc.kind, doc.title)}
                 >
                   <h3 className="truncate font-medium">{doc.title}</h3>
                   <div className="flex items-center gap-2">

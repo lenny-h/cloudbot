@@ -1,6 +1,9 @@
 "use client";
 
+import { useViewDocument } from "@/hooks/use-view-document";
+import { type ArtifactKind } from "@workspace/api-routes/schemas/artifact-schema";
 import { Badge } from "@workspace/ui/components/badge";
+import { Button } from "@workspace/ui/components/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -11,6 +14,7 @@ import { type ToolUIPart } from "ai";
 import {
   CheckCircle2,
   ChevronDown,
+  Eye,
   FileEdit,
   Loader2,
   XCircle,
@@ -20,8 +24,13 @@ import { useState } from "react";
 interface ToolUpdateDocumentProps {
   part: ToolUIPart<{
     updateDocument: {
-      input: { documentId: string; content: string };
-      output: { success?: boolean; error?: string };
+      input: { id: string; description: string };
+      output: {
+        id: string;
+        title: string;
+        kind: ArtifactKind;
+        message: string;
+      };
     };
   }>;
 }
@@ -29,6 +38,7 @@ interface ToolUpdateDocumentProps {
 export function ToolUpdateDocument({ part }: ToolUpdateDocumentProps) {
   const [isOpen, setIsOpen] = useState(part.state === "output-available");
   const { state, input, output } = part;
+  const { viewDocument } = useViewDocument();
 
   const getStatusBadge = () => {
     if (state === "input-streaming" || state === "input-available") {
@@ -94,27 +104,35 @@ export function ToolUpdateDocument({ part }: ToolUpdateDocumentProps) {
                   Document ID
                 </div>
                 <code className="bg-muted/50 rounded px-2 py-1 font-mono text-sm">
-                  {input.documentId}
+                  {input.id}
                 </code>
               </div>
 
               <div className="space-y-1.5">
                 <div className="text-muted-foreground text-xs font-medium">
-                  New Content
+                  Description
                 </div>
                 <div className="bg-muted/30 max-h-60 overflow-y-auto rounded border p-3">
                   <pre className="font-mono text-xs whitespace-pre-wrap">
-                    {input.content}
+                    {input.description}
                   </pre>
                 </div>
               </div>
-            </>
-          )}
 
-          {output && state === "output-available" && output.success && (
-            <div className="rounded border border-green-200 bg-green-50 p-3 text-sm text-green-700 dark:border-green-900 dark:bg-green-950/20 dark:text-green-400">
-              Document updated successfully
-            </div>
+              {output && state === "output-available" && (
+                <Button
+                  onClick={() =>
+                    viewDocument(output.id, output.kind, output.title)
+                  }
+                  className="w-full"
+                  size="sm"
+                  variant="outline"
+                >
+                  <Eye className="mr-2 size-4" />
+                  View Document
+                </Button>
+              )}
+            </>
           )}
         </div>
       </CollapsibleContent>
