@@ -119,8 +119,6 @@ export const DocumentsPage = memo(() => {
     }
   };
 
-
-
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString(locale, {
       year: "numeric",
@@ -197,14 +195,14 @@ export const DocumentsPage = memo(() => {
                   onClick={() => viewDocument(doc.id, doc.kind, doc.title)}
                 >
                   <h3 className="truncate font-medium">{doc.title}</h3>
-                  <div className="flex items-center gap-2">
-                    <p className="text-muted-foreground truncate text-xs">
-                      {doc.content}
-                    </p>
-                    <span className="text-muted-foreground text-xs">
-                      {formatDate(doc.createdAt)}
-                    </span>
-                  </div>
+                  <span className="text-muted-foreground text-xs">
+                    {formatDate(doc.createdAt)}
+                  </span>
+                  <p className="text-muted-foreground truncate text-xs">
+                    {doc.content.length >= 40
+                      ? `${doc.content}...`
+                      : doc.content}
+                  </p>
                 </button>
                 <Badge
                   variant="outline"

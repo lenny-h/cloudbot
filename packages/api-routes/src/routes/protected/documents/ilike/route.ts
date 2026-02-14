@@ -29,7 +29,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       .select({
         id: documents.id,
         title: documents.title,
-        content: sql<string>`SUBSTRING(${documents.content}, 1, 50)`.as(
+        content: sql<string>`SUBSTRING(${documents.content}, 1, 40)`.as(
           "content",
         ),
         kind: documents.kind,
