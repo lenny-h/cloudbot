@@ -40,7 +40,7 @@ export const extractFromWeb = ({
         .describe("The information to extract from the web"),
     }),
     outputSchema: z.object({
-      response: z.string(),
+      extractedInformation: z.string(),
     }),
     execute: async ({ informationToExtract }) => {
       const provider = process.env.SEARCH_PROVIDER as SearchProvider;
@@ -213,6 +213,6 @@ export const extractFromWeb = ({
         });
       }
 
-      return { response: result.text };
+      return { extractedInformation: result.text };
     },
   });

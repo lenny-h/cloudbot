@@ -11,10 +11,12 @@ import {
 import { Switch } from "@workspace/ui/components/switch";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import {
+  File,
   FileText,
   FolderOpen,
   MessageCircleDashed,
   MessageCirclePlus,
+  MessageSquare,
   Search,
   Sparkles,
 } from "lucide-react";
@@ -47,7 +49,7 @@ export const NavMain = memo(() => {
         </SidebarMenuButton>
       </SidebarMenuItem>
 
-      {(pathname === `/${locale}` || pathname.endsWith("/practice")) && (
+      {pathname === `/${locale}` && (
         <SidebarMenuItem className="flex items-center space-x-2">
           <SidebarMenuButton
             className="w-fit cursor-pointer"
@@ -68,7 +70,7 @@ export const NavMain = memo(() => {
       <SidebarMenuItem className="mt-4">
         <SidebarMenuButton
           asChild
-          isActive={pathname === `/${locale}` || pathname.includes("chat")}
+          isActive={pathname === `/${locale}` || pathname.includes("/chat/")}
         >
           <Link href={`/${locale}`}>
             <Sparkles />
@@ -87,6 +89,15 @@ export const NavMain = memo(() => {
       </SidebarMenuItem>
 
       <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={pathname === `/${locale}/chats`}>
+          <Link href={`/${locale}/chats`}>
+            <MessageSquare />
+            <span>{webT.navMain.chatsLabel}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+
+      <SidebarMenuItem>
         <SidebarMenuButton
           asChild
           isActive={pathname === `/${locale}/documents`}
@@ -99,13 +110,19 @@ export const NavMain = memo(() => {
       </SidebarMenuItem>
 
       <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={pathname === `/${locale}/folders`}
-        >
+        <SidebarMenuButton asChild isActive={pathname === `/${locale}/folders`}>
           <Link href={`/${locale}/folders`}>
             <FolderOpen />
             <span>{webT.navMain.foldersLabel}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={pathname === `/${locale}/files`}>
+          <Link href={`/${locale}/files`}>
+            <File />
+            <span>{webT.navMain.filesLabel}</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

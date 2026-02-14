@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { artifactKinds } from "@workspace/api-routes/lib/artifacts/artifact-server.js";
+import { artifactSchema } from "@workspace/api-routes/schemas/artifact-schema.js";
 import { itemsPerPageSchema } from "@workspace/api-routes/schemas/items-per-page-schema.js";
 import { pageNumberSchema } from "@workspace/api-routes/schemas/page-number-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
@@ -23,7 +23,7 @@ const jsonSchema = z
   .object({
     title: z.string().min(1).max(128),
     content: z.string().min(1).max(4096),
-    kind: z.enum(artifactKinds),
+    kind: artifactSchema,
   })
   .strict();
 

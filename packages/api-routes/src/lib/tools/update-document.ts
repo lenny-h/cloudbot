@@ -14,6 +14,7 @@
 
 import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
+import { artifactSchema } from "../../schemas/artifact-schema.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { documentHandlersByArtifactKind } from "../artifacts/artifact-server.js";
@@ -37,6 +38,12 @@ export const updateDocument = ({
       description: z
         .string()
         .describe("The description of changes that need to be made"),
+    }),
+    outputSchema: z.object({
+      id: z.string(),
+      title: z.string(),
+      kind: artifactSchema,
+      message: z.string(),
     }),
     execute: async ({ id, description }) => {
       const document = await getDocumentById({ id });
@@ -84,7 +91,7 @@ export const updateDocument = ({
         id,
         title: document.title,
         kind: document.kind,
-        content: "The document has been updated successfully.",
+        message: "The document has been updated successfully.",
       };
     },
   });

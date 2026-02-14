@@ -60,7 +60,7 @@ export const UploadFileDialog = memo(() => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQueryWithRPC({
-    queryKey: ["upload-folders"],
+    queryKey: ["folders"],
     queryFn: ({ pageParam }) =>
       apiFetcher(
         (client) =>
@@ -81,7 +81,10 @@ export const UploadFileDialog = memo(() => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => (v ? setOpen(true) : handleClose())}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => (v ? setOpen(true) : handleClose())}
+    >
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
           <Upload className="size-4" />
@@ -201,9 +204,7 @@ const FolderPickerList = memo(
                   visibilityColor[folder.visibility],
                 )}
               />
-              <span className="flex-1 truncate font-medium">
-                {folder.name}
-              </span>
+              <span className="flex-1 truncate font-medium">{folder.name}</span>
               <span className="text-muted-foreground text-xs capitalize">
                 {folder.visibility}
               </span>
@@ -215,9 +216,7 @@ const FolderPickerList = memo(
         })}
         {hasNextPage && (
           <div ref={inViewRef} className="flex h-8 items-center justify-center">
-            {isFetchingNextPage && (
-              <Loader2 className="size-4 animate-spin" />
-            )}
+            {isFetchingNextPage && <Loader2 className="size-4 animate-spin" />}
           </div>
         )}
       </div>
@@ -226,25 +225,14 @@ const FolderPickerList = memo(
 );
 
 const UploadSection = memo(
-  ({
-    folder,
-    onBack,
-  }: {
-    folder: Folder;
-    onBack: () => void;
-  }) => {
+  ({ folder, onBack }: { folder: Folder; onBack: () => void }) => {
     const { webT } = useWebTranslations();
     const { getRootProps, getInputProps, isDragActive, uploads } =
       useFolderDropzone({ folderId: folder.id });
 
     return (
       <div className="space-y-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5"
-          onClick={onBack}
-        >
+        <Button variant="ghost" size="sm" className="gap-1.5" onClick={onBack}>
           <ChevronLeft className="size-4" />
           {webT.uploadFileDialog.backToFolders}
         </Button>

@@ -14,6 +14,7 @@
 
 import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
+import { artifactSchema } from "../../schemas/artifact-schema.js";
 import { type Bindings } from "../../types/bindings.js";
 import { type CustomUIMessage } from "../../types/custom-ui-message.js";
 import { generateUUID } from "../../utils/generate-uuid.js";
@@ -35,10 +36,25 @@ export const createDocument = ({
 }: CreateDocumentProps) =>
   tool({
     description:
-      "Create a document for a writing or content creation activities. This tool will call other functions that will generate the contents of the document based on the title and kind.",
+      "Create a document with the given title, kind, and description.",
     inputSchema: z.object({
+      title: z.string().describe("The title of the document to create."),
+      kind: z
+        .enum(artifactKinds)
+        .describe(
+          `The kind of document to create. Supported kinds: ${artifactKinds.join(", ")}.`,
+        ),
+      description: z
+        .string()
+        .describe(
+          "A detailed description of the content to generate. Be specific about structure, sections, styling preferences, etc.",
+        ),
+    }),
+    outputSchema: z.object({
+      id: z.string(),
       title: z.string(),
-      kind: z.enum(artifactKinds),
+      kind: artifactSchema,
+      message: z.string(),
     }),
     execute: async ({ title, kind }) => {
       const id = generateUUID();
@@ -80,7 +96,7 @@ export const createDocument = ({
         id,
         title,
         kind,
-        content: "A document was created and is now visible to the user.",
+        message: "A document was created and is now visible to the user.",
       };
     },
   });

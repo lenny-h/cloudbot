@@ -15,7 +15,7 @@ interface DeleteFormProps {
   deleteDialogOpen: boolean;
   setDeleteDialogOpen: (open: boolean) => void;
   onDelete: () => Promise<void>;
-  type: "document" | "chat";
+  type: "document" | "chat" | "folder";
 }
 
 export const DeleteForm = memo(

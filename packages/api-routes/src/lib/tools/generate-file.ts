@@ -1,5 +1,6 @@
-import { generateText, tool, type UIMessageStreamWriter } from "ai";
 import * as z from "zod";
+
+import { generateText, tool, type UIMessageStreamWriter } from "ai";
 import { artifactModelIdx } from "../../providers/models.js";
 import { getModel } from "../../providers/providers.js";
 import { type Bindings } from "../../types/bindings.js";
@@ -28,7 +29,7 @@ const formatDescriptions: Record<FileFormat, string> = {
   svg: "Scalable Vector Graphics image",
 };
 
-const formatExtensions: Record<FileFormat, string> = {
+export const formatExtensions: Record<FileFormat, string> = {
   html: "html",
   xml: "xml",
   markdown: "md",
@@ -38,7 +39,7 @@ const formatExtensions: Record<FileFormat, string> = {
   svg: "svg",
 };
 
-const formatContentTypes: Record<FileFormat, string> = {
+export const formatContentTypes: Record<FileFormat, string> = {
   html: "text/html",
   xml: "application/xml",
   markdown: "text/markdown",
@@ -100,17 +101,21 @@ export const generateFile = ({ userId, dataStream, env }: GenerateFileProps) =>
         .map(([k, v]) => `${k} (${v})`)
         .join("; ")}.`,
     inputSchema: z.object({
-      title: z
-        .string()
-        .describe(
-          "A short, descriptive title for the file (used as the filename)",
-        ),
+      title: z.string().describe("The title of the file to generate."),
       format: z.enum(fileFormats).describe("The output file format"),
       description: z
         .string()
         .describe(
           "A detailed description of the content to generate. Be specific about structure, data, columns, sections, styling preferences, etc.",
         ),
+    }),
+    outputSchema: z.object({
+      fileId: z.string(),
+      filename: z.string(),
+      format: z.string(),
+      contentType: z.string(),
+      size: z.number(),
+      message: z.string(),
     }),
     execute: async ({ title, format, description }) => {
       const fileId = generateUUID();
@@ -149,27 +154,24 @@ export const generateFile = ({ userId, dataStream, env }: GenerateFileProps) =>
 
       // Notify the UI that the file is ready
       const sanitizedTitle = title.replace(/[^a-zA-Z0-9-_\s]/g, "").trim();
-      const fileName = `${sanitizedTitle}.${extension}`;
+      const filename = `${sanitizedTitle}.${extension}`;
 
       dataStream.write({
         type: "data-fileGenerated",
         data: JSON.stringify({
           fileId,
-          fileName,
-          format,
-          contentType,
-          size: contentBuffer.byteLength,
+          filename,
         }),
         transient: true,
       });
 
       return {
         fileId,
-        fileName,
+        filename,
         format,
         contentType,
         size: contentBuffer.byteLength,
-        content: `A ${format.toUpperCase()} file "${fileName}" has been generated and is available for download.`,
+        message: `A ${format.toUpperCase()} file "${filename}" has been generated and is available for download.`,
       };
     },
   });

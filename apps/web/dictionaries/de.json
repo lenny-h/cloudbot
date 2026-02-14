@@ -52,22 +52,26 @@
     "deleteForm": {
         "title": {
             "document": "Dokument löschen",
-            "chat": "Chat löschen"
+            "chat": "Chat löschen",
+            "folder": "Ordner löschen"
         },
         "description": {
             "document": "Sind Sie sicher, dass Sie dieses Dokument löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle zugehörigen Daten werden dauerhaft gelöscht.",
-            "chat": "Sind Sie sicher, dass Sie diesen Chat löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle zugehörigen Daten werden dauerhaft gelöscht."
+            "chat": "Sind Sie sicher, dass Sie diesen Chat löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle zugehörigen Daten werden dauerhaft gelöscht.",
+            "folder": "Sind Sie sicher, dass Sie diesen Ordner löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Alle Dateien im Ordner werden dauerhaft gelöscht."
         },
         "cancel": "Abbrechen",
         "delete": "Löschen",
         "deleting": "Wird gelöscht...",
         "deleted": {
             "document": "Dokument gelöscht!",
-            "chat": "Chat gelöscht!"
+            "chat": "Chat gelöscht!",
+            "folder": "Ordner gelöscht!"
         },
         "error": {
             "document": "Fehler beim Löschen des Dokuments. Bitte versuchen Sie es später erneut.",
-            "chat": "Fehler beim Löschen des Chats. Bitte versuchen Sie es später erneut."
+            "chat": "Fehler beim Löschen des Chats. Bitte versuchen Sie es später erneut.",
+            "folder": "Fehler beim Löschen des Ordners. Bitte versuchen Sie es später erneut."
         }
     },
     "editorDropdownMenu": {
@@ -228,6 +232,8 @@
     "navMain": {
         "chatLabel": "Chat",
         "documentsLabel": "Dokumente",
+        "filesLabel": "Dateien",
+        "chatsLabel": "Chats",
         "foldersLabel": "Ordner",
         "newChat": "Neuer Chat",
         "searchLabel": "Suche",
@@ -272,6 +278,40 @@
         "saving": "Speichert...",
         "titleLabel": "Titel",
         "titlePlaceholder": "Dokumenttitel"
+    },
+    "chatsPage": {
+        "title": "Chats",
+        "subtitle": "Durchsuchen Sie Ihren Chatverlauf.",
+        "errorLoading": "Fehler beim Laden der Chats",
+        "noChats": "Noch keine Chats",
+        "noChatsDescription": "Ihre Gespräche werden hier angezeigt, sobald Sie mit dem Chatten beginnen.",
+        "deleting": "Chat wird gelöscht...",
+        "deleted": "Chat gelöscht!",
+        "failedToDelete": "Fehler beim Löschen des Chats"
+    },
+    "documentsPage": {
+        "title": "Dokumente",
+        "subtitle": "Durchsuchen und verwalten Sie Ihre gespeicherten Dokumente.",
+        "errorLoading": "Fehler beim Laden der Dokumente",
+        "noDocuments": "Noch keine Dokumente",
+        "noDocumentsDescription": "Dokumente, die Sie erstellen oder speichern, werden hier angezeigt.",
+        "deleting": "Dokument wird gelöscht...",
+        "deleted": "Dokument gelöscht!",
+        "failedToDelete": "Fehler beim Löschen des Dokuments",
+        "viewInEditor": "Im Editor anzeigen"
+    },
+    "filesPage": {
+        "title": "Dateien",
+        "subtitle": "Durchsuchen und verwalten Sie die in Ihren Ordnern hochgeladenen Dateien.",
+        "errorLoading": "Fehler beim Laden der Dateien",
+        "noFiles": "Noch keine Dateien",
+        "noFilesDescription": "Laden Sie Dateien in Ihre Ordner hoch, um sie hier zu sehen.",
+        "selectFolders": "Wählen Sie Ordner aus, um Dateien zu durchsuchen",
+        "viewPdf": "PDF anzeigen",
+        "download": "Herunterladen",
+        "deleting": "Datei wird gelöscht...",
+        "deleted": "Datei gelöscht!",
+        "failedToDelete": "Fehler beim Löschen der Datei"
     },
     "searchSelection": {
         "chats": "Chats suchen...",

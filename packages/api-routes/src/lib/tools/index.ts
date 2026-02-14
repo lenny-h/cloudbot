@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 import { tool } from "ai";
+import { artifactSchema } from "../../schemas/artifact-schema.js";
 import { createDocument } from "./create-document.js";
 import { extractFromDocuments } from "./extract-from-documents.js";
 import { extractFromWeb } from "./extract-from-web.js";
@@ -21,7 +22,7 @@ export const mockedTools = {
       informationToExtract: z.string(),
     }),
     outputSchema: z.object({
-      response: z.string(),
+      extractedInformation: z.string(),
     }),
   }),
   extractFromDocuments: tool({
@@ -36,28 +37,41 @@ export const mockedTools = {
   createDocument: tool({
     inputSchema: z.object({
       title: z.string(),
-      content: z.string(),
+      kind: artifactSchema,
+      description: z.string(),
     }),
     outputSchema: z.object({
-      documentId: z.string(),
+      id: z.string(),
+      title: z.string(),
+      kind: artifactSchema,
+      message: z.string(),
     }),
   }),
   updateDocument: tool({
     inputSchema: z.object({
-      documentId: z.string(),
-      content: z.string(),
+      id: z.string(),
+      description: z.string(),
     }),
     outputSchema: z.object({
-      success: z.boolean(),
+      id: z.string(),
+      title: z.string(),
+      kind: artifactSchema,
+      message: z.string(),
     }),
   }),
   generateFile: tool({
     inputSchema: z.object({
-      fileName: z.string(),
-      content: z.string(),
+      title: z.string(),
+      format: z.string(),
+      description: z.string(),
     }),
     outputSchema: z.object({
-      fileUrl: z.string(),
+      fileId: z.string(),
+      filename: z.string(),
+      format: z.string(),
+      contentType: z.string(),
+      size: z.number(),
+      message: z.string(),
     }),
   }),
 };

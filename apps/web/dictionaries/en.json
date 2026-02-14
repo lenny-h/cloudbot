@@ -52,22 +52,26 @@
     "deleteForm": {
         "title": {
             "document": "Delete document",
-            "chat": "Delete chat"
+            "chat": "Delete chat",
+            "folder": "Delete folder"
         },
         "description": {
             "document": "Are you sure you want to delete this document? This action cannot be undone. This will permanently delete the document and all associated data.",
-            "chat": "Are you sure you want to delete this chat? This action cannot be undone. This will permanently delete the chat and all associated data."
+            "chat": "Are you sure you want to delete this chat? This action cannot be undone. This will permanently delete the chat and all associated data.",
+            "folder": "Are you sure you want to delete this folder? This action cannot be undone. This will permanently delete the folder and all its files."
         },
         "cancel": "Cancel",
         "delete": "Delete",
         "deleting": "Deleting...",
         "deleted": {
             "document": "Document deleted!",
-            "chat": "Chat deleted!"
+            "chat": "Chat deleted!",
+            "folder": "Folder deleted!"
         },
         "error": {
             "document": "Failed to delete document. Please try again later.",
-            "chat": "Failed to delete chat. Please try again later."
+            "chat": "Failed to delete chat. Please try again later.",
+            "folder": "Failed to delete folder. Please try again later."
         }
     },
     "editorDropdownMenu": {
@@ -230,7 +234,9 @@
         "temporaryChat": "Temporary chat",
         "chatLabel": "Chat",
         "searchLabel": "Search",
+        "chatsLabel": "Chats",
         "documentsLabel": "Documents",
+        "filesLabel": "Files",
         "foldersLabel": "Folders"
     },
     "pdfViewer": {
@@ -272,6 +278,40 @@
         "saving": "Saving...",
         "titleLabel": "Title",
         "titlePlaceholder": "Document title"
+    },
+    "chatsPage": {
+        "title": "Chats",
+        "subtitle": "Browse and search through your chat history.",
+        "errorLoading": "Error loading chats",
+        "noChats": "No chats yet",
+        "noChatsDescription": "Your conversations will appear here once you start chatting.",
+        "deleting": "Deleting chat...",
+        "deleted": "Chat deleted!",
+        "failedToDelete": "Failed to delete chat"
+    },
+    "documentsPage": {
+        "title": "Documents",
+        "subtitle": "Browse and manage your saved documents.",
+        "errorLoading": "Error loading documents",
+        "noDocuments": "No documents yet",
+        "noDocumentsDescription": "Documents you create or save will appear here.",
+        "deleting": "Deleting document...",
+        "deleted": "Document deleted!",
+        "failedToDelete": "Failed to delete document",
+        "viewInEditor": "View in editor"
+    },
+    "filesPage": {
+        "title": "Files",
+        "subtitle": "Browse and manage files uploaded to your folders.",
+        "errorLoading": "Error loading files",
+        "noFiles": "No files yet",
+        "noFilesDescription": "Upload files to your folders to see them here.",
+        "selectFolders": "Select folders to browse files",
+        "viewPdf": "View PDF",
+        "download": "Download",
+        "deleting": "Deleting file...",
+        "deleted": "File deleted!",
+        "failedToDelete": "Failed to delete file"
     },
     "searchSelection": {
         "chats": "Search for chats...",

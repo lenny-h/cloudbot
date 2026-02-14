@@ -18,8 +18,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { memo, useState } from "react";
-import { toast } from "sonner";
 import { CreateFolderDialog } from "./create-folder-dialog";
+import { DeleteForm } from "./delete-form";
 import { UploadFileDialog } from "./upload-file-dialog";
 
 interface Folder {
@@ -54,6 +54,8 @@ export const FoldersPage = memo(() => {
   const { webT } = useWebTranslations();
   const queryClient = useQueryClient();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null);
 
   const {
     data: folders,
@@ -63,7 +65,7 @@ export const FoldersPage = memo(() => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQueryWithRPC({
-    queryKey: ["managed-folders"],
+    queryKey: ["folders"],
     queryFn: ({ pageParam }) =>
       apiFetcher(
         (client) =>
@@ -77,30 +79,29 @@ export const FoldersPage = memo(() => {
       ),
   });
 
-  const handleDelete = async (folder: Folder) => {
-    setDeletingId(folder.id);
+  const confirmDelete = (folder: Folder) => {
+    setFolderToDelete(folder);
+    setDeleteDialogOpen(true);
+  };
 
-    const deletePromise = apiFetcher(
-      (client) =>
-        client.folders[":folderId"].$delete({
-          param: { folderId: folder.id },
-        }),
-      sharedT.apiCodes,
-    )
-      .then(() => {
-        queryClient.invalidateQueries({ queryKey: ["managed-folders"] });
-        queryClient.invalidateQueries({ queryKey: ["upload-folders"] });
-        queryClient.invalidateQueries({ queryKey: ["folders"] });
-      })
-      .finally(() => {
-        setDeletingId(null);
-      });
+  const handleDelete = async () => {
+    if (!folderToDelete) return;
+    setDeletingId(folderToDelete.id);
+    setDeleteDialogOpen(false);
 
-    toast.promise(deletePromise, {
-      loading: webT.foldersPage.deleting,
-      success: webT.foldersPage.deleted,
-      error: (err) => err.message || webT.foldersPage.failedToDelete,
-    });
+    try {
+      await apiFetcher(
+        (client) =>
+          client.folders[":folderId"].$delete({
+            param: { folderId: folderToDelete.id },
+          }),
+        sharedT.apiCodes,
+      );
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
+    } finally {
+      setDeletingId(null);
+      setFolderToDelete(null);
+    }
   };
 
   return (
@@ -176,7 +177,7 @@ export const FoldersPage = memo(() => {
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground hover:text-destructive shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                  onClick={() => handleDelete(folder)}
+                  onClick={() => confirmDelete(folder)}
                   disabled={deletingId === folder.id}
                 >
                   {deletingId === folder.id ? (
@@ -200,6 +201,13 @@ export const FoldersPage = memo(() => {
           )}
         </div>
       )}
+
+      <DeleteForm
+        deleteDialogOpen={deleteDialogOpen}
+        setDeleteDialogOpen={setDeleteDialogOpen}
+        onDelete={handleDelete}
+        type="folder"
+      />
     </div>
   );
 });

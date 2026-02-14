@@ -10,7 +10,7 @@ import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function ChatPage() {
+export default function ChatRoute() {
   const { locale, sharedT } = useSharedTranslations();
 
   const user = useUser();
