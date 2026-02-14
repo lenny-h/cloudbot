@@ -2,6 +2,7 @@
 
 import { SidebarLeft } from "@/components/sidebars/sidebar-left";
 import { ChatControlProvider } from "@/contexts/chat-control-context";
+import { DataStreamProvider } from "@/contexts/data-stream-context";
 import { DiffProvider } from "@/contexts/diff-context";
 import { EditorProvider } from "@/contexts/editor-context";
 import { FilterProvider } from "@/contexts/filter-context";
@@ -61,12 +62,14 @@ export default function MainLayout({
           <FilterProvider>
             <EditorProvider>
               <DiffProvider>
-                <PDFProvider>
-                  <SidebarProvider defaultOpen={defaultLeftOpen}>
-                    <SidebarLeft />
-                    <SidebarInset>{children}</SidebarInset>
-                  </SidebarProvider>
-                </PDFProvider>
+                <DataStreamProvider>
+                  <PDFProvider>
+                    <SidebarProvider defaultOpen={defaultLeftOpen}>
+                      <SidebarLeft />
+                      <SidebarInset>{children}</SidebarInset>
+                    </SidebarProvider>
+                  </PDFProvider>
+                </DataStreamProvider>
               </DiffProvider>
             </EditorProvider>
           </FilterProvider>

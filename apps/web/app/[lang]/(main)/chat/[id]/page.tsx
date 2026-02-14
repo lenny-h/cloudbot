@@ -2,6 +2,7 @@
 
 import { Chat } from "@/components/custom/chat";
 import { ChatSkeleton } from "@/components/custom/chat-skeleton";
+import { DataStreamHandler } from "@/components/custom/data-stream-handler";
 import { useQuery } from "@tanstack/react-query";
 import { type CustomUIMessage } from "@workspace/api-routes/types/custom-ui-message";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
@@ -59,9 +60,12 @@ export default function ChatRoute() {
   }
 
   return (
-    <Chat
-      chatId={chatId}
-      initialMessages={messages as unknown as CustomUIMessage[]}
-    />
+    <>
+      <Chat
+        chatId={chatId}
+        initialMessages={messages as unknown as CustomUIMessage[]}
+      />
+      <DataStreamHandler />
+    </>
   );
 }

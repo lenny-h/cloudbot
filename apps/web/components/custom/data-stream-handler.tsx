@@ -1,11 +1,10 @@
 "use client";
 
+import { useDataStream } from "@/contexts/data-stream-context";
 import { useDiff } from "@/contexts/diff-context";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
 import { useQueryClient } from "@tanstack/react-query";
-import { type CustomUIDataTypes } from "@workspace/api-routes/types/custom-ui-data-types";
-import { type DataUIPart } from "ai";
 import { useEffect } from "react";
 import { appendContentToEditor } from "../editors/helper-functions/append-content-to-editor";
 import { clearEditor } from "../editors/helper-functions/clear-editor";
@@ -13,13 +12,8 @@ import { disableEditor } from "../editors/helper-functions/disable-editor";
 import { finishDocumentCreation } from "../editors/helper-functions/finish-document-creation";
 import { finishDocumentUpdate } from "../editors/helper-functions/finish-document-update";
 
-export function DataStreamHandler({
-  dataStream,
-  setDataStream,
-}: {
-  dataStream: DataUIPart<CustomUIDataTypes>[];
-  setDataStream: (stream: DataUIPart<CustomUIDataTypes>[]) => void;
-}) {
+export function DataStreamHandler() {
+  const { dataStream, setDataStream } = useDataStream();
   const queryClient = useQueryClient();
   const {
     editorMode,
@@ -41,6 +35,8 @@ export function DataStreamHandler({
     for (const delta of newDeltas) {
       switch (delta.type) {
         case "data-chatCreated":
+          console.log("Chat created with ID:", delta.data.chatId);
+
           queryClient.invalidateQueries({ queryKey: ["chats"] });
           queryClient.invalidateQueries({
             queryKey: ["chatTitle", delta.data.chatId],

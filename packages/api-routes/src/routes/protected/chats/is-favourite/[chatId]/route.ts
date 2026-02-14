@@ -33,12 +33,11 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)))
         .limit(1);
 
-      const isFavourite = result[0]?.isFavourite;
-      if (!isFavourite) {
+      if (result.length === 0) {
         throw new HTTPException(404, { message: "NOT_FOUND" });
       }
 
-      return c.json({ isFavourite });
+      return c.json({ isFavourite: result[0].isFavourite });
     },
   )
   .patch(

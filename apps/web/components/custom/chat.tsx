@@ -1,5 +1,6 @@
 "use client";
 
+import { useDataStream } from "@/contexts/data-stream-context";
 import { type ContextFilter, useFilter } from "@/contexts/filter-context";
 import { useWebTranslations } from "@/contexts/web-translations";
 import { useChat } from "@ai-sdk/react";
@@ -25,6 +26,7 @@ export function Chat({
   const { sharedT } = useSharedTranslations();
   const { webT } = useWebTranslations();
   const { setFilter } = useFilter();
+  const { setDataStream } = useDataStream();
 
   const [input, setInput] = useState("");
 
@@ -54,7 +56,9 @@ export function Chat({
       messages: initialMessages,
       generateId: generateUUID,
       experimental_throttle: 100,
-      // onData: (dataPart) => {}, // TODO
+      onData: (dataPart) => {
+        setDataStream((prevDataStream) => [...prevDataStream, dataPart]);
+      },
       onError: () => toast.error(webT.chat.errorOccurred),
       transport: new DefaultChatTransport({
         api: `${process.env.NEXT_PUBLIC_API_URL}/api/protected/chat`,
