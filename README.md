@@ -157,24 +157,58 @@ wrangler dev --remote
 
 The `--remote` flag connects to your remote D1 and R2 instead of local ones.
 
-### Step 8: Set Up GitHub Secrets (for CI/CD)
+### Step 8: Update Custom Domains in wrangler.jsonc
+
+Replace the example domain (`nextgpt.cloud`) with your own domain in each app's `wrangler.jsonc`:
+
+**apps/api/wrangler.jsonc:**
+
+```json
+"route": {
+    "custom_domain": true,
+    "zone_name": "your-domain.com",
+    "pattern": "api.your-domain.com"
+}
+```
+
+**apps/web/wrangler.jsonc:**
+
+```json
+"route": {
+    "custom_domain": true,
+    "zone_name": "your-domain.com",
+    "pattern": "chat.your-domain.com"
+}
+```
+
+**apps/dashboard/wrangler.jsonc:**
+
+```json
+"route": {
+    "custom_domain": true,
+    "zone_name": "your-domain.com",
+    "pattern": "admin.your-domain.com"
+}
+```
+
+Make sure your domain is added to Cloudflare and the nameservers are updated.
+
+### Step 9: Set Up GitHub Secrets (for CI/CD)
 
 To enable automatic deployment via GitHub Actions, add these secrets to your repository:
 
 1. Go to **GitHub** → **Settings** → **Secrets and variables** → **Actions**
 
 2. Click **New repository secret** and add:
-
    - **CLOUDFLARE_API_TOKEN**
      - Go to Cloudflare Dashboard → **My Profile** → **API Tokens**
      - Click **Create Token** → Select "Edit Cloudflare Workers"
      - Copy the token
-   
    - **CLOUDFLARE_ACCOUNT_ID**
      - Go to Cloudflare Dashboard → **Home**
      - Copy your Account ID (under the domain)
 
-### Step 9: Deploy via GitHub Actions (Automatic)
+### Step 10: Deploy via GitHub Actions (Automatic)
 
 Once secrets are configured, deployments happen automatically:
 
@@ -186,64 +220,33 @@ git push origin main
 ```
 
 **What happens automatically:**
+
 - ✅ GitHub Actions workflow triggers
-- ✅ All packages build
 - ✅ API, Web, and Dashboard deploy simultaneously
 - ✅ Status appears in your repo's **Actions** tab
+- ✅ Cloudflare logging is turned off; you can turn it off in the 'wrangler.jsonc' file for each app under the 'observability' section.
 
-### Step 10: Manual Deployment (if needed)
+### Step 11: Manual Deployment (if needed)
+
+Make sure to set the correct environment variables for each app before deploying.
 
 ```bash
 # Build and deploy all apps
 pnpm run build
 cd apps/api && pnpm run deploy
-cd ../web && pnpm run deploy
-cd ../dashboard && pnpm run deploy
+cd ../web && pnpm run deploy-cloudflare
+cd ../dashboard && pnpm run deploy-cloudflare
 ```
 
 **Your apps are now live at:**
-- API: `https://api.nextgpt.cloud`
-- Web: `https://chat.nextgpt.cloud`
-- Dashboard: `https://admin.nextgpt.cloud`
 
-## Continuous Deployment (CI/CD)
+- API: `https://api.your-domain.com`
+- Web: `https://chat.your-domain.com`
+- Dashboard: `https://admin.your-domain.com`
 
-### Automatic Deployment on Push
+### Continuous Deployment (CI/CD)
 
-The repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically deploys all three applications to Cloudflare Workers when you push to the `main` branch.
-
-**Required Setup (one time):**
-
-1. **Create Cloudflare API Token**
-   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
-   - Navigate to **My Profile** → **API Tokens**
-   - Click **Create Token**
-   - Select "Edit Cloudflare Workers" template (or create custom with Workers write scope)
-   - Copy the token (you won't see it again)
-
-2. **Get Your Cloudflare Account ID**
-   - Dashboard → **Home**
-   - Copy **Account ID** (shown under your domain)
-
-3. **Add GitHub Secrets**
-   - Go to your GitHub repository
-   - **Settings** → **Secrets and variables** → **Actions**
-   - Click **New repository secret** for each:
-     - Name: `CLOUDFLARE_API_TOKEN` → Value: (paste token from step 1)
-     - Name: `CLOUDFLARE_ACCOUNT_ID` → Value: (paste ID from step 2)
-
-**How It Works:**
-
-Every time you push to `main`:
-1. GitHub Actions workflow runs automatically
-2. Installs dependencies and builds all packages
-3. Deploys API, Web, and Dashboard in parallel
-4. Each app updates immediately on Cloudflare Workers
-
-**Monitor Deployments:**
-- Go to GitHub repo → **Actions** tab
-- View logs for each deployment
-- Check status of individual apps
+When new commits are pushed to the `main` branch, GitHub Actions automatically builds and redeploys all apps. You can monitor the deployment status in the **Actions** tab of your GitHub repository.
 
 ## Common Commands
 
