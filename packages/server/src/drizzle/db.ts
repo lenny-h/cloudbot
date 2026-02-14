@@ -9,8 +9,8 @@ import { env } from "cloudflare:workers";
 import { drizzle } from "drizzle-orm/d1";
 
 interface Env {
-  TEST_BUCKET: R2Bucket;
-  YOUR_D1_DATABASE: D1Database;
+  CLOUDBOT_BUCKET: R2Bucket;
+  CLOUDBOT_D1_DATABASE: D1Database;
   AI: Ai;
 }
 
@@ -20,7 +20,7 @@ let _db: Db | null = null;
 
 export function db(): Db {
   if (!_db) {
-    _db = drizzle((env as Env).YOUR_D1_DATABASE, { schema });
+    _db = drizzle((env as Env).CLOUDBOT_D1_DATABASE, { schema });
   }
   return _db;
 }

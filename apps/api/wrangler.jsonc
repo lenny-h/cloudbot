@@ -7,20 +7,30 @@
     ],
     "r2_buckets": [
         {
-            "binding": "TEST_BUCKET",
-            "bucket_name": "test-bucket"
+            "binding": "CLOUDBOT_BUCKET",
+            "bucket_name": "cloudbot-bucket"
         }
     ],
     "d1_databases": [
         {
-            "binding": "YOUR_D1_DATABASE",
-            "database_name": "TEST_DB_NAME",
-            "database_id": "TEST_DB_ID",
+            "binding": "CLOUDBOT_D1_DATABASE",
+            "database_name": "CLOUDBOT_DB",
+            "database_id": "CLOUDBOT_DB_ID",
             "migrations_dir": "./../../packages/server/src/drizzle/migrations"
         }
     ],
     "ai": {
         "binding": "AI",
         "remote": true
+    },
+    "route": {
+        "custom_domain": true,
+        "zone_name": "nextgpt.cloud",
+        "pattern": "api.nextgpt.cloud"
+    },
+    "observability": {
+        "logs": {
+            "enabled": true
+        }
     }
 }

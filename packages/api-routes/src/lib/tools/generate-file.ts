@@ -143,7 +143,7 @@ export const generateFile = ({ userId, dataStream, env }: GenerateFileProps) =>
       // Upload to R2
       const contentBuffer = new TextEncoder().encode(content);
 
-      await env.TEST_BUCKET.put(r2Key, contentBuffer, {
+      await env.CLOUDBOT_BUCKET.put(r2Key, contentBuffer, {
         httpMetadata: { contentType },
         customMetadata: {
           title,
