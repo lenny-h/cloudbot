@@ -109,7 +109,7 @@ export class ChatRequest {
 
     // Check chat ownership and load messages for non-temporary chats
     if (!isTemporary) {
-      const chat = await getChatById(id);
+      const chat = await getChatById({ id });
 
       if (!chat) {
         createNewChat = true;

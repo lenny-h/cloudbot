@@ -319,5 +319,22 @@
         "files": "Search for files...",
         "documents": "Search for documents...",
         "prompts": "Search for prompts..."
+    },
+    "folderCombobox": {
+        "placeholder": "Search folders...",
+        "noFoldersFound": "No folders found"
+    },
+    "searchPage": {
+        "title": "Search Documents",
+        "subtitle": "Search across your document knowledge base using natural language.",
+        "searchPlaceholder": "Describe what you're looking for...",
+        "selectFolders": "Select folders to search in",
+        "selectAtLeastOneFolder": "Please select at least one folder",
+        "searching": "Searching...",
+        "noResults": "No results found",
+        "noResultsDescription": "Try rephrasing your query or selecting different folders.",
+        "errorSearching": "An error occurred while searching. Please try again.",
+        "sources": "Sources",
+        "searchButton": "Search"
     }
 }

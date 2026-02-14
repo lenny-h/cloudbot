@@ -63,8 +63,7 @@ export function Chat({
           return {
             body: {
               id: chatId,
-              message: messages[messages.length - 1],
-              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+              messages: [messages.at(-1)],
               ...body,
             },
           };

@@ -112,9 +112,9 @@ export function ToolGenerateFile({ part }: ToolGenerateFileProps) {
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="w-full rounded-lg border"
+      className="hover:bg-muted/50 w-full rounded-lg border transition-colors"
     >
-      <CollapsibleTrigger className="hover:bg-muted/50 flex w-full items-center justify-between gap-2 p-3 transition-colors">
+      <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between gap-2 p-3">
         <div className="flex items-center gap-2">
           <FileCode className="size-4 text-cyan-600" />
           <span className="text-sm font-medium">Generate File</span>
@@ -163,15 +163,23 @@ export function ToolGenerateFile({ part }: ToolGenerateFileProps) {
             <div className="space-y-3 rounded border border-cyan-200 bg-cyan-50 p-3 dark:border-cyan-900 dark:bg-cyan-950/20">
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 <div>
-                  <div className="text-muted-foreground text-xs font-medium">Filename</div>
+                  <div className="text-muted-foreground text-xs font-medium">
+                    Filename
+                  </div>
                   <code className="font-mono text-sm">{output.filename}</code>
                 </div>
                 <div>
-                  <div className="text-muted-foreground text-xs font-medium">Format</div>
-                  <Badge variant="outline" className="text-xs">{output.format}</Badge>
+                  <div className="text-muted-foreground text-xs font-medium">
+                    Format
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {output.format}
+                  </Badge>
                 </div>
                 <div>
-                  <div className="text-muted-foreground text-xs font-medium">Size</div>
+                  <div className="text-muted-foreground text-xs font-medium">
+                    Size
+                  </div>
                   <div className="text-sm">{humanFileSize(output.size)}</div>
                 </div>
               </div>

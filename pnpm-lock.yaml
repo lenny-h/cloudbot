@@ -86,7 +86,7 @@ importers:
         version: link:../../packages/ui
       better-auth:
         specifier: 1.4.18
-        version: 1.4.18(@prisma/client@5.22.0)(better-sqlite3@12.6.2)(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0))(next@16.1.6(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.18.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.16.9)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.4.18(@prisma/client@5.22.0)(better-sqlite3@12.6.2)(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0))(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.18.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.16.9)(tsx@4.21.0)(yaml@2.8.2))
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -491,7 +491,7 @@ importers:
         version: 1.4.18(@better-auth/utils@0.3.0)(better-auth@1.4.18(@prisma/client@5.22.0)(better-sqlite3@12.6.2)(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0))(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.18.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.16.9)(tsx@4.21.0)(yaml@2.8.2)))
       better-auth:
         specifier: 1.4.18
-        version: 1.4.18(@prisma/client@5.22.0)(better-sqlite3@12.6.2)(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0))(next@16.1.6(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.18.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.16.9)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.4.18(@prisma/client@5.22.0)(better-sqlite3@12.6.2)(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0))(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.18.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.16.9)(tsx@4.21.0)(yaml@2.8.2))
       drizzle-orm:
         specifier: 0.45.1
         version: 0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0)
@@ -575,7 +575,7 @@ importers:
         version: 1.0.0
       next:
         specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.1.6(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-themes:
         specifier: 0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -12547,7 +12547,7 @@ snapshots:
       better-sqlite3: 12.6.2
       drizzle-kit: 0.31.8
       drizzle-orm: 0.45.1(@cloudflare/workers-types@4.20260212.0)(@opentelemetry/api@1.9.0)(@prisma/client@5.22.0)(@types/pg@8.16.0)(better-sqlite3@12.6.2)(kysely@0.28.11)(pg@8.18.0)
-      next: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.1.6(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       pg: 8.18.0
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
@@ -15097,6 +15097,31 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  next@16.1.6(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      '@next/env': 16.1.6
+      '@swc/helpers': 0.5.15
+      baseline-browser-mapping: 2.9.19
+      caniuse-lite: 1.0.30001769
+      postcss: 8.4.31
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      styled-jsx: 5.1.6(react@19.2.4)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 16.1.6
+      '@next/swc-darwin-x64': 16.1.6
+      '@next/swc-linux-arm64-gnu': 16.1.6
+      '@next/swc-linux-arm64-musl': 16.1.6
+      '@next/swc-linux-x64-gnu': 16.1.6
+      '@next/swc-linux-x64-musl': 16.1.6
+      '@next/swc-win32-arm64-msvc': 16.1.6
+      '@next/swc-win32-x64-msvc': 16.1.6
+      '@opentelemetry/api': 1.9.0
+      sharp: 0.34.5
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
   no-case@2.3.2:
     dependencies:
       lower-case: 1.1.4
@@ -16327,6 +16352,11 @@ snapshots:
       react: 19.2.4
     optionalDependencies:
       '@babel/core': 7.29.0
+
+  styled-jsx@5.1.6(react@19.2.4):
+    dependencies:
+      client-only: 0.0.1
+      react: 19.2.4
 
   supports-color@10.2.2: {}
 

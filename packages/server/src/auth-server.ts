@@ -7,9 +7,11 @@ import { HTTPException } from "hono/http-exception";
 import { db } from "./drizzle/db.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "./send-email.js";
 
-console.log("Initializing auth server with the following configuration:");
-console.log(`Better Auth URL: ${process.env.BETTER_AUTH_URL}`);
-console.log(`Enable SSO: ${process.env.ENABLE_SSO}`);
+// console.log("Initializing auth server with the following configuration:");
+// console.log(`Better Auth URL: ${process.env.BETTER_AUTH_URL}`);
+// console.log(`Email Sign-Up Enabled: ${process.env.ENABLE_EMAIL_SIGNUP}`);
+// console.log(`OAuth Login Enabled: ${process.env.ENABLE_OAUTH_LOGIN}`);
+// console.log(`Enable SSO: ${process.env.ENABLE_SSO}`);
 
 // Helper to build the auth instance with correct plugin typing
 function buildAuth() {

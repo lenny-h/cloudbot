@@ -14,20 +14,17 @@ import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { cn } from "@workspace/ui/lib/utils";
 import {
-  Check,
   Download,
   Eye,
   File,
   FolderOpen,
-  Globe,
   Loader2,
-  Lock,
   Search,
-  ShieldCheck,
   Trash2,
 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { FolderCombobox } from "./folder-combobox";
 
 interface Folder {
   id: string;
@@ -46,12 +43,6 @@ interface FileItem {
   createdAt: number;
 }
 
-const visibilityIcons = {
-  private: Lock,
-  public: Globe,
-  protected: ShieldCheck,
-};
-
 export const FilesPage = memo(() => {
   const { sharedT, locale } = useSharedTranslations();
   const { webT } = useWebTranslations();
@@ -66,22 +57,6 @@ export const FilesPage = memo(() => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const selectedFolderIds = selectedFolders.map((f) => f.id);
-
-  // Load folders for selection
-  const { data: folders, isPending: foldersPending } = useInfiniteQueryWithRPC({
-    queryKey: ["folders"],
-    queryFn: ({ pageParam }) =>
-      apiFetcher(
-        (client) =>
-          client.folders.$get({
-            query: {
-              pageNumber: (pageParam ?? 0).toString(),
-              itemsPerPage: "20",
-            },
-          }),
-        sharedT.apiCodes,
-      ),
-  });
 
   // Load files from selected folders
   const {
@@ -132,12 +107,8 @@ export const FilesPage = memo(() => {
 
   const displayFiles = (ilikeResults ?? files) as FileItem[] | undefined;
 
-  const toggleFolder = (folder: Folder) => {
-    setSelectedFolders((prev) =>
-      prev.find((f) => f.id === folder.id)
-        ? prev.filter((f) => f.id !== folder.id)
-        : [...prev, folder],
-    );
+  const handleSetSelectedFolders = (folders: Folder[]) => {
+    setSelectedFolders(folders);
     setIlikeResults(null);
   };
 
@@ -211,38 +182,10 @@ export const FilesPage = memo(() => {
       {/* Folder selection */}
       <div className="space-y-2">
         <p className="text-sm font-medium">{webT.filesPage.selectFolders}</p>
-        {foldersPending ? (
-          <div className="flex gap-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-8 w-24 rounded-md" />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {folders?.map((folder) => {
-              const isSelected = selectedFolders.some(
-                (f) => f.id === folder.id,
-              );
-              const VisIcon = visibilityIcons[folder.visibility] || FolderOpen;
-              return (
-                <button
-                  key={folder.id}
-                  onClick={() => toggleFolder(folder)}
-                  className={cn(
-                    "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors",
-                    isSelected
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "hover:bg-muted/50",
-                  )}
-                >
-                  <VisIcon className="size-3.5" />
-                  <span>{folder.name}</span>
-                  {isSelected && <Check className="size-3.5" />}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        <FolderCombobox
+          selectedFolders={selectedFolders}
+          onSelectedFoldersChange={handleSetSelectedFolders}
+        />
       </div>
 
       {/* Search */}

@@ -35,6 +35,7 @@ import profilesRoute from "./profiles/route.js";
 import promptsDeleteRoute from "./prompts/[promptId]/route.js";
 import promptsIlike from "./prompts/ilike/route.js";
 import promptsRoute from "./prompts/route.js";
+import searchRoute from "./search/route.js";
 
 // Important: Move routes with slugs to the end to prevent route conflicts
 
@@ -101,7 +102,10 @@ const protectedApiRouter = new Hono()
   // Prompts
   .route("/prompts", promptsRoute)
   .route("/prompts/:promptId", promptsDeleteRoute)
-  .route("/prompts/ilike", promptsIlike);
+  .route("/prompts/ilike", promptsIlike)
+
+  // Search
+  .route("/search", searchRoute);
 
 export { protectedApiRouter };
 export type ProtectedApiType = typeof protectedApiRouter;

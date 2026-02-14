@@ -319,5 +319,22 @@
         "files": "Dateien suchen...",
         "documents": "Dokumente suchen...",
         "prompts": "Prompts suchen..."
+    },
+    "folderCombobox": {
+        "placeholder": "Ordner suchen...",
+        "noFoldersFound": "Keine Ordner gefunden"
+    },
+    "searchPage": {
+        "title": "Dokumente durchsuchen",
+        "subtitle": "Durchsuchen Sie Ihre Wissensdatenbank mit natürlicher Sprache.",
+        "searchPlaceholder": "Beschreiben Sie, wonach Sie suchen...",
+        "selectFolders": "Ordner zum Durchsuchen auswählen",
+        "selectAtLeastOneFolder": "Bitte wählen Sie mindestens einen Ordner aus",
+        "searching": "Suche läuft...",
+        "noResults": "Keine Ergebnisse gefunden",
+        "noResultsDescription": "Versuchen Sie, Ihre Anfrage umzuformulieren oder andere Ordner auszuwählen.",
+        "errorSearching": "Beim Suchen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+        "sources": "Quellen",
+        "searchButton": "Suchen"
     }
 }

@@ -4,7 +4,7 @@
 @source "../**/*.{ts,tsx}";
 
 @import "tw-animate-css";
-/* @import "@tailwindcss/typography"; */
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 

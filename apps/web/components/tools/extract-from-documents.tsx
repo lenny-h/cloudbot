@@ -75,9 +75,9 @@ export function ToolExtractFromDocuments({
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="w-full rounded-lg border"
+      className="hover:bg-muted/50 w-full rounded-lg border transition-colors"
     >
-      <CollapsibleTrigger className="hover:bg-muted/50 flex w-full items-center justify-between gap-2 p-3 transition-colors">
+      <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between gap-2 p-3">
         <div className="flex items-center gap-2">
           <FileText className="size-4 text-blue-600" />
           <span className="text-sm font-medium">Extract from Documents</span>
