@@ -5,7 +5,7 @@ import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { courseUsers, folders } from "@workspace/server/drizzle/schema.js";
+import { folderUsers, folders } from "@workspace/server/drizzle/schema.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -50,14 +50,14 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       // Public folders allow anyone to download
       hasAccess = true;
     } else if (folder.visibility === "protected") {
-      // Protected folders require user to be in courseUsers or be the owner
+      // Protected folders require user to be in folderUsers or be the owner
       const access = await db()
         .select()
-        .from(courseUsers)
+        .from(folderUsers)
         .where(
           and(
-            eq(courseUsers.folderId, folderId),
-            eq(courseUsers.userId, user.id),
+            eq(folderUsers.folderId, folderId),
+            eq(folderUsers.userId, user.id),
           ),
         )
         .limit(1);

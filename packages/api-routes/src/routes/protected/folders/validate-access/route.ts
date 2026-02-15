@@ -1,7 +1,7 @@
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { courseUsers, folders } from "@workspace/server/drizzle/schema.js";
+import { folderUsers, folders } from "@workspace/server/drizzle/schema.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -46,15 +46,15 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       return c.json({ hasAccess: true });
     }
 
-    // For protected folders, check courseUsers table
+    // For protected folders, check folderUsers table
     if (folder.visibility === "protected") {
       const access = await db()
         .select()
-        .from(courseUsers)
+        .from(folderUsers)
         .where(
           and(
-            eq(courseUsers.folderId, folderId),
-            eq(courseUsers.userId, user.id),
+            eq(folderUsers.folderId, folderId),
+            eq(folderUsers.userId, user.id),
           ),
         )
         .limit(1);

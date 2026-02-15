@@ -315,7 +315,7 @@
     },
     "searchSelection": {
         "chats": "Search for chats...",
-        "folders": "Search for courses...",
+        "folders": "Search for folders...",
         "files": "Search for files...",
         "documents": "Search for documents...",
         "prompts": "Search for prompts..."

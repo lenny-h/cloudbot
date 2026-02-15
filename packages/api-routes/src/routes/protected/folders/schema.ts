@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const createCourseFormSchema = z
+const createFolderFormSchema = z
   .object({
     name: z
       .string()
@@ -30,8 +30,8 @@ const createCourseFormSchema = z
   )
   .strict();
 
-export const createCourseSchema = z
+export const createFolderSchema = z
   .object({
-    values: createCourseFormSchema,
+    values: createFolderFormSchema,
   })
   .strict();

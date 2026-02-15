@@ -17,7 +17,7 @@ import {
   filterAuthorizedFiles,
 } from "../../utils/filter-authorized-files.js";
 import {
-  filterAuthorizedCourses,
+  filterAuthorizedFolders,
   type FolderMetadata,
 } from "../../utils/filter-authorized-folders.js";
 import { generateUUID } from "../../utils/generate-uuid.js";
@@ -130,7 +130,7 @@ export class StandardChatHandler extends ChatHandler {
       // Check folders only if no files are present
       else if (contextFilter.folders && contextFilter.folders.length > 0) {
         const folderIds = contextFilter.folders.map((c) => c.id);
-        const requestedCourses = await db()
+        const requestedFolders = await db()
           .select({
             id: folders.id,
             visibility: folders.visibility,
@@ -140,16 +140,16 @@ export class StandardChatHandler extends ChatHandler {
           .from(folders)
           .where(inArray(folders.id, folderIds));
 
-        const authorizedFolderMetadata = await filterAuthorizedCourses(
-          requestedCourses,
+        const authorizedFolderMetadata = await filterAuthorizedFolders(
+          requestedFolders,
           this.request.user.id,
         );
 
         if (authorizedFolderMetadata.length !== folderIds.length) {
           logger.warn("User does not have access to all referenced folders", {
             userId: this.request.user.id,
-            requestedCourses: folderIds.length,
-            authorizedCourses: authorizedFolderMetadata.length,
+            requestedFolders: folderIds.length,
+            authorizedFolders: authorizedFolderMetadata.length,
           });
           throw new HTTPException(403, {
             message: "You do not have permission to access one or more folders",

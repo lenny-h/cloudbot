@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { courseUsers } from "@workspace/server/drizzle/schema.js";
+import { folderUsers } from "@workspace/server/drizzle/schema.js";
 import { and, eq } from "drizzle-orm";
 
 export type FileMetadata = {
@@ -12,7 +12,7 @@ export type FileMetadata = {
 /**
  * Filters files based on user permissions
  * - Public files are always accessible
- * - Protected files require user to be in courseUsers
+ * - Protected files require user to be in folderUsers
  * - Private files require user to be the owner
  */
 export async function filterAuthorizedFiles(
@@ -26,15 +26,15 @@ export async function filterAuthorizedFiles(
         return file;
       }
 
-      // For protected files, check if user has access via courseUsers
+      // For protected files, check if user has access via folderUsers
       if (file.visibility === "protected") {
         const access = await db()
           .select()
-          .from(courseUsers)
+          .from(folderUsers)
           .where(
             and(
-              eq(courseUsers.folderId, file.folderId),
-              eq(courseUsers.userId, userId),
+              eq(folderUsers.folderId, file.folderId),
+              eq(folderUsers.userId, userId),
             ),
           )
           .limit(1);

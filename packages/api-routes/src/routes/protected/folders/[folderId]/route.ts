@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { deleteCourse } from "@workspace/api-routes/lib/queries/folders.js";
+import { deleteFolder } from "@workspace/api-routes/lib/queries/folders.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -39,7 +39,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    const courseFiles = await db()
+    const folderFiles = await db()
       .select({
         id: files.id,
         visibility: files.visibility,
@@ -47,17 +47,17 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       .from(files)
       .where(eq(files.folderId, folderId));
 
-    if (courseFiles.length === 0) {
-      const deletedCourseName = await deleteCourse({ folderId });
+    if (folderFiles.length === 0) {
+      const deletedFolderName = await deleteFolder({ folderId });
 
-      if (!deletedCourseName) {
+      if (!deletedFolderName) {
         throw new HTTPException(404, { message: "NOT_FOUND" });
       }
 
-      return c.json({ name: deletedCourseName });
+      return c.json({ name: deletedFolderName });
     }
 
-    for (const file of courseFiles) {
+    for (const file of folderFiles) {
       await db().delete(files).where(eq(files.id, file.id));
 
       const key =
@@ -68,13 +68,13 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       await c.env.CLOUDBOT_BUCKET.delete(key);
     }
 
-    const deletedCourseName = await deleteCourse({ folderId });
+    const deletedFolderName = await deleteFolder({ folderId });
 
-    if (!deletedCourseName) {
+    if (!deletedFolderName) {
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    return c.json({ name: deletedCourseName });
+    return c.json({ name: deletedFolderName });
   },
 );
 

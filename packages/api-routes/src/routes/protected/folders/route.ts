@@ -6,12 +6,12 @@ import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { encryptApiKey } from "@workspace/api-routes/utils/encryption.js";
 import { db } from "@workspace/server/drizzle/db.js";
-import { courseUsers, folders } from "@workspace/server/drizzle/schema.js";
+import { folderUsers, folders } from "@workspace/server/drizzle/schema.js";
 import { and, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
-import { createCourseSchema } from "./schema.js";
+import { createFolderSchema } from "./schema.js";
 
 const querySchema = z
   .object({
@@ -58,7 +58,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
   .post(
     "/",
     validator("json", async (value, c) => {
-      const parsed = createCourseSchema.safeParse(value);
+      const parsed = createFolderSchema.safeParse(value);
       if (!parsed.success) {
         throw new HTTPException(400, { message: "BAD_REQUEST" });
       }
@@ -88,7 +88,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
       // If the folder is protected, add the creator as a member
       if (values.visibility === "protected") {
-        await db().insert(courseUsers).values({
+        await db().insert(folderUsers).values({
           folderId: insertedFolder.id,
           userId: user.id,
         });

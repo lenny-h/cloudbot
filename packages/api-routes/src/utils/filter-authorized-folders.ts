@@ -1,5 +1,5 @@
 import { db } from "@workspace/server/drizzle/db.js";
-import { courseUsers } from "@workspace/server/drizzle/schema.js";
+import { folderUsers } from "@workspace/server/drizzle/schema.js";
 import { and, eq } from "drizzle-orm";
 
 export type FolderMetadata = {
@@ -12,29 +12,29 @@ export type FolderMetadata = {
 /**
  * Filters folders based on user permissions
  * - Public folders are always accessible
- * - Protected folders require user to be in courseUsers
+ * - Protected folders require user to be in folderUsers
  * - Private folders require user to be the owner
  */
-export async function filterAuthorizedCourses(
-  courseList: FolderMetadata[],
+export async function filterAuthorizedFolders(
+  folderList: FolderMetadata[],
   userId: string,
 ): Promise<FolderMetadata[]> {
-  const filteredCourses = await Promise.all(
-    courseList.map(async (folder) => {
+  const filteredFolders = await Promise.all(
+    folderList.map(async (folder) => {
       // Public folders are always allowed
       if (folder.visibility === "public") {
         return folder;
       }
 
-      // For protected folders, check if user has access via courseUsers
+      // For protected folders, check if user has access via folderUsers
       if (folder.visibility === "protected") {
         const access = await db()
           .select()
-          .from(courseUsers)
+          .from(folderUsers)
           .where(
             and(
-              eq(courseUsers.folderId, folder.id),
-              eq(courseUsers.userId, userId),
+              eq(folderUsers.folderId, folder.id),
+              eq(folderUsers.userId, userId),
             ),
           )
           .limit(1);
@@ -52,5 +52,5 @@ export async function filterAuthorizedCourses(
   );
 
   // Remove null entries (folders user doesn't have access to)
-  return filteredCourses.filter((folder) => folder !== null);
+  return filteredFolders.filter((folder) => folder !== null);
 }

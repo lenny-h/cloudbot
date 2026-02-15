@@ -19,7 +19,7 @@ interface Props {
 interface File extends ListItem {
   id: string;
   name: string;
-  courseId: string;
+  folderId: string;
 }
 
 export const FilesList = memo(({ open, setOpen, inputValue }: Props) => {
@@ -34,7 +34,7 @@ export const FilesList = memo(({ open, setOpen, inputValue }: Props) => {
 
   const handleItemClick = (item: ListItem) => {
     const file = item as File;
-    openPdf(isMobile, panelRef, file.courseId, file.name);
+    openPdf(isMobile, panelRef, file.folderId, file.name);
     setOpen(false);
   };
 

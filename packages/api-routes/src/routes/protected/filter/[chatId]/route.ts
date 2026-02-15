@@ -149,9 +149,9 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
         name: prompt.name,
         content: prompt.content,
       })),
-      folders: foldersData.map((course) => ({
-        id: course.id,
-        name: course.name,
+      folders: foldersData.map((folder) => ({
+        id: folder.id,
+        name: folder.name,
       })),
       files: filesData.map((file) => ({
         id: file.id,

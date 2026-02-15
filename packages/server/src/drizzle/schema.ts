@@ -206,10 +206,10 @@ export const folders = sqliteTable("folders", {
 
 export type Folder = InferSelectModel<typeof folders>;
 
-export const courseUsers = sqliteTable(
-  "course_users",
+export const folderUsers = sqliteTable(
+  "folder_users",
   {
-    folderId: text("course_id")
+    folderId: text("folder_id")
       .notNull()
       .references(() => folders.id, { onDelete: "cascade" }),
     userId: text("user_id")
@@ -233,7 +233,7 @@ export const files = sqliteTable(
     visibility: text("visibility", { enum: ["private", "protected", "public"] })
       .notNull()
       .default("private"),
-    folderId: text("course_id")
+    folderId: text("folder_id")
       .notNull()
       .references(() => folders.id),
     name: text("name").notNull(),

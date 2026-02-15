@@ -6,7 +6,7 @@ import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { buildMetadataFilter } from "@workspace/api-routes/utils/build-metadata-filter.js";
 import { type FileMetadata } from "@workspace/api-routes/utils/filter-authorized-files.js";
 import {
-  filterAuthorizedCourses,
+  filterAuthorizedFolders,
   type FolderMetadata,
 } from "@workspace/api-routes/utils/filter-authorized-folders.js";
 import { db } from "@workspace/server/drizzle/db.js";
@@ -48,7 +48,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       .from(folders)
       .where(inArray(folders.id, folderIds));
 
-    const authorizedFolders = await filterAuthorizedCourses(
+    const authorizedFolders = await filterAuthorizedFolders(
       requestedFolders,
       user.id,
     );

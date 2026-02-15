@@ -8,9 +8,9 @@ import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { generateUUID } from "@workspace/api-routes/utils/generate-uuid.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import {
-  courseUsers,
   files,
   folders,
+  folderUsers,
 } from "@workspace/server/drizzle/schema.js";
 import { createLogger } from "@workspace/server/logger/logger.js";
 import { and, eq } from "drizzle-orm";
@@ -71,14 +71,14 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       // Public folders allow anyone to upload
       hasAccess = true;
     } else if (folder.visibility === "protected") {
-      // Protected folders require user to be in courseUsers or be the owner
+      // Protected folders require user to be in folderUsers or be the owner
       const access = await db()
         .select()
-        .from(courseUsers)
+        .from(folderUsers)
         .where(
           and(
-            eq(courseUsers.folderId, folderId),
-            eq(courseUsers.userId, user.id),
+            eq(folderUsers.folderId, folderId),
+            eq(folderUsers.userId, user.id),
           ),
         )
         .limit(1);

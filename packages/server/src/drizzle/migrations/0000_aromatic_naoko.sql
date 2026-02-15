@@ -25,15 +25,6 @@ CREATE TABLE `chats` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `course_users` (
-	`course_id` text NOT NULL,
-	`user_id` text NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
-	PRIMARY KEY(`course_id`, `user_id`),
-	FOREIGN KEY (`course_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
-);
---> statement-breakpoint
 CREATE TABLE `diffs` (
 	`id` text PRIMARY KEY NOT NULL,
 	`document_id` text NOT NULL,
@@ -60,17 +51,26 @@ CREATE TABLE `documents` (
 CREATE TABLE `files` (
 	`id` text PRIMARY KEY NOT NULL,
 	`visibility` text DEFAULT 'private' NOT NULL,
-	`course_id` text NOT NULL,
+	`folder_id` text NOT NULL,
 	`name` text NOT NULL,
 	`owner` text NOT NULL,
 	`size` integer NOT NULL,
 	`format` text NOT NULL,
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
-	FOREIGN KEY (`course_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`folder_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`owner`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `files_course_id_name_unique` ON `files` (`course_id`,`name`);--> statement-breakpoint
+CREATE UNIQUE INDEX `files_folder_id_name_unique` ON `files` (`folder_id`,`name`);--> statement-breakpoint
+CREATE TABLE `folder_users` (
+	`folder_id` text NOT NULL,
+	`user_id` text NOT NULL,
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	PRIMARY KEY(`folder_id`, `user_id`),
+	FOREIGN KEY (`folder_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `folders` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
