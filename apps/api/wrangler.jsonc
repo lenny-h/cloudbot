@@ -32,5 +32,42 @@
         "logs": {
             "enabled": true
         }
+    },
+    "vars": {
+        "NODE_ENV": "production",
+        "BETTER_AUTH_URL": "nextgpt.cloud",
+        "ADMIN_USER_IDS": "",
+        "ALLOWED_ORIGINS": "app.nextgpt.cloud,dashboard.nextgpt.cloud",
+        "ENABLE_EMAIL_SIGNUP": "true",
+        "ENABLE_OAUTH_LOGIN": "false",
+        "ENABLE_SSO": "false",
+        "ALLOWED_EMAIL_DOMAINS": "",
+        "RESEND_SENDER_EMAIL": "onboarding@test.nextgpt.cloud",
+        "GOOGLE_CLIENT_ID": "",
+        "GITHUB_CLIENT_ID": "",
+        "GITLAB_CLIENT_ID": "",
+        "SSO_DOMAIN": "",
+        "SSO_PROVIDER_ID": "",
+        "SSO_CLIENT_ID": "",
+        "SSO_ISSUER": "",
+        "SSO_DISCOVERY_ENDPOINT": "",
+        "SSO_AUTHORIZATION_ENDPOINT": "",
+        "SSO_TOKEN_ENDPOINT": "",
+        "SSO_JWKS_ENDPOINT": "",
+        "NEXT_PUBLIC_LLM_MODELS": "[{'name':'gpt-4o','label':'GPT-4o','provider':'openai','description':'Faster model','images':true,'pdfs':true,'reasoning':false},{'name':'gpt-5','label':'GPT-5','provider':'openai','description':'More capable model','images':true,'pdfs':true,'reasoning':false}]",
+        "R2_ENDPOINT": "",
+        "CLOUDFLARE_ACCESS_KEY_ID": "",
+        "AWS_ACCESS_KEY_ID": "",
+        "AWS_REGION": "",
+        "AZURE_RESOURCE_NAME": "",
+        "GOOGLE_VERTEX_PROJECT": "",
+        "GOOGLE_VERTEX_LOCATION": "",
+        "GOOGLE_CLIENT_EMAIL": "",
+        "GOOGLE_PRIVATE_KEY_ID": "",
+        "SEARCH_PROVIDER": "openai",
+        "TITLE_MODEL_IDX": "",
+        "ARTIFACT_MODEL_IDX": "",
+        "WEB_SEARCH_MODEL_IDX": "",
+        "COMPLETION_MODEL_IDX": ""
     }
 }
