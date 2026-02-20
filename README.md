@@ -34,7 +34,7 @@ pnpm run dev
 - To apply migrations to the local D1 database:
 
 ```bash
-wrangler d1 migrations apply cloudbot-db --local
+wrangler d1 migrations apply cloudbot_db --local
 ```
 
 Wrangler automatically keeps track of the migrations already applied to the local D1 database, so it is safe to run this command multiple times during development as you create new migrations.
@@ -49,10 +49,10 @@ pnpm run dev --filter=web --filter=dashboard
 
 ```bash
 # Query local D1 database
-wrangler d1 execute cloudbot-db --local --command "SELECT * FROM users"
+wrangler d1 execute cloudbot_db --local --command "SELECT * FROM users"
 
 # List local R2 objects
-wrangler r2 object list cloudbot_bucket --local
+wrangler r2 object list cloudbot-bucket --local
 ```
 
 ## Production Setup (Remote D1 and R2)
@@ -75,18 +75,18 @@ wrangler whoami
 
 ```bash
 # Create the D1 database
-wrangler d1 create cloudbot-db
+wrangler d1 create cloudbot_db
 ```
 
 **Output example:**
 
 ```
-✅ Successfully created DB 'cloudbot-db'
+✅ Successfully created DB 'cloudbot_db'
 Created your database using D1's new storage backend.
 
 [[d1_databases]]
 binding = "DB"
-database_name = "cloudbot-db"
+database_name = "cloudbot_db"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
@@ -99,8 +99,8 @@ Update `apps/api/wrangler.jsonc`:
 ```json
 "d1_databases": [
     {
-        "binding": "cloudbot-db",
-        "database_name": "cloudbot-db",
+        "binding": "cloudbot_db",
+        "database_name": "cloudbot_db",
         "database_id": "YOUR_ACTUAL_DATABASE_ID_HERE",
         "migrations_dir": "./../../packages/server/src/drizzle/migrations"
     }
@@ -111,27 +111,27 @@ Update `apps/api/wrangler.jsonc`:
 
 ```bash
 # Apply migrations to remote database
-wrangler d1 migrations apply cloudbot-db --remote
+wrangler d1 migrations apply cloudbot_db --remote
 ```
 
 To verify:
 
 ```bash
 # List tables in remote database
-wrangler d1 execute cloudbot-db --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
+wrangler d1 execute cloudbot_db --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
 ```
 
 ### Step 5: Create Remote R2 Bucket
 
 ```bash
 # Create the R2 bucket
-wrangler r2 bucket create cloudbot_bucket
+wrangler r2 bucket create cloudbot-bucket
 ```
 
 **Output:**
 
 ```
-✅ Created bucket 'cloudbot_bucket'
+✅ Created bucket 'cloudbot-bucket'
 ```
 
 ### Step 6: Update wrangler.jsonc with R2 Info (if needed)
@@ -141,8 +141,8 @@ Update `apps/api/wrangler.jsonc`:
 ```json
 "r2_buckets": [
     {
-        "binding": "cloudbot-bucket",
-        "bucket_name": "cloudbot_bucket"
+        "binding": "cloudbot_bucket",
+        "bucket_name": "cloudbot-bucket"
     }
 ]
 ```
@@ -395,16 +395,16 @@ When new commits are pushed to the `main` branch, GitHub Actions automatically b
 wrangler d1 execute YOUR_D1_DATABASE --local --command "SELECT * FROM users"
 
 # Execute SQL on remote database
-wrangler d1 execute cloudbot-db --remote --command "SELECT * FROM users"
+wrangler d1 execute cloudbot_db --remote --command "SELECT * FROM users"
 
 # Execute SQL from file
-wrangler d1 execute cloudbot-db --remote --file=./query.sql
+wrangler d1 execute cloudbot_db --remote --file=./query.sql
 
 # List all D1 databases
 wrangler d1 list
 
 # Delete a database (careful!)
-wrangler d1 delete cloudbot-db
+wrangler d1 delete cloudbot_db
 ```
 
 ### R2 Bucket Commands
@@ -414,22 +414,22 @@ wrangler d1 delete cloudbot-db
 wrangler r2 bucket list
 
 # Get bucket info
-wrangler r2 bucket info cloudbot_bucket
+wrangler r2 bucket info cloudbot-bucket
 
 # Upload a file
-wrangler r2 object put cloudbot_bucket/path/file.txt --file=./local-file.txt
+wrangler r2 object put cloudbot-bucket/path/file.txt --file=./local-file.txt
 
 # List objects in bucket
-wrangler r2 object list cloudbot_bucket
+wrangler r2 object list cloudbot-bucket
 
 # Download an object
-wrangler r2 object get cloudbot_bucket/path/file.txt --file=./downloaded-file.txt
+wrangler r2 object get cloudbot-bucket/path/file.txt --file=./downloaded-file.txt
 
 # Delete an object
-wrangler r2 object delete cloudbot_bucket/path/file.txt
+wrangler r2 object delete cloudbot-bucket/path/file.txt
 
 # Delete a bucket (must be empty)
-wrangler r2 bucket delete cloudbot_bucket
+wrangler r2 bucket delete cloudbot-bucket
 ```
 
 ### Development Commands
@@ -502,7 +502,7 @@ cloudbot/
 
 ### "R2 bucket not found"
 
-- Create the bucket: `wrangler r2 bucket create cloudbot_bucket`
+- Create the bucket: `wrangler r2 bucket create cloudbot-bucket`
 - Verify the `bucket_name` in `wrangler.jsonc` is correct
 - Check you're authenticated: `wrangler whoami`
 
@@ -510,10 +510,10 @@ cloudbot/
 
 ```bash
 # Apply migrations manually
-wrangler d1 migrations apply cloudbot-db --remote
+wrangler d1 migrations apply cloudbot_db --remote
 
 # Check migration status
-wrangler d1 migrations list cloudbot-db
+wrangler d1 migrations list cloudbot_db
 ```
 
 ### Clear local development data
