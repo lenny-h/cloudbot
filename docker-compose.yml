@@ -16,9 +16,6 @@ services:
       - default_network
 
 volumes:
-  postgres-data:
-  redis-data:
-  minio-data:
 
 networks:
   default_network:

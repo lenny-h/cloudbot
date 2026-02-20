@@ -2,10 +2,10 @@
 
 import { memo, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "../components/button";
 import { GitHubIcon, GitLabIcon, GoogleIcon } from "../components/icons";
 import { useSharedTranslations } from "../contexts/shared-translations-context";
 import { client } from "../lib/auth-client";
-import { SubmitButton } from "./submit-button";
 
 export const SocialLogins = memo(() => {
   const { locale, sharedT } = useSharedTranslations();
@@ -40,36 +40,40 @@ export const SocialLogins = memo(() => {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      <SubmitButton
-        variant="outline"
-        className="border-primary w-full"
+      <Button
+        className="border border-primary w-full"
         onClick={handleGoogleLogin}
-        isPending={isPending}
-        pendingText={sharedT.signIn.redirecting}
-      >
-        <GoogleIcon />
-        Google
-      </SubmitButton>
-      <SubmitButton
+        type="submit"
         variant="outline"
-        className="border-primary w-full"
-        isPending={false}
-        pendingText={sharedT.signIn.redirecting}
+        disabled={isPending}
+      >
+        {isPending ? (
+          sharedT.signIn.redirecting
+        ) : (
+          <>
+            <GoogleIcon />
+            Google
+          </>
+        )}
+      </Button>
+      <Button
+        className="border border-primary w-full"
+        type="submit"
+        variant="outline"
         disabled
       >
         <GitHubIcon />
         GitHub
-      </SubmitButton>
-      <SubmitButton
+      </Button>
+      <Button
+        className="border border-primary w-full"
+        type="submit"
         variant="outline"
-        className="border-primary w-full"
-        isPending={false}
-        pendingText={sharedT.signIn.redirecting}
         disabled
       >
         <GitLabIcon />
         GitLab
-      </SubmitButton>
+      </Button>
     </div>
   );
 });

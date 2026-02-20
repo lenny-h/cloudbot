@@ -97,7 +97,7 @@ const PureAgentMessage = ({
           className={cn(
             !isThinking && "relative flex w-full flex-col gap-4 p-3",
             isLastMessage &&
-              "min-h-[calc(100dvh-328px)] md:min-h-[calc(100dvh-336px)]",
+              "min-h-[calc(100dvh-324px)] md:min-h-[calc(100dvh-332px)]",
           )}
         >
           {isThinking || (isLoading && message.parts.length === 0) ? (

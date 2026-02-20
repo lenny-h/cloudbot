@@ -179,8 +179,6 @@
         "readAloud": "Read aloud",
         "stopReading": "Stop reading",
         "retry": "Retry",
-        "like": "Like",
-        "dislike": "Dislike",
         "editor": "Editor",
         "copiedToClipboard": "Copied to clipboard!",
         "retryFailed": "Failed to process retry operation. Please try again.",

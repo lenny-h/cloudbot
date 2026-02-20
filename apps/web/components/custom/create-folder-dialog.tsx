@@ -4,6 +4,7 @@ import * as z from "zod";
 
 import { useWebTranslations } from "@/contexts/web-translations";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -23,19 +24,11 @@ import {
   FormMessage,
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { cn } from "@workspace/ui/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
-import { Eye, FolderPlus, Globe, Lock, ShieldCheck } from "lucide-react";
+import { FolderPlus, Globe, Lock, ShieldCheck } from "lucide-react";
 import { memo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,11 +39,9 @@ const createFolderSchema = z
       .string()
       .min(3, { message: "Folder name must be at least 3 characters." })
       .max(128, { message: "Folder name must be less than 128 characters." }),
-    description: z
-      .string()
-      .max(512, {
-        message: "Description must be less than 512 characters.",
-      }),
+    description: z.string().max(512, {
+      message: "Description must be less than 512 characters.",
+    }),
     visibility: z.enum(["private", "protected", "public"]),
     password: z.string().optional(),
   })
@@ -130,8 +121,7 @@ export const CreateFolderDialog = memo(() => {
     toast.promise(createFolderPromise, {
       loading: webT.createFolderDialog.creating,
       success: webT.createFolderDialog.created,
-      error: (error) =>
-        error.message || webT.createFolderDialog.failedToCreate,
+      error: (error) => error.message || webT.createFolderDialog.failedToCreate,
     });
   };
 
@@ -151,10 +141,7 @@ export const CreateFolderDialog = memo(() => {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -239,7 +226,11 @@ export const CreateFolderDialog = memo(() => {
                                 : "text-muted-foreground",
                             )}
                           >
-                            {webT.createFolderDialog.visibilityOptions[option.value]}
+                            {
+                              webT.createFolderDialog.visibilityOptions[
+                                option.value
+                              ]
+                            }
                           </span>
                         </button>
                       );
@@ -259,9 +250,7 @@ export const CreateFolderDialog = memo(() => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      {webT.createFolderDialog.password}
-                    </FormLabel>
+                    <FormLabel>{webT.createFolderDialog.password}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -290,9 +279,7 @@ export const CreateFolderDialog = memo(() => {
               >
                 {webT.createFolderDialog.cancel}
               </Button>
-              <Button type="submit">
-                {webT.createFolderDialog.create}
-              </Button>
+              <Button type="submit">{webT.createFolderDialog.create}</Button>
             </DialogFooter>
           </form>
         </Form>

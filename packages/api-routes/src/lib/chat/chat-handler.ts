@@ -60,7 +60,6 @@ export abstract class ChatHandler {
       userId: this.request.user.id,
       title,
     });
-    await this.saveUserMessage();
 
     return createdChat;
   }
@@ -225,10 +224,10 @@ export abstract class ChatHandler {
   }
 
   async handleRequest(): Promise<Response> {
-    const createdChat = await this.handleChatCreation();
-
     const stream = createUIMessageStream<CustomUIMessage>({
       execute: async ({ writer }) => {
+        const createdChat = await this.handleChatCreation();
+
         if (createdChat) {
           writer.write({
             type: "data-chatCreated",
@@ -237,6 +236,9 @@ export abstract class ChatHandler {
           });
         }
 
+        if (!this.request.isTemporary) {
+          await this.saveUserMessage();
+        }
         await this.executeChat(writer);
       },
       onError: (error) => this.handleError(error),

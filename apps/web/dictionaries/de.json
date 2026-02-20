@@ -42,7 +42,7 @@
         "rename": "Umbenennen"
     },
     "chatSearch": {
-        "searchChats": "Search chats..."
+        "searchChats": "Chats durchsuchen..."
     },
     "codeBlock": {
         "copy": "Kopieren",
@@ -179,8 +179,6 @@
         "readAloud": "Vorlesen",
         "stopReading": "Vorlesen stoppen",
         "retry": "Erneut versuchen",
-        "like": "Positiv",
-        "dislike": "Negativ",
         "editor": "Editor",
         "copiedToClipboard": "In die Zwischenablage kopiert!",
         "retryFailed": "Wiederholungsaktion fehlgeschlagen. Bitte versuchen Sie es erneut.",

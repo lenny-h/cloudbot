@@ -39,14 +39,14 @@ export const ChatsPage = memo(() => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQueryWithRPC({
-    queryKey: ["all-chats"],
+    queryKey: ["chats"],
     queryFn: ({ pageParam }) =>
       apiFetcher(
         (client) =>
           client.chats.$get({
             query: {
               pageNumber: (pageParam ?? 0).toString(),
-              itemsPerPage: "20",
+              itemsPerPage: "10",
             },
           }),
         sharedT.apiCodes,
