@@ -41,9 +41,8 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    await c.env.CLOUDBOT_BUCKET.delete(
-      `${file.visibility}/${file.folderId}/${file.id}`,
-    );
+    (await c.env.cloudbot) -
+      bucket.delete(`${file.visibility}/${file.folderId}/${file.id}`);
 
     return c.json({ name: file.name });
   },

@@ -21,17 +21,14 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
-import { checkResponse } from "@workspace/ui/lib/translation-utils";
 import { KeyboardShortcut } from "@workspace/ui/shared-components/keyboard-shortcut";
-import { Check, Copy, Download, X } from "lucide-react";
-import { DOMSerializer } from "prosemirror-model";
+import { Check, Copy, X } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 import { EditorDropdownMenu } from "./editor-dropdown-menu";
 import { LoadButton } from "./load-button";
 import { ModeSwitcher } from "./mode-switcher";
-import { textEditorSchema } from "./prosemirror-math/config";
 import {
   mathLatexSerializer,
   mathMarkdownSerializer,
@@ -136,60 +133,6 @@ export const EditorHeader = memo(() => {
     [editorMode, textEditorRef, codeEditorRef, copyToClipboard],
   );
 
-  const handlePdfDownload = useCallback(async () => {
-    if (editorMode === "text" && textEditorRef.current) {
-      const title =
-        documentIdentifier.title || webT.editorHeader.untitledDocument;
-      const filename = `${title.replace(/\s+/g, "-").toLowerCase()}.pdf`;
-
-      const contentElement = document.createElement("div");
-      const fragment = DOMSerializer.fromSchema(
-        textEditorSchema,
-      ).serializeFragment(textEditorRef.current.state.doc.content);
-      contentElement.appendChild(fragment);
-
-      const toastId = toast.loading(webT.editorHeader.generatingPdf);
-
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_PDF_EXPORTER_URL}/pdf-exporter/protected/export-pdf`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-              ...(documentIdentifier.title && {
-                title: documentIdentifier.title,
-              }),
-              content: contentElement.innerHTML,
-            }),
-          },
-        );
-
-        checkResponse(response, sharedT.apiCodes);
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-
-        toast.success(
-          webT.editorHeader.downloadedAs.replace("{filename}", filename),
-          { id: toastId },
-        );
-      } catch (error) {
-        toast.error(webT.editorHeader.failedToGeneratePdf, { id: toastId });
-      }
-    }
-  }, [editorMode, textEditorRef]);
-
   return (
     <div className="bg-sidebar flex h-14 items-center gap-2 overflow-x-auto border-b px-3">
       <Button variant="ghost" onClick={() => panelRef.current?.collapse()}>
@@ -223,37 +166,27 @@ export const EditorHeader = memo(() => {
                 )}
               </Button>
             ) : (
-              <>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" disabled={isBlocked}>
-                      {copied ? <Check className="text-green-500" /> : <Copy />}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => handleCopy("markdown")}
-                    >
-                      {webT.editorHeader.markdown}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => handleCopy("latex")}
-                    >
-                      {webT.editorHeader.latex}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <Button
-                  variant="ghost"
-                  onClick={handlePdfDownload}
-                  disabled={isBlocked}
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" disabled={isBlocked}>
+                    {copied ? <Check className="text-green-500" /> : <Copy />}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => handleCopy("markdown")}
+                  >
+                    {webT.editorHeader.markdown}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => handleCopy("latex")}
+                  >
+                    {webT.editorHeader.latex}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </ButtonGroup>
 

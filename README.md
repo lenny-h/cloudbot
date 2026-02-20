@@ -34,7 +34,7 @@ pnpm run dev
 - To apply migrations to the local D1 database:
 
 ```bash
-wrangler d1 migrations apply CLOUDBOT_D1_DATABASE --local
+wrangler d1 migrations apply cloudbot-db --local
 ```
 
 Wrangler automatically keeps track of the migrations already applied to the local D1 database, so it is safe to run this command multiple times during development as you create new migrations.
@@ -49,10 +49,10 @@ pnpm run dev --filter=web --filter=dashboard
 
 ```bash
 # Query local D1 database
-wrangler d1 execute CLOUDBOT_D1_DATABASE --local --command "SELECT * FROM users"
+wrangler d1 execute cloudbot-db --local --command "SELECT * FROM users"
 
 # List local R2 objects
-wrangler r2 object list cloudbot-bucket --local
+wrangler r2 object list cloudbot_bucket --local
 ```
 
 ## Production Setup (Remote D1 and R2)
@@ -99,7 +99,7 @@ Update `apps/api/wrangler.jsonc`:
 ```json
 "d1_databases": [
     {
-        "binding": "CLOUDBOT_D1_DATABASE",
+        "binding": "cloudbot-db",
         "database_name": "cloudbot-db",
         "database_id": "YOUR_ACTUAL_DATABASE_ID_HERE",
         "migrations_dir": "./../../packages/server/src/drizzle/migrations"
@@ -125,13 +125,13 @@ wrangler d1 execute cloudbot-db --remote --command "SELECT name FROM sqlite_mast
 
 ```bash
 # Create the R2 bucket
-wrangler r2 bucket create cloudbot-bucket
+wrangler r2 bucket create cloudbot_bucket
 ```
 
 **Output:**
 
 ```
-✅ Created bucket 'cloudbot-bucket'
+✅ Created bucket 'cloudbot_bucket'
 ```
 
 ### Step 6: Update wrangler.jsonc with R2 Info (if needed)
@@ -141,8 +141,8 @@ Update `apps/api/wrangler.jsonc`:
 ```json
 "r2_buckets": [
     {
-        "binding": "CLOUDBOT_BUCKET",
-        "bucket_name": "cloudbot-bucket"
+        "binding": "cloudbot-bucket",
+        "bucket_name": "cloudbot_bucket"
     }
 ]
 ```
@@ -279,7 +279,6 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 
 - `NEXT_PUBLIC_BASE_URL` - Web app base URL (e.g., "https://chat.your-domain.com")
 - `NEXT_PUBLIC_DASHBOARD_URL` - Dashboard URL (e.g., "https://admin.your-domain.com")
-- `NEXT_PUBLIC_PDF_EXPORTER_URL` - PDF exporter URL (typically same as API URL)
 - `NEXT_PUBLIC_API_URL` - API URL (e.g., "https://api.your-domain.com")
 - `NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP` - Same as API ("true" or "false")
 - `NEXT_PUBLIC_ENABLE_OAUTH_LOGIN` - Same as API ("true" or "false")
@@ -415,22 +414,22 @@ wrangler d1 delete cloudbot-db
 wrangler r2 bucket list
 
 # Get bucket info
-wrangler r2 bucket info cloudbot-bucket
+wrangler r2 bucket info cloudbot_bucket
 
 # Upload a file
-wrangler r2 object put cloudbot-bucket/path/file.txt --file=./local-file.txt
+wrangler r2 object put cloudbot_bucket/path/file.txt --file=./local-file.txt
 
 # List objects in bucket
-wrangler r2 object list cloudbot-bucket
+wrangler r2 object list cloudbot_bucket
 
 # Download an object
-wrangler r2 object get cloudbot-bucket/path/file.txt --file=./downloaded-file.txt
+wrangler r2 object get cloudbot_bucket/path/file.txt --file=./downloaded-file.txt
 
 # Delete an object
-wrangler r2 object delete cloudbot-bucket/path/file.txt
+wrangler r2 object delete cloudbot_bucket/path/file.txt
 
 # Delete a bucket (must be empty)
-wrangler r2 bucket delete cloudbot-bucket
+wrangler r2 bucket delete cloudbot_bucket
 ```
 
 ### Development Commands
@@ -463,7 +462,6 @@ For local development, create `.env.local` files based on the provided examples:
 ```env
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 NEXT_PUBLIC_DASHBOARD_URL="http://localhost:3001"
-NEXT_PUBLIC_PDF_EXPORTER_URL="http://localhost:3002"
 NEXT_PUBLIC_API_URL="http://localhost:8787"
 
 NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP="true"
@@ -504,7 +502,7 @@ cloudbot/
 
 ### "R2 bucket not found"
 
-- Create the bucket: `wrangler r2 bucket create cloudbot-bucket`
+- Create the bucket: `wrangler r2 bucket create cloudbot_bucket`
 - Verify the `bucket_name` in `wrangler.jsonc` is correct
 - Check you're authenticated: `wrangler whoami`
 

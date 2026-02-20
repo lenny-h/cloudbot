@@ -79,7 +79,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
         : `${folder.visibility}/${folderId}/${fileId}`;
 
     const signedUrl = await StorageClient.getSignedUrlForDownload({
-      bucket: "cloudbot-bucket",
+      bucket: "cloudbot_bucket",
       key,
     });
 

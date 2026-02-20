@@ -21,7 +21,7 @@ export function cspMiddleware(middleware: CustomMiddleware) {
         font-src 'self';
         object-src 'self';
         frame-src 'self' blob: data: ${cspEndpoints};
-        connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL} ${process.env.NEXT_PUBLIC_PDF_EXPORTER_URL} ${cspEndpoints};
+        connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL} ${cspEndpoints};
         base-uri 'self';
         form-action 'self';
         frame-ancestors 'self';

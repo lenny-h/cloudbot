@@ -5,7 +5,7 @@ import {
 } from "@cloudflare/workers-types";
 
 export type Bindings = {
-  CLOUDBOT_BUCKET: R2Bucket;
-  CLOUDBOT_D1_DATABASE: D1Database;
+  cloudbot-bucket: R2Bucket;
+  cloudbot-db: D1Database;
   AI: Ai;
 };

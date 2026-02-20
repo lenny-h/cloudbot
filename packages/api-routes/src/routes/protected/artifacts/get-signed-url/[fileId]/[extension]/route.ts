@@ -32,7 +32,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const key = `artifacts/${user.id}/${fileId}.${extension}`;
 
     const signedUrl = await StorageClient.getSignedUrlForDownload({
-      bucket: "cloudbot-bucket",
+      bucket: "cloudbot_bucket",
       key,
     });
 

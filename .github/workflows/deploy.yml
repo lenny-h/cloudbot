@@ -72,6 +72,42 @@ jobs:
           workingDirectory: apps/api
           command: deploy --minify
           secrets: |
+            NODE_ENV
+            BETTER_AUTH_URL
+            ADMIN_USER_IDS
+            ALLOWED_ORIGINS
+            ENABLE_EMAIL_SIGNUP
+            ENABLE_OAUTH_LOGIN
+            ENABLE_SSO
+            ALLOWED_EMAIL_DOMAINS
+            RESEND_SENDER_EMAIL
+            GOOGLE_CLIENT_ID
+            GITHUB_CLIENT_ID
+            GITLAB_CLIENT_ID
+            SSO_DOMAIN
+            SSO_PROVIDER_ID
+            SSO_CLIENT_ID
+            SSO_ISSUER
+            SSO_DISCOVERY_ENDPOINT
+            SSO_AUTHORIZATION_ENDPOINT
+            SSO_TOKEN_ENDPOINT
+            SSO_JWKS_ENDPOINT
+            NEXT_PUBLIC_LLM_MODELS
+            R2_ENDPOINT
+            CLOUDFLARE_ACCESS_KEY_ID
+            AWS_ACCESS_KEY_ID
+            AWS_REGION
+            AZURE_RESOURCE_NAME
+            GOOGLE_VERTEX_PROJECT
+            GOOGLE_VERTEX_LOCATION
+            GOOGLE_CLIENT_EMAIL
+            GOOGLE_PRIVATE_KEY_ID
+            SEARCH_PROVIDER
+            TITLE_MODEL_IDX
+            ARTIFACT_MODEL_IDX
+            WEB_SEARCH_MODEL_IDX
+            COMPLETION_MODEL_IDX
+
             BETTER_AUTH_SECRET
             ENCRYPTION_KEY
             RESEND_API_KEY
@@ -91,7 +127,44 @@ jobs:
             PARALLEL_API_KEY
             TAVILY_API_KEY
         env:
-          # Sensitive secrets (encrypted in Cloudflare)
+          # Non-sensitive configuration vars
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
+          ADMIN_USER_IDS: ${{ vars.ADMIN_USER_IDS }}
+          ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
+          ENABLE_EMAIL_SIGNUP: ${{ vars.ENABLE_EMAIL_SIGNUP }}
+          ENABLE_OAUTH_LOGIN: ${{ vars.ENABLE_OAUTH_LOGIN }}
+          ENABLE_SSO: ${{ vars.ENABLE_SSO }}
+          ALLOWED_EMAIL_DOMAINS: ${{ vars.ALLOWED_EMAIL_DOMAINS }}
+          RESEND_SENDER_EMAIL: ${{ vars.RESEND_SENDER_EMAIL }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          GITHUB_CLIENT_ID: ${{ vars.GITHUB_CLIENT_ID }}
+          GITLAB_CLIENT_ID: ${{ vars.GITLAB_CLIENT_ID }}
+          SSO_DOMAIN: ${{ vars.SSO_DOMAIN }}
+          SSO_PROVIDER_ID: ${{ vars.SSO_PROVIDER_ID }}
+          SSO_CLIENT_ID: ${{ vars.SSO_CLIENT_ID }}
+          SSO_ISSUER: ${{ vars.SSO_ISSUER }}
+          SSO_DISCOVERY_ENDPOINT: ${{ vars.SSO_DISCOVERY_ENDPOINT }}
+          SSO_AUTHORIZATION_ENDPOINT: ${{ vars.SSO_AUTHORIZATION_ENDPOINT }}
+          SSO_TOKEN_ENDPOINT: ${{ vars.SSO_TOKEN_ENDPOINT }}
+          SSO_JWKS_ENDPOINT: ${{ vars.SSO_JWKS_ENDPOINT }}
+          NEXT_PUBLIC_LLM_MODELS: ${{ vars.NEXT_PUBLIC_LLM_MODELS }}
+          R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
+          CLOUDFLARE_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_ACCESS_KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AZURE_RESOURCE_NAME: ${{ vars.AZURE_RESOURCE_NAME }}
+          GOOGLE_VERTEX_PROJECT: ${{ vars.GOOGLE_VERTEX_PROJECT }}
+          GOOGLE_VERTEX_LOCATION: ${{ vars.GOOGLE_VERTEX_LOCATION }}
+          GOOGLE_CLIENT_EMAIL: ${{ vars.GOOGLE_CLIENT_EMAIL }}
+          GOOGLE_PRIVATE_KEY_ID: ${{ vars.GOOGLE_PRIVATE_KEY_ID }}
+          SEARCH_PROVIDER: ${{ vars.SEARCH_PROVIDER }}
+          TITLE_MODEL_IDX: ${{ vars.TITLE_MODEL_IDX }}
+          ARTIFACT_MODEL_IDX: ${{ vars.ARTIFACT_MODEL_IDX }}
+          WEB_SEARCH_MODEL_IDX: ${{ vars.WEB_SEARCH_MODEL_IDX }}
+          COMPLETION_MODEL_IDX: ${{ vars.COMPLETION_MODEL_IDX }}
+
+          # Sensitive secrets
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -120,7 +193,6 @@ jobs:
     env:
       NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL }}
       NEXT_PUBLIC_DASHBOARD_URL: ${{ vars.NEXT_PUBLIC_DASHBOARD_URL }}
-      NEXT_PUBLIC_PDF_EXPORTER_URL: ${{ vars.NEXT_PUBLIC_PDF_EXPORTER_URL }}
       NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
       NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP: ${{ vars.NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP }}
       NEXT_PUBLIC_ENABLE_OAUTH_LOGIN: ${{ vars.NEXT_PUBLIC_ENABLE_OAUTH_LOGIN }}
