@@ -65,7 +65,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
           ? `${user.id}/${folderId}/${file.id}`
           : `${file.visibility}/${folderId}/${file.id}`;
 
-      (await c.env.cloudbot) - bucket.delete(key);
+      await c.env.CLOUDBOT_BUCKET.delete(key);
     }
 
     const deletedFolderName = await deleteFolder({ folderId });

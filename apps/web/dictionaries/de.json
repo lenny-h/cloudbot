@@ -334,5 +334,29 @@
         "errorSearching": "Beim Suchen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
         "sources": "Quellen",
         "searchButton": "Suchen"
+    },
+    "greeting": {
+        "greetings": [
+            {
+                "title": "Hallo, {name}!",
+                "subtitle": "Bereit, gemeinsam das Unbekannte zu erkunden?"
+            },
+            {
+                "title": "Hey, {name}!",
+                "subtitle": "Welche brillante Idee sollen wir heute zum Leben erwecken?"
+            },
+            {
+                "title": "Willkommen zurück, {name}!",
+                "subtitle": "Lass uns deine Gedanken in die Realität umsetzen!"
+            },
+            {
+                "title": "Guten Tag, {name}!",
+                "subtitle": "Beflügle deine Kreativität – ich bin ganz Ohr!"
+            },
+            {
+                "title": "Schön, dich zu sehen, {name}!",
+                "subtitle": "Lass uns gemeinsam etwas Außergewöhnliches schaffen!"
+            }
+        ]
     }
 }

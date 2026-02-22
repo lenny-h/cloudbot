@@ -7,13 +7,13 @@
     ],
     "r2_buckets": [
         {
-            "binding": "cloudbot_bucket",
+            "binding": "CLOUDBOT_BUCKET",
             "bucket_name": "cloudbot-bucket"
         }
     ],
     "d1_databases": [
         {
-            "binding": "cloudbot_db",
+            "binding": "CLOUDBOT_DB",
             "database_name": "cloudbot-db",
             "database_id": "CLOUDBOT_DB_ID",
             "migrations_dir": "./../../packages/server/src/drizzle/migrations"

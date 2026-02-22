@@ -334,5 +334,29 @@
         "errorSearching": "An error occurred while searching. Please try again.",
         "sources": "Sources",
         "searchButton": "Search"
+    },
+    "greeting": {
+        "greetings": [
+            {
+                "title": "Hello, {name}!",
+                "subtitle": "Ready to explore the unknown together?"
+            },
+            {
+                "title": "Hey there, {name}!",
+                "subtitle": "What brilliant idea shall we bring to life today?"
+            },
+            {
+                "title": "Welcome back, {name}!",
+                "subtitle": "Let's turn your thoughts into reality!"
+            },
+            {
+                "title": "Greetings, {name}!",
+                "subtitle": "Supercharge your creativity—I'm all ears!"
+            },
+            {
+                "title": "Good to see you, {name}!",
+                "subtitle": "Let's brew something extraordinary together!"
+            }
+        ]
     }
 }

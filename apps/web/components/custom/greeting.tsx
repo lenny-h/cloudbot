@@ -2,43 +2,23 @@
 
 import * as m from "motion/react-m";
 
+import { useWebTranslations } from "@/contexts/web-translations";
 import { useUser } from "@workspace/ui/contexts/user-context";
 import { LazyMotion } from "motion/react";
 import { useMemo } from "react";
 
 const loadFeatures = () => import("@/lib/features").then((res) => res.default);
 
-const greetings = [
-  {
-    title: "Hello, {name}!",
-    subtitle: "Ready to explore the unknown together?",
-  },
-  {
-    title: "Hey there, {name}!",
-    subtitle: "What brilliant idea shall we bring to life today?",
-  },
-  {
-    title: "Welcome back, {name}!",
-    subtitle: "Let's turn your thoughts into reality!",
-  },
-  {
-    title: "Greetings, {name}!",
-    subtitle: "Supercharge your creativity—I'm all ears!",
-  },
-  {
-    title: "Good to see you, {name}!",
-    subtitle: "Let's brew something extraordinary together!",
-  },
-];
-
 export function Greeting() {
   const user = useUser();
+  const { webT } = useWebTranslations();
 
   const greeting = useMemo(() => {
     // Select a greeting based on the day (consistent throughout the day)
     const dayIndex = new Date().getDay();
+    const { greetings } = webT.greeting;
     return greetings[dayIndex % greetings.length];
-  }, []);
+  }, [webT]);
 
   const userName = user.name || user.username || "friend";
   const title = greeting.title.replace("{name}", userName);

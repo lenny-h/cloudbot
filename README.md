@@ -34,7 +34,7 @@ pnpm run dev
 - To apply migrations to the local D1 database:
 
 ```bash
-wrangler d1 migrations apply cloudbot_db --local
+wrangler d1 migrations apply CLOUDBOT_DB --local
 ```
 
 Wrangler automatically keeps track of the migrations already applied to the local D1 database, so it is safe to run this command multiple times during development as you create new migrations.
@@ -49,7 +49,7 @@ pnpm run dev --filter=web --filter=dashboard
 
 ```bash
 # Query local D1 database
-wrangler d1 execute cloudbot_db --local --command "SELECT * FROM users"
+wrangler d1 execute CLOUDBOT_DB --local --command "SELECT * FROM users"
 
 # List local R2 objects
 wrangler r2 object list cloudbot-bucket --local
@@ -75,18 +75,18 @@ wrangler whoami
 
 ```bash
 # Create the D1 database
-wrangler d1 create cloudbot_db
+wrangler d1 create CLOUDBOT_DB
 ```
 
 **Output example:**
 
 ```
-✅ Successfully created DB 'cloudbot_db'
+✅ Successfully created DB 'CLOUDBOT_DB'
 Created your database using D1's new storage backend.
 
 [[d1_databases]]
 binding = "DB"
-database_name = "cloudbot_db"
+database_name = "CLOUDBOT_DB"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
@@ -99,8 +99,8 @@ Update `apps/api/wrangler.jsonc`:
 ```json
 "d1_databases": [
     {
-        "binding": "cloudbot_db",
-        "database_name": "cloudbot_db",
+        "binding": "CLOUDBOT_DB",
+        "database_name": "CLOUDBOT_DB",
         "database_id": "YOUR_ACTUAL_DATABASE_ID_HERE",
         "migrations_dir": "./../../packages/server/src/drizzle/migrations"
     }
@@ -111,14 +111,14 @@ Update `apps/api/wrangler.jsonc`:
 
 ```bash
 # Apply migrations to remote database
-wrangler d1 migrations apply cloudbot_db --remote
+wrangler d1 migrations apply CLOUDBOT_DB --remote
 ```
 
 To verify:
 
 ```bash
 # List tables in remote database
-wrangler d1 execute cloudbot_db --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
+wrangler d1 execute CLOUDBOT_DB --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
 ```
 
 ### Step 5: Create Remote R2 Bucket
@@ -141,7 +141,7 @@ Update `apps/api/wrangler.jsonc`:
 ```json
 "r2_buckets": [
     {
-        "binding": "cloudbot_bucket",
+        "binding": "CLOUDBOT_BUCKET",
         "bucket_name": "cloudbot-bucket"
     }
 ]
@@ -277,8 +277,6 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 
 **Configure as GitHub Variables** (all are non-sensitive configuration):
 
-- `NEXT_PUBLIC_BASE_URL` - Web app base URL (e.g., "https://chat.your-domain.com")
-- `NEXT_PUBLIC_DASHBOARD_URL` - Dashboard URL (e.g., "https://admin.your-domain.com")
 - `NEXT_PUBLIC_API_URL` - API URL (e.g., "https://api.your-domain.com")
 - `NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP` - Same as API ("true" or "false")
 - `NEXT_PUBLIC_ENABLE_OAUTH_LOGIN` - Same as API ("true" or "false")
@@ -292,7 +290,6 @@ _Note: These are embedded in the client-side bundle during build, so they're pas
 
 **Configure as GitHub Variables** (all are non-sensitive configuration):
 
-- `NEXT_PUBLIC_BASE_URL` - Dashboard base URL (e.g., "https://admin.your-domain.com")
 - `NEXT_PUBLIC_API_URL` - API URL (e.g., "https://api.your-domain.com")
 - `NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP` - Same as API ("true" or "false")
 - `NEXT_PUBLIC_ENABLE_OAUTH_LOGIN` - Same as API ("true" or "false")
@@ -395,16 +392,16 @@ When new commits are pushed to the `main` branch, GitHub Actions automatically b
 wrangler d1 execute YOUR_D1_DATABASE --local --command "SELECT * FROM users"
 
 # Execute SQL on remote database
-wrangler d1 execute cloudbot_db --remote --command "SELECT * FROM users"
+wrangler d1 execute CLOUDBOT_DB --remote --command "SELECT * FROM users"
 
 # Execute SQL from file
-wrangler d1 execute cloudbot_db --remote --file=./query.sql
+wrangler d1 execute CLOUDBOT_DB --remote --file=./query.sql
 
 # List all D1 databases
 wrangler d1 list
 
 # Delete a database (careful!)
-wrangler d1 delete cloudbot_db
+wrangler d1 delete CLOUDBOT_DB
 ```
 
 ### R2 Bucket Commands
@@ -510,10 +507,10 @@ cloudbot/
 
 ```bash
 # Apply migrations manually
-wrangler d1 migrations apply cloudbot_db --remote
+wrangler d1 migrations apply CLOUDBOT_DB --remote
 
 # Check migration status
-wrangler d1 migrations list cloudbot_db
+wrangler d1 migrations list CLOUDBOT_DB
 ```
 
 ### Clear local development data

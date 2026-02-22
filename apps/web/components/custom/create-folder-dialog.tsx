@@ -115,7 +115,7 @@ export const CreateFolderDialog = memo(() => {
     ).then(() => {
       form.reset();
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["managed-folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
     });
 
     toast.promise(createFolderPromise, {

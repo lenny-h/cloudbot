@@ -191,8 +191,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.web == 'true'
     env:
-      NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL }}
-      NEXT_PUBLIC_DASHBOARD_URL: ${{ vars.NEXT_PUBLIC_DASHBOARD_URL }}
       NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
       NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP: ${{ vars.NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP }}
       NEXT_PUBLIC_ENABLE_OAUTH_LOGIN: ${{ vars.NEXT_PUBLIC_ENABLE_OAUTH_LOGIN }}
@@ -235,7 +233,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.dashboard == 'true'
     env:
-      NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_DASHBOARD_BASE_URL }}
       NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
       NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP: ${{ secrets.NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP }}
       NEXT_PUBLIC_ENABLE_OAUTH_LOGIN: ${{ secrets.NEXT_PUBLIC_ENABLE_OAUTH_LOGIN }}
