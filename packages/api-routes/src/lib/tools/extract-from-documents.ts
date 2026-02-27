@@ -1,5 +1,6 @@
 import * as z from "zod";
 
+import { createLogger } from "@workspace/server/logger/logger.js";
 import { tool, type UIMessageStreamWriter } from "ai";
 import { documentSearchPrompt } from "../../providers/prompts.js";
 import { type Bindings } from "../../types/bindings.js";
@@ -15,6 +16,8 @@ type ExtractFromDocumentsProps = {
   folderMetadata: FolderMetadata[];
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
 };
+
+const logger = createLogger("extract-from-documents");
 
 export const extractFromDocuments = ({
   env,
@@ -32,40 +35,45 @@ export const extractFromDocuments = ({
     }),
     outputSchema: z.object({ extractedInformation: z.string() }),
     execute: async ({ query, max_num_results }) => {
-      // Permissions already checked in standard-chat-handler
-      // fileMetadata contains only files the user has access to
+      try {
+        // Permissions already checked in standard-chat-handler
+        // fileMetadata contains only files the user has access to
 
-      const metadataFilter = buildMetadataFilter(
-        userId,
-        fileMetadata,
-        folderMetadata,
-      );
+        const metadataFilter = buildMetadataFilter(
+          userId,
+          fileMetadata,
+          folderMetadata,
+        );
 
-      const answer = await env.AI.autorag("autorag").aiSearch({
-        system_prompt: documentSearchPrompt,
-        query,
-        rewrite_query: false,
-        max_num_results,
-        ranking_options: {
-          score_threshold: 0.3,
-        },
-        reranking: {
-          enabled: true,
-          model: "@cf/baai/bge-reranker-base",
-        },
-        stream: false,
-        ...(metadataFilter && { filters: metadataFilter }),
-      });
-
-      for (const source of answer.data) {
-        dataStream.write({
-          type: "source-document",
-          sourceId: source.file_id,
-          mediaType: source.filename.split(".").pop() || "unknown",
-          title: source.filename,
+        const answer = await env.AI.autorag("autorag").aiSearch({
+          system_prompt: documentSearchPrompt,
+          query,
+          rewrite_query: false,
+          max_num_results,
+          ranking_options: {
+            score_threshold: 0.3,
+          },
+          reranking: {
+            enabled: true,
+            model: "@cf/baai/bge-reranker-base",
+          },
+          stream: false,
+          ...(metadataFilter && { filters: metadataFilter }),
         });
-      }
 
-      return { extractedInformation: answer.response };
+        for (const source of answer.data) {
+          dataStream.write({
+            type: "source-document",
+            sourceId: source.file_id,
+            mediaType: source.filename.split(".").pop() || "unknown",
+            title: source.filename,
+          });
+        }
+
+        return { extractedInformation: answer.response };
+      } catch (error) {
+        logger.error("Error in extractFromDocuments tool", error);
+        throw error;
+      }
     },
   });

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { createLogger } from "@workspace/server/logger/logger.js";
 import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
 import { artifactSchema } from "../../schemas/artifact-schema.js";
@@ -25,6 +26,8 @@ type UpdateDocumentProps = {
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
   env: Bindings;
 };
+
+const logger = createLogger("update-document");
 
 export const updateDocument = ({
   userId,
@@ -46,52 +49,59 @@ export const updateDocument = ({
       message: z.string(),
     }),
     execute: async ({ id, description }) => {
-      const document = await getDocumentById({ id });
+      try {
+        const document = await getDocumentById({ id });
 
-      if (!document) {
+        if (!document) {
+          return {
+            error: "Document not found",
+          };
+        }
+
+        dataStream.write({
+          type: "data-documentIdentifier",
+          data: {
+            id,
+            title: document.title,
+            kind: document.kind,
+          },
+          transient: true,
+        });
+
+        const documentHandler = documentHandlersByArtifactKind.find(
+          (documentHandlerByArtifactKind) =>
+            documentHandlerByArtifactKind.kind === document.kind,
+        );
+
+        if (!documentHandler) {
+          throw new Error(
+            `No document handler found for kind: ${document.kind}`,
+          );
+        }
+
+        await documentHandler.onUpdateDocument({
+          document,
+          description,
+          dataStream,
+          userId,
+          env,
+        });
+
+        dataStream.write({
+          type: "data-updateFinish",
+          data: document.kind,
+          transient: true,
+        });
+
         return {
-          error: "Document not found",
-        };
-      }
-
-      dataStream.write({
-        type: "data-documentIdentifier",
-        data: {
           id,
           title: document.title,
           kind: document.kind,
-        },
-        transient: true,
-      });
-
-      const documentHandler = documentHandlersByArtifactKind.find(
-        (documentHandlerByArtifactKind) =>
-          documentHandlerByArtifactKind.kind === document.kind,
-      );
-
-      if (!documentHandler) {
-        throw new Error(`No document handler found for kind: ${document.kind}`);
+          message: "The document has been updated successfully.",
+        };
+      } catch (error) {
+        logger.error("Error in updateDocument tool", error);
+        throw error;
       }
-
-      await documentHandler.onUpdateDocument({
-        document,
-        description,
-        dataStream,
-        userId,
-        env,
-      });
-
-      dataStream.write({
-        type: "data-updateFinish",
-        data: document.kind,
-        transient: true,
-      });
-
-      return {
-        id,
-        title: document.title,
-        kind: document.kind,
-        message: "The document has been updated successfully.",
-      };
     },
   });

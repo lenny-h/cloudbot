@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "99991408-93ba-4792-85fa-ecfdd652adb4",
+  "id": "8b5be636-4246-4792-9022-05a2240cf12c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -166,7 +166,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         }
       },
       "indexes": {},
@@ -248,7 +248,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         }
       },
       "indexes": {},
@@ -329,7 +329,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         }
       },
       "indexes": {},
@@ -411,7 +411,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         }
       },
       "indexes": {
@@ -479,7 +479,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         }
       },
       "indexes": {},
@@ -560,7 +560,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         },
         "visibility": {
           "name": "visibility",
@@ -650,7 +650,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "(unixepoch() * 1000)"
         }
       },
       "indexes": {},

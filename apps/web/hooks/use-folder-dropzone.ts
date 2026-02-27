@@ -1,4 +1,5 @@
 import { type Upload } from "@/types/upload";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { generateUUID } from "@workspace/ui/lib/utils";
@@ -11,6 +12,7 @@ interface Props {
 
 export function useFolderDropzone({ folderId }: Props) {
   const { sharedT } = useSharedTranslations();
+  const queryClient = useQueryClient();
   const [uploads, setUploads] = useState<{ [key: string]: Upload }>({});
 
   const handleFileUpload = async (file: File) => {
@@ -70,6 +72,8 @@ export function useFolderDropzone({ folderId }: Props) {
         ...prev,
         [id]: { ...prev[id]!, state: "success" },
       }));
+      queryClient.invalidateQueries({ queryKey: ["folder-files"] });
+      queryClient.invalidateQueries({ queryKey: ["files"] });
     } catch (error) {
       const message =
         error instanceof Error

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { createLogger } from "@workspace/server/logger/logger.js";
 import { tool, type UIMessageStreamWriter } from "ai";
 import { z } from "zod";
 import { artifactSchema } from "../../schemas/artifact-schema.js";
@@ -28,6 +29,8 @@ type CreateDocumentProps = {
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
   env: Bindings;
 };
+
+const logger = createLogger("create-document");
 
 export const createDocument = ({
   userId,
@@ -57,46 +60,51 @@ export const createDocument = ({
       message: z.string(),
     }),
     execute: async ({ title, kind }) => {
-      const id = generateUUID();
+      try {
+        const id = generateUUID();
 
-      dataStream.write({
-        type: "data-documentIdentifier",
-        data: {
+        dataStream.write({
+          type: "data-documentIdentifier",
+          data: {
+            id,
+            title,
+            kind,
+          },
+          transient: true,
+        });
+
+        const documentHandler = documentHandlersByArtifactKind.find(
+          (documentHandlerByArtifactKind) =>
+            documentHandlerByArtifactKind.kind === kind,
+        );
+
+        if (!documentHandler) {
+          throw new Error(`No document handler found for kind: ${kind}`);
+        }
+
+        await documentHandler.onCreateDocument({
+          id,
+          title,
+          dataStream,
+          userId,
+          env,
+        });
+
+        dataStream.write({
+          type: "data-createFinish",
+          data: kind,
+          transient: true,
+        });
+
+        return {
           id,
           title,
           kind,
-        },
-        transient: true,
-      });
-
-      const documentHandler = documentHandlersByArtifactKind.find(
-        (documentHandlerByArtifactKind) =>
-          documentHandlerByArtifactKind.kind === kind,
-      );
-
-      if (!documentHandler) {
-        throw new Error(`No document handler found for kind: ${kind}`);
+          message: "A document was created and is now visible to the user.",
+        };
+      } catch (error) {
+        logger.error("Error in createDocument tool", error);
+        throw error;
       }
-
-      await documentHandler.onCreateDocument({
-        id,
-        title,
-        dataStream,
-        userId,
-        env,
-      });
-
-      dataStream.write({
-        type: "data-createFinish",
-        data: kind,
-        transient: true,
-      });
-
-      return {
-        id,
-        title,
-        kind,
-        message: "A document was created and is now visible to the user.",
-      };
     },
   });

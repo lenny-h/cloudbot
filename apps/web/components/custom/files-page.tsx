@@ -40,7 +40,7 @@ interface FileItem {
   owner: string;
   size: number;
   format: string;
-  createdAt: number;
+  createdAt: string;
 }
 
 export const FilesPage = memo(() => {
@@ -158,8 +158,8 @@ export const FilesPage = memo(() => {
   const isPdf = (file: FileItem) =>
     file.format === "application/pdf" || file.name?.endsWith(".pdf");
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString(locale, {
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString(locale, {
       year: "numeric",
       month: "short",
       day: "numeric",

@@ -158,9 +158,9 @@ export const chats = sqliteTable("chats", {
   isFavourite: integer("is_favourite", { mode: "boolean" })
     .notNull()
     .default(false),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch() * 1000)`),
 });
 
 export type Chat = InferSelectModel<typeof chats>;
@@ -177,9 +177,9 @@ export const messages = sqliteTable("messages", {
   role: text("role", { enum: ["user", "assistant", "system"] }).notNull(),
   parts: text("parts", { mode: "json" }).notNull(),
   metadata: text("metadata", { mode: "json" }),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch() * 1000)`),
 });
 
 export type Message = InferSelectModel<typeof messages>;
@@ -195,9 +195,9 @@ export const folders = sqliteTable("folders", {
     .notNull()
     .references(() => users.id),
   description: text("description"),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch() * 1000)`),
   visibility: text("visibility", { enum: ["private", "protected", "public"] })
     .notNull()
     .default("private"),
@@ -215,9 +215,9 @@ export const folderUsers = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
-      .default(sql`(unixepoch())`),
+      .default(sql`(unixepoch() * 1000)`),
   },
   (table) => [primaryKey({ columns: [table.folderId, table.userId] })],
 );
@@ -242,9 +242,9 @@ export const files = sqliteTable(
       .references(() => users.id),
     size: integer("size").notNull(),
     format: text("format").notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
-      .default(sql`(unixepoch())`),
+      .default(sql`(unixepoch() * 1000)`),
   },
   (table) => [unique().on(table.folderId, table.name)],
 );
@@ -264,9 +264,9 @@ export const documents = sqliteTable("documents", {
   owner: text("owner")
     .notNull()
     .references(() => users.id),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch() * 1000)`),
 });
 
 export type Document = InferSelectModel<typeof documents>;
@@ -288,9 +288,9 @@ export const diffs = sqliteTable("diffs", {
   owner: text("owner")
     .notNull()
     .references(() => users.id),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch() * 1000)`),
 });
 
 export type Diff = InferSelectModel<typeof diffs>;

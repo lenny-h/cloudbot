@@ -9,10 +9,9 @@ import {
   type SourceDocumentUIPart,
   type SourceUrlUIPart,
 } from "ai";
-import equal from "fast-deep-equal";
 import { LazyMotion } from "motion/react";
 import dynamic from "next/dynamic";
-import { memo, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ToolCreateDocument,
   ToolExtractFromDocuments,
@@ -46,7 +45,7 @@ interface AgentMessageProps {
 
 const loadFeatures = () => import("@/lib/features").then((res) => res.default);
 
-const PureAgentMessage = ({
+export const AgentMessage = ({
   chatId,
   message,
   regenerate,
@@ -194,12 +193,3 @@ const PureAgentMessage = ({
     </LazyMotion>
   );
 };
-
-export const AgentMessage = memo(PureAgentMessage, (prevProps, nextProps) => {
-  if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
-  if (prevProps.isLoading !== nextProps.isLoading) return false;
-  if (prevProps.isThinking !== nextProps.isThinking) return false;
-  if (prevProps.isLastMessage !== nextProps.isLastMessage) return false;
-
-  return true;
-});

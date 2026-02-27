@@ -21,7 +21,7 @@ CREATE TABLE `chats` (
 	`user_id` text NOT NULL,
 	`title` text NOT NULL,
 	`is_favourite` integer DEFAULT false NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
@@ -33,7 +33,7 @@ CREATE TABLE `diffs` (
 	`kind` text,
 	`is_resolved` integer DEFAULT false NOT NULL,
 	`owner` text NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	FOREIGN KEY (`document_id`) REFERENCES `documents`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`owner`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -44,7 +44,7 @@ CREATE TABLE `documents` (
 	`content` text,
 	`kind` text DEFAULT 'text' NOT NULL,
 	`owner` text NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	FOREIGN KEY (`owner`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -56,7 +56,7 @@ CREATE TABLE `files` (
 	`owner` text NOT NULL,
 	`size` integer NOT NULL,
 	`format` text NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	FOREIGN KEY (`folder_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`owner`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -65,7 +65,7 @@ CREATE UNIQUE INDEX `files_folder_id_name_unique` ON `files` (`folder_id`,`name`
 CREATE TABLE `folder_users` (
 	`folder_id` text NOT NULL,
 	`user_id` text NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	PRIMARY KEY(`folder_id`, `user_id`),
 	FOREIGN KEY (`folder_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
@@ -76,7 +76,7 @@ CREATE TABLE `folders` (
 	`name` text NOT NULL,
 	`owner` text NOT NULL,
 	`description` text,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	`visibility` text DEFAULT 'private' NOT NULL,
 	`encrypted_key` text,
 	FOREIGN KEY (`owner`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
@@ -89,7 +89,7 @@ CREATE TABLE `messages` (
 	`role` text NOT NULL,
 	`parts` text NOT NULL,
 	`metadata` text,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
 	FOREIGN KEY (`chat_id`) REFERENCES `chats`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
