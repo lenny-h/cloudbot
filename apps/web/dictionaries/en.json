@@ -183,7 +183,9 @@
         "copiedToClipboard": "Copied to clipboard!",
         "retryFailed": "Failed to process retry operation. Please try again.",
         "failedRead": "Failed to read message",
-        "editMessage": "Edit message"
+        "editMessage": "Edit message",
+        "deletePair": "Delete message pair",
+        "deletePairFailed": "Failed to delete message pair. Please try again."
     },
     "messageEditor": {
         "cancel": "Cancel",

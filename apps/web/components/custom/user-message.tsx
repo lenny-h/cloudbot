@@ -10,9 +10,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
+import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { type ChatRequestOptions } from "ai";
 import equal from "fast-deep-equal";
-import { Copy, Pencil } from "lucide-react";
+import { Copy, Pencil, Trash2 } from "lucide-react";
 import { LazyMotion } from "motion/react";
 import { memo, useState } from "react";
 import { toast } from "sonner";
@@ -44,8 +46,31 @@ function PureUserMessage({
   regenerate,
 }: UserMessageProps) {
   const { webT } = useWebTranslations();
+  const { sharedT } = useSharedTranslations();
   const [_, copyToClipboard] = useCopyToClipboard();
   const [mode, setMode] = useState<"view" | "edit">("view");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeletePair = async () => {
+    setIsDeleting(true);
+    try {
+      const data = await apiFetcher(
+        (client) =>
+          client.messages["delete-pair"][":messageId"].$delete({
+            param: { messageId: message.id },
+          }),
+        sharedT.apiCodes,
+      );
+      setMessages((prev) =>
+        prev.filter((m) => !data.deleted.includes(m.id)),
+      );
+    } catch (error) {
+      console.error("Error deleting message pair:", error);
+      toast.error(webT.messageActions.deletePairFailed);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // Extract text parts from the message
   const textParts = message.parts.filter((part) => part.type === "text");
@@ -103,6 +128,21 @@ function PureUserMessage({
                   </TooltipTrigger>
                   <TooltipContent>
                     {webT.messageActions.editMessage}
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-muted-foreground size-6 opacity-0 group-hover/message:opacity-100"
+                      onClick={handleDeletePair}
+                      disabled={isDeleting}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {webT.messageActions.deletePair}
                   </TooltipContent>
                 </Tooltip>
                 <div className="bg-muted w-fit max-w-3/4 rounded-2xl px-4 py-2 whitespace-pre-wrap">

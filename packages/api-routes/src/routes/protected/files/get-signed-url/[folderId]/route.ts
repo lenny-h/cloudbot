@@ -95,21 +95,25 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
 
     // Create file entry with folder's visibility
     const fileId = generateUUID();
-    await db().insert(files).values({
-      id: fileId,
-      folderId,
-      name: filename,
-      owner: user.id,
-      size: fileSize,
-      format: fileType,
-      visibility: folder.visibility,
-    });
+    try {
+      await db().insert(files).values({
+        id: fileId,
+        folderId,
+        name: filename,
+        owner: user.id,
+        size: fileSize,
+        format: fileType,
+        visibility: folder.visibility,
+      });
+    } catch (error) {
+      throw new HTTPException(409, { message: "FILE_ALREADY_EXISTS" });
+    }
 
     try {
       // Generate signed URL for upload
       const key = `${user.id}/${folderId}/${fileId}`;
       const { url: signedUrl } = await StorageClient.getSignedUrlForUpload({
-        bucket: "cloudbot-bucket",
+        bucket: process.env.R2_BUCKET_NAME!,
         key,
         contentType: fileType,
         contentLength: fileSize,

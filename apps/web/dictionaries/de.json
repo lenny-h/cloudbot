@@ -183,7 +183,9 @@
         "copiedToClipboard": "In die Zwischenablage kopiert!",
         "retryFailed": "Wiederholungsaktion fehlgeschlagen. Bitte versuchen Sie es erneut.",
         "failedRead": "Fehler beim Vorlesen der Nachricht",
-        "editMessage": "Nachricht bearbeiten"
+        "editMessage": "Nachricht bearbeiten",
+        "deletePair": "Nachrichtenpaar löschen",
+        "deletePairFailed": "Nachrichtenpaar konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
     },
     "messageEditor": {
         "cancel": "Abbrechen",

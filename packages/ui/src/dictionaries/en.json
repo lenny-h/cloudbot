@@ -13,6 +13,7 @@
     "INVALID_KEY": "Invalid password",
     "INVALID_EMAIL_DOMAIN": "Your email domain is not allowed to sign up",
     "INVALID_FILENAME": "Filenames must not contain special characters and must have a valid extension",
+    "FILE_ALREADY_EXISTS": "A file with this name already exists in the folder",
     "LOAD_MORE_ERROR": "Failed to load more items",
     "NO_RESULTS": "No results found",
     "PAGE_NOT_FOUND": "Page not found",

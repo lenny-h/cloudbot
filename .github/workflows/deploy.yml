@@ -94,6 +94,7 @@ jobs:
             SSO_JWKS_ENDPOINT
             NEXT_PUBLIC_LLM_MODELS
             R2_ENDPOINT
+            R2_BUCKET_NAME
             CLOUDFLARE_ACCESS_KEY_ID
             AWS_ACCESS_KEY_ID
             AWS_REGION
@@ -150,6 +151,7 @@ jobs:
           SSO_JWKS_ENDPOINT: ${{ vars.SSO_JWKS_ENDPOINT }}
           NEXT_PUBLIC_LLM_MODELS: ${{ vars.NEXT_PUBLIC_LLM_MODELS }}
           R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
           CLOUDFLARE_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_ACCESS_KEY_ID }}
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}

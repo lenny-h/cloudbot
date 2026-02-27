@@ -13,6 +13,7 @@
     "INVALID_KEY": "Ungültiges Passwort",
     "INVALID_EMAIL_DOMAIN": "Ihre E-Mail-Domain ist nicht für die Anmeldung erlaubt",
     "INVALID_FILENAME": "Ungültiger Dateiname. Dateinamen dürfen keine Sonderzeichen enthalten und müssen eine gültige Endung haben",
+    "FILE_ALREADY_EXISTS": "Eine Datei mit diesem Namen existiert bereits im Ordner",
     "LOAD_MORE_ERROR": "Fehler beim Laden weiterer Elemente",
     "NO_RESULTS": "Keine Ergebnisse gefunden",
     "PAGE_NOT_FOUND": "Die Seite konnte nicht gefunden werden",
