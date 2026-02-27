@@ -20,15 +20,15 @@ export function DocSourceBadge({ source, className }: SourceBadgeProps) {
   const { openPdf } = usePdf();
 
   const filenameParts = source.filename?.split("/");
-  const fileId = filenameParts?.[filenameParts.length - 1];
+  const filename = filenameParts?.[filenameParts.length - 1];
   const folderId = filenameParts?.[filenameParts.length - 2];
 
   const fileIsViewable =
-    source.mediaType === "application/pdf" && folderId && fileId;
+    source.mediaType === "application/pdf" && folderId && filename;
 
   const handleClick = () => {
     if (fileIsViewable) {
-      openPdf(isMobile, panelRef, folderId, fileId);
+      openPdf(isMobile, panelRef, folderId, filename);
     }
   };
 

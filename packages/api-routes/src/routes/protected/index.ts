@@ -19,7 +19,7 @@ import documentsTitleRoute from "./documents/title/[documentId]/[title]/route.js
 import documentsVersionRoute from "./documents/version/[documentId]/route.js";
 import documentsVersionsRoute from "./documents/versions/[documentId]/route.js";
 import filesFileIdRoute from "./files/[fileId]/route.js";
-import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/[fileId]/route.js";
+import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/[filename]/route.js";
 import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/route.js";
 import filesIlike from "./files/ilike/route.js";
 import filesRoute from "./files/route.js";
@@ -76,7 +76,7 @@ const protectedApiRouter = new Hono()
   // Files
   .route("/files", filesRoute)
   .route(
-    "/files/get-signed-url/:folderId/:fileId",
+    "/files/get-signed-url/:folderId/:filename",
     filesGetSignedUrlFolderFileRoute,
   )
   .route("/files/get-signed-url/:folderId", filesGetSignedUrlFolderRoute)

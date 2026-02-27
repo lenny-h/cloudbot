@@ -22,7 +22,7 @@ interface PDFContextType {
     isMobile: boolean,
     panelRef: RefObject<PanelImperativeHandle | null>,
     folderId: string,
-    fileId: string,
+    filename: string,
   ) => Promise<void>;
   isFetching: boolean;
 }
@@ -37,11 +37,11 @@ interface CachedUrl {
   expiresAt: number;
 }
 
-function getCachedUrl(folderId: string, fileId: string): string | null {
+function getCachedUrl(folderId: string, filename: string): string | null {
   if (typeof window === "undefined") return null;
 
   try {
-    const cacheKey = `${CACHE_KEY_PREFIX}${folderId}:${fileId}`;
+    const cacheKey = `${CACHE_KEY_PREFIX}${folderId}:${filename}`;
     const cached = sessionStorage.getItem(cacheKey);
 
     if (!cached) return null;
@@ -62,11 +62,11 @@ function getCachedUrl(folderId: string, fileId: string): string | null {
   }
 }
 
-function setCachedUrl(folderId: string, fileId: string, url: string): void {
+function setCachedUrl(folderId: string, filename: string, url: string): void {
   if (typeof window === "undefined") return;
 
   try {
-    const cacheKey = `${CACHE_KEY_PREFIX}${folderId}:${fileId}`;
+    const cacheKey = `${CACHE_KEY_PREFIX}${folderId}:${filename}`;
     const data: CachedUrl = {
       url,
       expiresAt: Date.now() + CACHE_EXPIRY_MS,
@@ -86,9 +86,9 @@ export function PDFProvider({ children }: { children: ReactNode }) {
   const [isFetching, setIsFetching] = useState(false);
 
   const getSignedUrl = useCallback(
-    async (folderId: string, fileId: string): Promise<string> => {
+    async (folderId: string, filename: string): Promise<string> => {
       // Check if we have a cached URL that's still valid
-      const cached = getCachedUrl(folderId, fileId);
+      const cached = getCachedUrl(folderId, filename);
       if (cached) {
         return cached;
       }
@@ -96,14 +96,14 @@ export function PDFProvider({ children }: { children: ReactNode }) {
       // Otherwise, fetch a new signed URL
       const { signedUrl } = await apiFetcher(
         (client) =>
-          client.files["get-signed-url"][":folderId"][":fileId"].$get({
-            param: { folderId, fileId },
+          client.files["get-signed-url"][":folderId"][":filename"].$get({
+            param: { folderId, filename },
           }),
         sharedT.apiCodes,
       );
 
       // Cache the URL
-      setCachedUrl(folderId, fileId, signedUrl);
+      setCachedUrl(folderId, filename, signedUrl);
 
       return signedUrl;
     },
@@ -111,12 +111,12 @@ export function PDFProvider({ children }: { children: ReactNode }) {
   );
 
   const loadPdf = useCallback(
-    async (folderId: string, fileId: string) => {
-      setCurrentFilename(fileId);
+    async (folderId: string, filename: string) => {
+      setCurrentFilename(filename);
       setIsFetching(true);
 
       try {
-        const signedUrl = await getSignedUrl(folderId, fileId);
+        const signedUrl = await getSignedUrl(folderId, filename);
         setCurrentPdfUrl(signedUrl);
         setEditorMode("pdf");
       } catch (error) {
@@ -134,11 +134,11 @@ export function PDFProvider({ children }: { children: ReactNode }) {
       isMobile: boolean,
       panelRef: RefObject<PanelImperativeHandle | null>,
       folderId: string,
-      fileId: string,
+      filename: string,
     ) => {
       if (isMobile) {
         try {
-          const signedUrl = await getSignedUrl(folderId, fileId);
+          const signedUrl = await getSignedUrl(folderId, filename);
           window.open(signedUrl, "_blank");
         } catch (error) {
           console.error("Error opening PDF on mobile:", error);
@@ -146,7 +146,7 @@ export function PDFProvider({ children }: { children: ReactNode }) {
         }
       } else {
         resizeEditor(panelRef, false);
-        loadPdf(folderId, fileId);
+        loadPdf(folderId, filename);
       }
     },
     [getSignedUrl, loadPdf],

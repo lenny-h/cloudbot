@@ -111,7 +111,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
 
     try {
       // Generate signed URL for upload
-      const key = `${user.id}/${folderId}/${fileId}`;
+      const key = `${user.id}/${folderId}/${filename}`;
       const { url: signedUrl } = await StorageClient.getSignedUrlForUpload({
         bucket: process.env.R2_BUCKET_NAME!,
         key,

@@ -113,15 +113,15 @@ export const FilesPage = memo(() => {
   };
 
   const handleViewPdf = (file: FileItem) => {
-    openPdf(isMobile, panelRef, file.folderId, file.id);
+    openPdf(isMobile, panelRef, file.folderId, file.name);
   };
 
   const handleDownload = async (file: FileItem) => {
     try {
       const { signedUrl } = await apiFetcher(
         (client) =>
-          client.files["get-signed-url"][":folderId"][":fileId"].$get({
-            param: { folderId: file.folderId, fileId: file.id },
+          client.files["get-signed-url"][":folderId"][":filename"].$get({
+            param: { folderId: file.folderId, filename: file.name },
           }),
         sharedT.apiCodes,
       );

@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 import { StorageClient } from "@workspace/api-routes/lib/storage-client.js";
+import { createFilenameWithExtensionSchema } from "@workspace/api-routes/schemas/filename-schema.js";
 import { uuidSchema } from "@workspace/api-routes/schemas/uuid-schema.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
@@ -10,11 +11,16 @@ import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
+import { allowedMediaTypes } from "../schema.js";
+
+const allowedExtensions = new Set(
+  allowedMediaTypes.map((type) => type.split("/").pop()),
+);
 
 const paramSchema = z
   .object({
     folderId: uuidSchema,
-    fileId: uuidSchema,
+    filename: createFilenameWithExtensionSchema(allowedExtensions),
   })
   .strict();
 
@@ -28,7 +34,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     return parsed.data;
   }),
   async (c) => {
-    const { folderId, fileId } = c.req.valid("param");
+    const { folderId, filename } = c.req.valid("param");
     const user = c.get("user");
 
     // Fetch the folder to check permissions
@@ -75,8 +81,8 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     // Construct the key using the file owner's ID
     const key =
       folder.visibility === "private"
-        ? `${user.id}/${folderId}/${fileId}`
-        : `${folder.visibility}/${folderId}/${fileId}`;
+        ? `${user.id}/${folderId}/${filename}`
+        : `${folder.visibility}/${folderId}/${filename}`;
 
     const signedUrl = await StorageClient.getSignedUrlForDownload({
       bucket: process.env.R2_BUCKET_NAME!,

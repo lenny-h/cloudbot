@@ -24,15 +24,15 @@ export function ToolSourceDocument({ part }: ToolSourceDocumentProps) {
   const { openPdf } = usePdf();
 
   const filenameParts = part.filename?.split("/");
-  const fileId = filenameParts?.[filenameParts.length - 1];
+  const filename = filenameParts?.[filenameParts.length - 1];
   const folderId = filenameParts?.[filenameParts.length - 2];
 
   const fileIsViewable =
-    part.mediaType === "application/pdf" && folderId && fileId;
+    part.mediaType === "application/pdf" && folderId && filename;
 
   const handleViewFile = () => {
     if (fileIsViewable) {
-      openPdf(isMobile, panelRef, folderId, fileId);
+      openPdf(isMobile, panelRef, folderId, filename);
     }
   };
 
@@ -69,7 +69,7 @@ export function ToolSourceDocument({ part }: ToolSourceDocumentProps) {
               <div className="text-muted-foreground text-xs font-medium">
                 Filename
               </div>
-              <div className="bg-muted/50 rounded p-2 text-sm font-mono break-all">
+              <div className="bg-muted/50 rounded p-2 font-mono text-sm break-all">
                 {part.filename}
               </div>
             </div>
