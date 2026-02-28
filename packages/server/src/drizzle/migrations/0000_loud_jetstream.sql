@@ -129,6 +129,15 @@ CREATE TABLE `sso_providers` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `sso_providers_provider_id_unique` ON `sso_providers` (`provider_id`);--> statement-breakpoint
+CREATE TABLE `two_factors` (
+	`id` text PRIMARY KEY NOT NULL,
+	`user_id` text NOT NULL,
+	`secret` text,
+	`backup_codes` text,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `two_factors_user_id_unique` ON `two_factors` (`user_id`);--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
@@ -142,7 +151,8 @@ CREATE TABLE `users` (
 	`ban_reason` text,
 	`ban_expires` integer,
 	`last_login_method` text,
-	`username` text
+	`username` text,
+	`two_factor_enabled` integer DEFAULT false
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);--> statement-breakpoint

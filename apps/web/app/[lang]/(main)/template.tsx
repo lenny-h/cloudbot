@@ -45,7 +45,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <ResizablePanelGroup orientation="horizontal">
-      <ResizablePanel className="h-svh" defaultSize={100} collapsible>
+      <ResizablePanel className="h-svh overflow-y-auto" defaultSize={100} collapsible>
         {children}
       </ResizablePanel>
       <ResizableHandle withHandle />

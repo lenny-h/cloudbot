@@ -60,7 +60,7 @@ const MessageSkeleton = memo(
     return (
       <div
         className={cn(
-          "animate-in fade-in-0 slide-in-from-bottom-2 flex gap-3 duration-500",
+          "animate-in fade-in-0 slide-in-from-bottom-2 mx-auto flex w-full max-w-183.75 gap-3 duration-500",
           isUser ? "justify-end" : "justify-start",
         )}
         style={{
