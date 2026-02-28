@@ -32,14 +32,23 @@ export function appendContentToEditor(
     }
     case "code": {
       const editor = editorRef.current as CodeMirrorEditorView;
+
+      // Accumulate raw code in the buffer and strip code fences on every chunk
+      textStreamBuffer.current += contentToAppend;
+      const stripped = stripCodeFences(textStreamBuffer.current);
+
       editor.dispatch({
         changes: {
-          from: editor.state.doc.length,
+          from: 0,
           to: editor.state.doc.length,
-          insert: contentToAppend,
+          insert: stripped,
         },
       });
       break;
     }
   }
+}
+
+function stripCodeFences(content: string): string {
+  return content.replace(/^```[^\n]*\n?/, "").replace(/\n?```$/, "");
 }

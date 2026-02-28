@@ -42,19 +42,17 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
       if (type === "text-delta") {
         const { text: code } = delta;
 
-        if (code) {
-          dataStream.write({
-            type: "data-codeDelta",
-            data: code ?? "",
-            transient: true,
-          });
+        draftContent += code;
 
-          draftContent = code;
-        }
+        dataStream.write({
+          type: "data-codeDelta",
+          data: code ?? "",
+          transient: true,
+        });
       }
     }
 
-    return draftContent;
+    return stripCodeFences(draftContent);
   },
   onUpdateDocument: async ({ document, description, dataStream, env }) => {
     if (!document.content)
@@ -77,18 +75,23 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
       if (type === "text-delta") {
         const { text: code } = delta;
 
-        if (code) {
-          dataStream.write({
-            type: "data-codeDelta",
-            data: code ?? "",
-            transient: true,
-          });
+        draftContent += code;
 
-          draftContent = code;
-        }
+        dataStream.write({
+          type: "data-codeDelta",
+          data: code ?? "",
+          transient: true,
+        });
       }
     }
 
-    return draftContent;
+    return stripCodeFences(draftContent);
   },
 });
+
+function stripCodeFences(content: string): string {
+  return content
+    .replace(/^```[^\n]*\n?/, "")
+    .replace(/\n?```$/, "")
+    .trim();
+}

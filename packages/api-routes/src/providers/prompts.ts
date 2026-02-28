@@ -19,8 +19,9 @@ export const webSearchPrompt: string =
 export function createDocumentPrompt(kind: "text" | "code" | "sheet"): string {
   const prompts = {
     text: "Write a document based on the provided title and description. The title is the topic and the description contains additional instructions or context. Markdown is supported. Use headings wherever appropriate.",
-    code: "Generate clean, production-ready code based on the provided title and description. The title names the task and the description contains additional requirements or context. Use best practices, meaningful names, proper error handling, and include helpful comments. Output ONLY the code without explanations. Do NOT enclose the generated code in markdown code blocks (no ```). Do NOT specify the programming language. Just output the raw code.",
-    sheet: "Generate well-structured CSV data based on the provided title and description. The title names the dataset and the description contains additional requirements or context. Include realistic values and proper formatting. Include 10-50 rows unless specified. Output ONLY the CSV data.",
+    code: "Generate clean, production-ready code based on the provided title and description. The title names the task and the description contains additional requirements or context. Use best practices, meaningful names, proper error handling, and include helpful comments. Output ONLY the code without explanations.",
+    sheet:
+      "Generate well-structured CSV data based on the provided title and description. The title names the dataset and the description contains additional requirements or context. Include realistic values and proper formatting. Include 10-50 rows unless specified. Output ONLY the CSV data.",
   };
 
   return prompts[kind];

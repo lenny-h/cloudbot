@@ -72,6 +72,7 @@ export function DataStreamHandler() {
               }
 
               codeDiffPrev.current = codeEditorRef.current.state;
+              textStreamBuffer.current = "";
               break;
           }
 
@@ -146,6 +147,7 @@ export function DataStreamHandler() {
             codeDiffPrev,
             codeEditorRef,
           });
+          textStreamBuffer.current = "";
 
           // Show diff actions
           setShowDiffActions(true);
