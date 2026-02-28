@@ -5,50 +5,50 @@
     "compatibility_flags": [
         "nodejs_compat"
     ],
-    // "env": {
-    //     "dev": {
-    "r2_buckets": [
-        {
-            "binding": "CLOUDBOT_BUCKET",
-            "bucket_name": "cloudbot-dev-bucket",
-            "remote": true
+    "env": {
+        "dev": {
+            "r2_buckets": [
+                {
+                    "binding": "CLOUDBOT_BUCKET",
+                    "bucket_name": "cloudbot-dev-bucket",
+                    "remote": true
+                }
+            ],
+            "d1_databases": [
+                {
+                    "binding": "CLOUDBOT_DB",
+                    "database_name": "cloudbot-db",
+                    "database_id": "CLOUDBOT_DB_ID",
+                    "migrations_dir": "./../../packages/server/src/drizzle/migrations"
+                }
+            ],
+            "ai": {
+                "binding": "AI",
+                "remote": true
+            }
+        },
+        "production": {
+            "r2_buckets": [
+                {
+                    "binding": "CLOUDBOT_BUCKET",
+                    "bucket_name": "cloudbot-bucket",
+                    "remote": true
+                }
+            ],
+            "d1_databases": [
+                {
+                    "binding": "CLOUDBOT_DB",
+                    "database_name": "cloudbot-db",
+                    "database_id": "CLOUDBOT_DB_ID",
+                    "migrations_dir": "./../../packages/server/src/drizzle/migrations"
+                }
+            ],
+            "ai": {
+                "binding": "AI",
+                "remote": true
+            }
         }
-    ],
-    "d1_databases": [
-        {
-            "binding": "CLOUDBOT_DB",
-            "database_name": "cloudbot-db",
-            "database_id": "CLOUDBOT_DB_ID",
-            "migrations_dir": "./../../packages/server/src/drizzle/migrations"
-        }
-    ],
-    "ai": {
-        "binding": "AI",
-        "remote": true
     },
-        // },
-        // "production": {
-        //     "r2_buckets": [
-        //         {
-        //             "binding": "CLOUDBOT_BUCKET",
-        //             "bucket_name": "cloudbot-bucket",
-        //             "remote": true
-        //         }
-        //     ],
-        //     "d1_databases": [
-        //         {
-        //             "binding": "CLOUDBOT_DB",
-        //             "database_name": "cloudbot-db",
-        //             "database_id": "CLOUDBOT_DB_ID",
-        //             "migrations_dir": "./../../packages/server/src/drizzle/migrations"
-        //         }
-        //     ],
-        //     "ai": {
-        //         "binding": "AI",
-        //         "remote": true
-        //     }
-        // }
-    // },
     "route": {
         "custom_domain": true,
         "zone_name": "nextgpt.cloud",

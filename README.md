@@ -8,53 +8,6 @@ A monorepo containing the CloudBot API, dashboard, and web applications built wi
 - Cloudflare account (for remote deployment)
 - Wrangler CLI (included in dependencies)
 
-## Local Development Setup
-
-### 1. Install Dependencies
-
-```bash
-pnpm install
-```
-
-### 2. Local Development (Automatic Local D1 and R2)
-
-When you run `wrangler dev`, it automatically creates local D1 database and R2 bucket for testing:
-
-```bash
-# Start the API in development mode
-cd apps/api
-pnpm run dev
-```
-
-**What happens automatically:**
-
-- ✅ Local D1 database is created at `.wrangler/state/v3/d1/`
-- ✅ Local R2 bucket is created at `.wrangler/state/v3/r2/`
-- ✅ API runs on `http://localhost:8787`
-- To apply migrations to the local D1 database:
-
-```bash
-wrangler d1 migrations apply CLOUDBOT_DB --local
-```
-
-Wrangler automatically keeps track of the migrations already applied to the local D1 database, so it is safe to run this command multiple times during development as you create new migrations.
-
-### 3. Run Other Apps Locally
-
-```bash
-pnpm run dev --filter=web --filter=dashboard
-```
-
-### 4. View Local Data
-
-```bash
-# Query local D1 database
-wrangler d1 execute CLOUDBOT_DB --local --command "SELECT * FROM users"
-
-# List local R2 objects
-wrangler r2 object list cloudbot-bucket --local
-```
-
 ## Production Setup (Remote D1 and R2)
 
 ### Step 1: Authenticate with Cloudflare
@@ -128,26 +81,7 @@ wrangler d1 execute CLOUDBOT_DB --remote --command "SELECT name FROM sqlite_mast
 wrangler r2 bucket create cloudbot-bucket
 ```
 
-**Output:**
-
-```
-✅ Created bucket 'cloudbot-bucket'
-```
-
-### Step 6: Update wrangler.jsonc with R2 Info (if needed)
-
-Update `apps/api/wrangler.jsonc`:
-
-```json
-"r2_buckets": [
-    {
-        "binding": "CLOUDBOT_BUCKET",
-        "bucket_name": "cloudbot-bucket"
-    }
-]
-```
-
-### Step 7: Test Remote Connection
+### Step 6: Test Remote Connection
 
 ```bash
 # Test with remote resources
@@ -157,7 +91,7 @@ wrangler dev --remote
 
 The `--remote` flag connects to your remote D1 and R2 instead of local ones.
 
-### Step 8: Update Custom Domains in wrangler.jsonc
+### Step 7: Update Custom Domains in wrangler.jsonc
 
 Replace the example domain (`nextgpt.cloud`) with your own domain in each app's `wrangler.jsonc`:
 
@@ -193,7 +127,7 @@ Replace the example domain (`nextgpt.cloud`) with your own domain in each app's 
 
 Make sure your domain is added to Cloudflare and the nameservers are updated.
 
-### Step 9: Set Up GitHub Secrets (for CI/CD)
+### Step 8: Set Up GitHub Secrets (for CI/CD)
 
 To enable automatic deployment via GitHub Actions, you need to configure secrets and variables in your GitHub repository. Go to **GitHub** → **Settings** → **Secrets and variables** → **Actions**.
 
@@ -332,7 +266,7 @@ And define non-sensitive config in `wrangler.jsonc`:
 }
 ```
 
-### Step 10: Deploy via GitHub Actions (Automatic)
+### Step 9: Deploy via GitHub Actions (Automatic)
 
 Once secrets are configured, deployments happen automatically:
 
@@ -350,7 +284,7 @@ git push origin main
 - ✅ Status appears in your repo's **Actions** tab
 - ✅ Cloudflare logging is turned off; you can turn it off in the 'wrangler.jsonc' file for each app under the 'observability' section.
 
-### Step 11: Manual Deployment (if needed)
+### Step 10: Manual Deployment (if needed)
 
 For manual deployment, ensure all environment variables from Step 9 are configured as Cloudflare Workers secrets using:
 
@@ -382,6 +316,53 @@ cd ../dashboard && pnpm run deploy-cloudflare
 ### Continuous Deployment (CI/CD)
 
 When new commits are pushed to the `main` branch, GitHub Actions automatically builds and redeploys all apps. You can monitor the deployment status in the **Actions** tab of your GitHub repository.
+
+## Local Development Setup
+
+### 1. Install Dependencies
+
+```bash
+pnpm install
+```
+
+### 2. Local Development (Automatic Local D1 and R2)
+
+When you run `wrangler dev`, it automatically creates local D1 database and R2 bucket for testing:
+
+```bash
+# Start the API in development mode
+cd apps/api
+pnpm run dev
+```
+
+**What happens automatically:**
+
+- ✅ Local D1 database is created at `.wrangler/state/v3/d1/`
+- ✅ Local R2 bucket is created at `.wrangler/state/v3/r2/`
+- ✅ API runs on `http://localhost:8787`
+- To apply migrations to the local D1 database:
+
+```bash
+wrangler d1 migrations apply CLOUDBOT_DB --local
+```
+
+Wrangler automatically keeps track of the migrations already applied to the local D1 database, so it is safe to run this command multiple times during development as you create new migrations.
+
+### 3. Run Other Apps Locally
+
+```bash
+pnpm run dev --filter=web --filter=dashboard
+```
+
+### 4. View Local Data
+
+```bash
+# Query local D1 database
+wrangler d1 execute CLOUDBOT_DB --local --command "SELECT * FROM users"
+
+# List local R2 objects
+wrangler r2 object list cloudbot-bucket --local
+```
 
 ## Common Commands
 
@@ -447,32 +428,6 @@ pnpm run build
 # Deploy API to production
 cd apps/api && pnpm run deploy
 ```
-
-## Environment Variables
-
-For local development, create `.env.local` files based on the provided examples:
-
-**For API:** Copy `apps/api/.env.example` to `apps/api/.env.local` and fill in your values.
-
-**For Web:** Copy `apps/web/.env.local.example` to `apps/web/.env.local` and configure:
-
-```env
-NEXT_PUBLIC_BASE_URL="http://localhost:3000"
-NEXT_PUBLIC_DASHBOARD_URL="http://localhost:3001"
-NEXT_PUBLIC_API_URL="http://localhost:8787"
-
-NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP="true"
-NEXT_PUBLIC_ENABLE_OAUTH_LOGIN="true"
-NEXT_PUBLIC_ENABLE_SSO="true"
-
-NEXT_PUBLIC_CSP_ENDPOINTS="http://localhost:9000"
-
-NEXT_PUBLIC_LLM_MODELS='[{"name":"gpt-4o","label":"GPT-4o","provider":"openai","description":"Faster model","images":true,"pdfs":true,"reasoning":false}]'
-```
-
-**For Dashboard:** Copy `apps/dashboard/.env.local.example` to `apps/dashboard/.env.local` with similar configuration.
-
-For production deployment with GitHub Actions, see [Step 9: Set Up GitHub Secrets](#step-9-set-up-github-secrets-for-cicd) for a comprehensive list of all required environment variables and secrets.
 
 ## Project Structure
 
