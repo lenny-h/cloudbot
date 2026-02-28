@@ -14,6 +14,7 @@ import {
 type DiffContextType = {
   textDiffPrev: RefObject<TextEditorState | undefined>;
   codeDiffPrev: RefObject<CodeEditorState | undefined>;
+  textStreamBuffer: RefObject<string>;
   showDiffActions: boolean;
   setShowDiffActions: React.Dispatch<React.SetStateAction<boolean>>;
   isViewingVersion: boolean;
@@ -30,6 +31,7 @@ interface Props {
 export function DiffProvider({ children }: Props) {
   const textDiffPrev = useRef<TextEditorState | undefined>(undefined);
   const codeDiffPrev = useRef<CodeEditorState | undefined>(undefined);
+  const textStreamBuffer = useRef<string>("");
   const [showDiffActions, setShowDiffActions] = useState(false);
   const [isViewingVersion, setIsViewingVersion] = useState(false);
 
@@ -43,6 +45,7 @@ export function DiffProvider({ children }: Props) {
       value={{
         textDiffPrev,
         codeDiffPrev,
+        textStreamBuffer,
         showDiffActions,
         setShowDiffActions,
         isViewingVersion,

@@ -125,7 +125,7 @@ export const generateFile = ({ userId, dataStream, env }: GenerateFileProps) =>
         const fileId = generateUUID();
         const extension = formatExtensions[format];
         const contentType = formatContentTypes[format];
-        const r2Key = `artifacts/${userId}/${fileId}.${extension}`;
+        const key = `artifacts/${userId}/${fileId}.${extension}`;
 
         // Notify the UI that file generation has started
         dataStream.write({
@@ -147,14 +147,16 @@ export const generateFile = ({ userId, dataStream, env }: GenerateFileProps) =>
         // Upload to R2
         const contentBuffer = new TextEncoder().encode(content);
 
-        await env.CLOUDBOT_BUCKET.put(r2Key, contentBuffer, {
-          httpMetadata: { contentType },
-          customMetadata: {
-            title,
-            format,
-            createdAt: new Date().toISOString(),
+        await env.CLOUDBOT_BUCKET.put(
+          `${process.env.R2_BUCKET_NAME}/${key}`,
+          contentBuffer,
+          {
+            httpMetadata: { contentType },
+            customMetadata: {
+              title,
+            },
           },
-        });
+        );
 
         // Notify the UI that the file is ready
         const sanitizedTitle = title.replace(/[^a-zA-Z0-9-_\s]/g, "").trim();

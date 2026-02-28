@@ -42,6 +42,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
     const folderFiles = await db()
       .select({
         id: files.id,
+        name: files.name,
         visibility: files.visibility,
       })
       .from(files)
@@ -62,10 +63,12 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
 
       const key =
         file.visibility === "private"
-          ? `${user.id}/${folderId}/${file.id}`
-          : `${file.visibility}/${folderId}/${file.id}`;
+          ? `${user.id}/${folderId}/${file.name}`
+          : `${file.visibility}/${folderId}/${file.name}`;
 
-      await c.env.CLOUDBOT_BUCKET.delete(key);
+      await c.env.CLOUDBOT_BUCKET.delete(
+        `${process.env.R2_BUCKET_NAME}/${key}`,
+      );
     }
 
     const deletedFolderName = await deleteFolder({ folderId });

@@ -12,24 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { streamText } from "ai";
+import { smoothStream, streamText } from "ai";
 import { HTTPException } from "hono/http-exception";
 import { artifactModelIdx } from "../../providers/models.js";
-import { codePrompt, updateDocumentPrompt } from "../../providers/prompts.js";
+import {
+  createDocumentPrompt,
+  updateDocumentPrompt,
+} from "../../providers/prompts.js";
 import { getModel } from "../../providers/providers.js";
 import { createDocumentHandler } from "./artifact-server.js";
 
 export const codeDocumentHandler = createDocumentHandler<"code">({
   kind: "code",
-  onCreateDocument: async ({ title, dataStream, env }) => {
+  onCreateDocument: async ({ title, description, dataStream, env }) => {
     let draftContent = "";
 
     const config = await getModel(env, artifactModelIdx);
 
     const { fullStream } = streamText({
       model: config.model,
-      system: codePrompt,
-      prompt: title,
+      system: createDocumentPrompt("code"),
+      prompt: description ? `${title}\n\n${description}` : title,
+      experimental_transform: smoothStream({ chunking: "line" }),
     });
 
     for await (const delta of fullStream) {
@@ -64,6 +68,7 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
       model: config.model,
       system: updateDocumentPrompt(document.content, "code"),
       prompt: description,
+      experimental_transform: smoothStream({ chunking: "line" }),
     });
 
     for await (const delta of fullStream) {

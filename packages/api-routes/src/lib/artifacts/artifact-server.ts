@@ -33,6 +33,7 @@ export type SaveDocumentProps = {
 export type CreateDocumentCallbackProps = {
   id: string;
   title: string;
+  description: string;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
   userId: string;
   env: Bindings;
@@ -63,6 +64,7 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
       const draftContent = await config.onCreateDocument({
         id: args.id,
         title: args.title,
+        description: args.description,
         dataStream: args.dataStream,
         userId: args.userId,
         env: args.env,

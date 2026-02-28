@@ -59,7 +59,7 @@ export const createDocument = ({
       kind: artifactSchema,
       message: z.string(),
     }),
-    execute: async ({ title, kind }) => {
+    execute: async ({ title, kind, description }) => {
       try {
         const id = generateUUID();
 
@@ -85,6 +85,7 @@ export const createDocument = ({
         await documentHandler.onCreateDocument({
           id,
           title,
+          description,
           dataStream,
           userId,
           env,

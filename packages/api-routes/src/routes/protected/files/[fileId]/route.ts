@@ -5,10 +5,13 @@ import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { files } from "@workspace/server/drizzle/schema.js";
+import { createLogger } from "@workspace/server/logger/logger.js";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
+
+const logger = createLogger("delete-file");
 
 const paramSchema = z.object({ fileId: uuidSchema }).strict();
 
@@ -29,7 +32,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       .delete(files)
       .where(and(eq(files.id, fileId), eq(files.owner, user.id)))
       .returning({
-        id: files.id,
         visibility: files.visibility,
         folderId: files.folderId,
         name: files.name,
@@ -41,9 +43,24 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
       throw new HTTPException(404, { message: "NOT_FOUND" });
     }
 
-    await c.env.CLOUDBOT_BUCKET.delete(
-      `${file.visibility}/${file.folderId}/${file.id}`,
-    );
+    try {
+      const key =
+        file.visibility === "private"
+          ? `${user.id}/${file.folderId}/${file.name}`
+          : `${file.visibility}/${file.folderId}/${file.name}`;
+
+      logger.debug("Deleting file from R2 with key:", { key });
+
+      await c.env.CLOUDBOT_BUCKET.delete(
+        `${process.env.R2_BUCKET_NAME}/${key}`,
+      );
+    } catch (e) {
+      // We don't want to fail the whole request if the R2 delete fails, since the database record has already been deleted and we don't want orphaned records. We'll just log the error and move on.
+      logger.error("Failed to delete file from R2:", {
+        error: e,
+        filename: file.name,
+      });
+    }
 
     return c.json({ name: file.name });
   },

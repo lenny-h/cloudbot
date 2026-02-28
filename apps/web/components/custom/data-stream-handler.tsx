@@ -4,6 +4,7 @@ import { useDataStream } from "@/contexts/data-stream-context";
 import { useDiff } from "@/contexts/diff-context";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
+import { resizeEditor } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { appendContentToEditor } from "../editors/helper-functions/append-content-to-editor";
@@ -21,8 +22,9 @@ export function DataStreamHandler() {
     setTextDocumentIdentifier,
     setCodeDocumentIdentifier,
   } = useEditor();
-  const { textEditorRef, codeEditorRef } = useRefs();
-  const { textDiffPrev, codeDiffPrev, setShowDiffActions } = useDiff();
+  const { panelRef, textEditorRef, codeEditorRef } = useRefs();
+  const { textDiffPrev, codeDiffPrev, textStreamBuffer, setShowDiffActions } =
+    useDiff();
 
   useEffect(() => {
     if (!dataStream?.length) {
@@ -47,6 +49,7 @@ export function DataStreamHandler() {
           const { id, title, kind } = delta.data;
 
           setEditorMode(kind);
+          resizeEditor(panelRef, false);
 
           switch (kind) {
             case "text":
@@ -58,6 +61,7 @@ export function DataStreamHandler() {
               }
 
               textDiffPrev.current = textEditorRef.current.state;
+              textStreamBuffer.current = "";
               break;
             case "code":
               if (!codeEditorRef.current) {
@@ -93,7 +97,12 @@ export function DataStreamHandler() {
             return;
           }
 
-          appendContentToEditor("text", textEditorRef, delta.data);
+          appendContentToEditor(
+            "text",
+            textEditorRef,
+            delta.data,
+            textStreamBuffer,
+          );
           break;
 
         case "data-codeDelta":
@@ -102,7 +111,12 @@ export function DataStreamHandler() {
             return;
           }
 
-          appendContentToEditor("code", codeEditorRef, delta.data);
+          appendContentToEditor(
+            "code",
+            codeEditorRef,
+            delta.data,
+            textStreamBuffer,
+          );
           break;
 
         // case "data-sheetDelta": // Maybe add sheet later
@@ -118,6 +132,7 @@ export function DataStreamHandler() {
             codeDiffPrev,
             codeEditorRef,
           });
+          textStreamBuffer.current = "";
 
           break;
 

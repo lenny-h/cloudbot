@@ -1,8 +1,6 @@
 import { type CustomUIMessage } from "@workspace/api-routes/types/custom-ui-message";
 import { useScrollToBottom } from "@workspace/ui/hooks/use-scroll-to-bottom";
 import { type ChatRequestOptions } from "ai";
-import equal from "fast-deep-equal";
-import { memo } from "react";
 import { AgentMessage } from "./agent-message";
 import { UserMessage } from "./user-message";
 
@@ -22,13 +20,13 @@ interface MessagesProps {
   ) => Promise<void>;
 }
 
-function PureMessages({
+export const Messages = ({
   chatId,
   messages,
   setMessages,
   status,
   regenerate,
-}: MessagesProps) {
+}: MessagesProps) => {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
@@ -79,12 +77,4 @@ function PureMessages({
       <div ref={messagesEndRef} className="min-h-6 min-w-6 shrink-0" />
     </div>
   );
-}
-
-export const Messages = memo(PureMessages, (prevProps, nextProps) => {
-  if (prevProps.messages.length !== nextProps.messages.length) return false;
-  if (!equal(prevProps.messages, nextProps.messages)) return false;
-  if (prevProps.status !== nextProps.status) return false;
-
-  return true;
-});
+};

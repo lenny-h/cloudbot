@@ -13,7 +13,10 @@
 // limitations under the License.
 
 import { artifactModelIdx } from "@workspace/api-routes/providers/models.js";
-import { updateDocumentPrompt } from "@workspace/api-routes/providers/prompts.js";
+import {
+  createDocumentPrompt,
+  updateDocumentPrompt,
+} from "@workspace/api-routes/providers/prompts.js";
 import { getModel } from "@workspace/api-routes/providers/providers.js";
 import { smoothStream, streamText } from "ai";
 import { HTTPException } from "hono/http-exception";
@@ -21,17 +24,16 @@ import { createDocumentHandler } from "./artifact-server.js";
 
 export const textDocumentHandler = createDocumentHandler<"text">({
   kind: "text",
-  onCreateDocument: async ({ title, dataStream, env }) => {
+  onCreateDocument: async ({ title, description, dataStream, env }) => {
     let draftContent = "";
 
     const config = await getModel(env, artifactModelIdx);
 
     const { fullStream } = streamText({
       model: config.model,
-      system:
-        "Write about the given topic. Markdown is supported. Use headings wherever appropriate.",
-      experimental_transform: smoothStream({ chunking: "word" }),
-      prompt: title,
+      system: createDocumentPrompt("text"),
+      prompt: description ? `${title}\n\n${description}` : title,
+      experimental_transform: smoothStream({ chunking: "line" }),
     });
 
     for await (const delta of fullStream) {
@@ -63,16 +65,8 @@ export const textDocumentHandler = createDocumentHandler<"text">({
     const { fullStream } = streamText({
       model: config.model,
       system: updateDocumentPrompt(document.content, "text"),
-      experimental_transform: smoothStream({ chunking: "word" }),
       prompt: description,
-      providerOptions: {
-        openai: {
-          prediction: {
-            type: "content",
-            content: document.content,
-          },
-        },
-      },
+      experimental_transform: smoothStream({ chunking: "line" }),
     });
 
     for await (const delta of fullStream) {
