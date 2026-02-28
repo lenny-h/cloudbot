@@ -37,7 +37,34 @@
     "logOut": "Log out",
     "noUsername": "No username",
     "unnamed": "Unnamed",
-    "updateProfile": "Update profile"
+    "updateProfile": "Update profile",
+    "twoFactor": {
+      "enableLabel": "Enable 2FA",
+      "manageLabel": "Manage 2FA",
+      "enableTitle": "Enable Two-Factor Authentication",
+      "enableSubtitle": "Enter your password to continue.",
+      "disableTitle": "Disable Two-Factor Authentication",
+      "disableSubtitle": "Enter your password to turn off 2FA.",
+      "scanTitle": "Scan QR Code",
+      "scanSubtitle": "Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.",
+      "backupTitle": "Save Your Backup Codes",
+      "backupSubtitle": "Store these codes somewhere safe. Each can only be used once to regain access.",
+      "passwordLabel": "Your Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmCode": "Confirm Code",
+      "confirmButton": "Confirm",
+      "continue": "Continue",
+      "back": "Back",
+      "cancel": "Cancel",
+      "done": "Done",
+      "copied": "Copied!",
+      "enabling": "Enabling...",
+      "disabling": "Disabling...",
+      "enableSuccess": "Two-factor authentication enabled.",
+      "enableError": "Failed to enable two-factor authentication.",
+      "disableSuccess": "Two-factor authentication disabled.",
+      "disableError": "Failed to disable two-factor authentication."
+    }
   },
   "profileForm": {
     "goBackHome": "Go back home",
@@ -105,5 +132,19 @@
     "loginWithInstitution": "Login With Your Institution",
     "redirectingToSSO": "Redirecting to institution SSO...",
     "redirectError": "Failed to redirect to institution SSO"
+  },
+  "twoFactor": {
+    "pageTitle": "Two-Factor Authentication",
+    "totpDescription": "Enter the 6-digit code from your authenticator app.",
+    "backupDescription": "Enter one of your backup codes to sign in.",
+    "codeLabel": "Authentication Code",
+    "backupCodeLabel": "Backup Code",
+    "backupCodePlaceholder": "Enter a backup code",
+    "verifyButton": "Verify",
+    "verifying": "Verifying...",
+    "verifySuccess": "Verified successfully",
+    "verifyError": "Verification failed",
+    "useBackupCode": "Use a backup code instead",
+    "useAuthenticator": "Use authenticator app instead"
   }
 }

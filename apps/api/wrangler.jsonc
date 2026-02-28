@@ -9,7 +9,7 @@
         "dev": {
             "r2_buckets": [
                 {
-                    "binding": "CLOUDBOT_DEV_BUCKET",
+                    "binding": "CLOUDBOT_BUCKET",
                     "bucket_name": "cloudbot-dev-bucket",
                     "remote": true
                 }

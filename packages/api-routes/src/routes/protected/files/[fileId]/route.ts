@@ -49,7 +49,9 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
           ? `${user.id}/${file.folderId}/${file.name}`
           : `${file.visibility}/${file.folderId}/${file.name}`;
 
-      logger.debug("Deleting file from R2 with key:", { key });
+      logger.debug("Deleting file from R2 with key:", {
+        key: `${process.env.R2_BUCKET_NAME}/${key}`,
+      });
 
       await c.env.CLOUDBOT_BUCKET.delete(
         `${process.env.R2_BUCKET_NAME}/${key}`,

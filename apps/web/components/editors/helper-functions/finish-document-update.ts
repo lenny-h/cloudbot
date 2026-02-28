@@ -66,6 +66,10 @@ export async function finishDocumentUpdate({
 
       const codeDiffResult = diffLines(prevContent, content);
 
+      console.log("Previous content:", prevContent);
+      console.log("Current content:", content);
+      console.log("Code diff result:", codeDiffResult);
+
       updateEditorWithDispatch(
         "code",
         codeEditorRef,

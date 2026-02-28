@@ -31,6 +31,9 @@ export const users = sqliteTable("users", {
   banExpires: integer("ban_expires", { mode: "timestamp_ms" }),
   lastLoginMethod: text("last_login_method"),
   username: text("username"),
+  twoFactorEnabled: integer("two_factor_enabled", { mode: "boolean" }).default(
+    false,
+  ),
 });
 
 export type User = InferSelectModel<typeof users>;
@@ -125,6 +128,18 @@ export const ssoProviders = sqliteTable("sso_providers", {
 });
 
 export type SsoProvider = InferSelectModel<typeof ssoProviders>;
+
+export const twoFactors = sqliteTable("two_factors", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .unique()
+    .references(() => users.id, { onDelete: "cascade" }),
+  secret: text("secret"),
+  backupCodes: text("backup_codes"),
+});
 
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),

@@ -59,8 +59,12 @@ export const SignIn = memo(() => {
         rememberMe: true,
       },
       {
-        onSuccess() {
-          router.push(`/${locale}/`);
+        onSuccess(context) {
+          if (context.data.twoFactorRedirect) {
+            router.push(`/${locale}/two-factor`);
+          } else {
+            router.push(`/${locale}/`);
+          }
         },
         onError(context) {
           throw new Error(context.error.message);

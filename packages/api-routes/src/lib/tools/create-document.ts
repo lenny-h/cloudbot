@@ -101,7 +101,8 @@ export const createDocument = ({
           id,
           title,
           kind,
-          message: "A document was created and is now visible to the user.",
+          message:
+            "A document was created. The user can view the document, do not provide a link to the document.",
         };
       } catch (error) {
         logger.error("Error in createDocument tool", error);

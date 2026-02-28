@@ -3,6 +3,7 @@ import {
   adminClient,
   inferAdditionalFields,
   lastLoginMethodClient,
+  twoFactorClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ export const client = createAuthClient({
   plugins: [
     adminClient(),
     ssoClient(),
+    twoFactorClient(),
     lastLoginMethodClient(),
     // oneTapClient({
     //   clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
@@ -39,4 +41,4 @@ export const client = createAuthClient({
   },
 });
 
-export const { signUp, signIn, signOut, useSession } = client;
+export const { signUp, signIn, signOut, useSession, twoFactor } = client;

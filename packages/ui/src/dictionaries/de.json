@@ -37,7 +37,34 @@
     "logOut": "Abmelden",
     "noUsername": "Kein Benutzername",
     "unnamed": "Unbenannt",
-    "updateProfile": "Profil aktualisieren"
+    "updateProfile": "Profil aktualisieren",
+    "twoFactor": {
+      "enableLabel": "2FA aktivieren",
+      "manageLabel": "2FA verwalten",
+      "enableTitle": "Zwei-Faktor-Authentifizierung aktivieren",
+      "enableSubtitle": "Geben Sie Ihr Passwort ein, um fortzufahren.",
+      "disableTitle": "Zwei-Faktor-Authentifizierung deaktivieren",
+      "disableSubtitle": "Geben Sie Ihr Passwort ein, um 2FA zu deaktivieren.",
+      "scanTitle": "QR-Code scannen",
+      "scanSubtitle": "Scannen Sie diesen QR-Code mit Ihrer Authenticator-App und geben Sie anschließend den 6-stelligen Code ein, um zu bestätigen.",
+      "backupTitle": "Backup-Codes speichern",
+      "backupSubtitle": "Bewahren Sie diese Codes sicher auf. Jeder kann nur einmal zur Wiederherstellung des Zugangs verwendet werden.",
+      "passwordLabel": "Ihr Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "confirmCode": "Code bestätigen",
+      "confirmButton": "Bestätigen",
+      "continue": "Weiter",
+      "back": "Zurück",
+      "cancel": "Abbrechen",
+      "done": "Fertig",
+      "copied": "Kopiert!",
+      "enabling": "Wird aktiviert...",
+      "disabling": "Wird deaktiviert...",
+      "enableSuccess": "Zwei-Faktor-Authentifizierung aktiviert.",
+      "enableError": "Aktivierung der Zwei-Faktor-Authentifizierung fehlgeschlagen.",
+      "disableSuccess": "Zwei-Faktor-Authentifizierung deaktiviert.",
+      "disableError": "Deaktivierung der Zwei-Faktor-Authentifizierung fehlgeschlagen."
+    }
   },
   "profileForm": {
     "goBackHome": "Zurück zur Startseite",
@@ -105,5 +132,19 @@
     "loginWithInstitution": "Mit Ihrer Institution anmelden",
     "redirectingToSSO": "Weiterleitung zu Institutions-SSO...",
     "redirectError": "Weiterleitung zu Institutions-SSO fehlgeschlagen"
+  },
+  "twoFactor": {
+    "pageTitle": "Zwei-Faktor-Authentifizierung",
+    "totpDescription": "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.",
+    "backupDescription": "Geben Sie einen Ihrer Backup-Codes ein, um sich anzumelden.",
+    "codeLabel": "Authentifizierungscode",
+    "backupCodeLabel": "Backup-Code",
+    "backupCodePlaceholder": "Backup-Code eingeben",
+    "verifyButton": "Bestätigen",
+    "verifying": "Wird überprüft...",
+    "verifySuccess": "Erfolgreich bestätigt",
+    "verifyError": "Überprüfung fehlgeschlagen",
+    "useBackupCode": "Stattdessen einen Backup-Code verwenden",
+    "useAuthenticator": "Stattdessen Authenticator-App verwenden"
   }
 }

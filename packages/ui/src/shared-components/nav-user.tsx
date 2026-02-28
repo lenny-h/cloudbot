@@ -25,6 +25,7 @@ import { client } from "../lib/auth-client";
 import { apiFetcher } from "../lib/fetcher";
 import { LocaleSwitcher } from "./locale-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
+import { TwoFactorMenuItem } from "./two-factor-menu-item";
 
 export const NavUser = memo(() => {
   const { locale, sharedT } = useSharedTranslations();
@@ -32,6 +33,9 @@ export const NavUser = memo(() => {
   const user = useUser();
   const isMobile = useIsMobile();
   const router = useRouter();
+
+  const enableEmailSignup =
+    process.env.NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP === "true";
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile"],
@@ -100,6 +104,7 @@ export const NavUser = memo(() => {
                   ? sharedT.navUser.loading
                   : sharedT.navUser.updateProfile}
               </DropdownMenuItem>
+              {enableEmailSignup && <TwoFactorMenuItem />}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

@@ -2,7 +2,7 @@ import { sso } from "@better-auth/sso";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware } from "better-auth/api";
-import { admin, lastLoginMethod } from "better-auth/plugins";
+import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
 import { HTTPException } from "hono/http-exception";
 import { db } from "./drizzle/db.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "./send-email.js";
@@ -44,6 +44,14 @@ function buildAuth() {
             disableImplicitSignUp: false,
             trustEmailVerified: true,
             providersLimit: 0, // No extra providers allowed so users cannot register new SSO providers
+          }),
+        ]
+      : []),
+    ...(process.env.ENABLE_EMAIL_SIGNUP === "true"
+      ? [
+          twoFactor({
+            issuer: "CloudBot",
+            skipVerificationOnEnable: false,
           }),
         ]
       : []),
