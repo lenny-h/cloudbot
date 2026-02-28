@@ -1,37 +1,50 @@
+import { updateEditorWithDispatch } from "@/components/editors/helper-functions/update-editor-with-dispatch";
 import { useDiff } from "@/contexts/diff-context";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
+import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { useCallback } from "react";
+import { toast } from "sonner";
 
 export function useDiffActions() {
   const { editorMode } = useEditor();
   const { textEditorRef, codeEditorRef } = useRefs();
-  const { textDiffPrev, codeDiffPrev, setShowDiffActions } = useDiff();
+  const { sharedT } = useSharedTranslations();
+  const {
+    textDiffPrev,
+    codeDiffPrev,
+    textStreamBuffer,
+    codeStreamBuffer,
+    currentDiffId,
+    setCurrentDiffId,
+  } = useDiff();
 
   const handleTextDiffAction = useCallback(
     (acceptChanges: boolean) => {
       if (!textEditorRef.current || !textDiffPrev.current) return;
 
       if (acceptChanges) {
-        const tr = textDiffPrev.current.tr;
-        tr.replaceWith(
-          0,
-          textDiffPrev.current.doc.content.size,
-          textEditorRef.current.state.doc.content,
-        );
+        // Restore previous clean state, then apply the buffered accepted content
+        textEditorRef.current.updateState(textDiffPrev.current);
+        textEditorRef.current.setProps({ editable: () => true });
 
-        const newState = textDiffPrev.current.apply(tr);
-        if (newState) {
-          textEditorRef.current.updateState(newState);
-          textEditorRef.current.setProps({ editable: () => true });
+        if (textStreamBuffer.current) {
+          updateEditorWithDispatch(
+            "text",
+            textEditorRef,
+            textStreamBuffer.current,
+          );
         }
       } else {
         textEditorRef.current.updateState(textDiffPrev.current);
+        textEditorRef.current.setProps({ editable: () => true });
       }
 
       textDiffPrev.current = undefined;
+      textStreamBuffer.current = "";
     },
-    [textEditorRef, textDiffPrev],
+    [textEditorRef, textDiffPrev, textStreamBuffer],
   );
 
   const handleCodeDiffAction = useCallback(
@@ -39,42 +52,60 @@ export function useDiffActions() {
       if (!codeEditorRef.current || !codeDiffPrev.current) return;
 
       if (acceptChanges) {
-        const prevState = codeDiffPrev.current;
-
-        const transaction = prevState.update({
-          changes: {
-            from: 0,
-            to: prevState.doc.length,
-            insert: codeEditorRef.current.state.doc.toString(),
-          },
-        });
-
+        // Restore previous clean state, then apply the buffered accepted content
         codeEditorRef.current.setState(codeDiffPrev.current);
-        codeEditorRef.current.dispatch(transaction);
+
+        if (codeStreamBuffer.current) {
+          updateEditorWithDispatch(
+            "code",
+            codeEditorRef,
+            codeStreamBuffer.current,
+          );
+        }
       } else {
         codeEditorRef.current.setState(codeDiffPrev.current);
       }
 
       codeDiffPrev.current = undefined;
+      codeStreamBuffer.current = "";
     },
-    [codeEditorRef, codeDiffPrev],
+    [codeEditorRef, codeDiffPrev, codeStreamBuffer],
   );
 
   const handleDiffAction = useCallback(
     (acceptChanges: boolean) => {
-      setShowDiffActions(false);
-
       if (editorMode === "text") {
         handleTextDiffAction(acceptChanges);
       } else {
         handleCodeDiffAction(acceptChanges);
       }
+
+      if (acceptChanges && currentDiffId) {
+        toast.promise(
+          apiFetcher(
+            (client) =>
+              client["documents"]["accept-diff"][":diffId"].$patch({
+                param: { diffId: currentDiffId },
+              }),
+            sharedT.apiCodes,
+          ),
+          {
+            loading: "Accepting diff...",
+            success: "Diff accepted",
+            error: (error) => "Error accepting diff: " + error,
+          },
+        );
+      }
+
+      setCurrentDiffId(null);
     },
     [
       editorMode,
       handleTextDiffAction,
       handleCodeDiffAction,
-      setShowDiffActions,
+      currentDiffId,
+      setCurrentDiffId,
+      sharedT,
     ],
   );
 

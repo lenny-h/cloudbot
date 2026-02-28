@@ -13,12 +13,16 @@ export async function finishDocumentUpdate({
   textEditorRef,
   codeDiffPrev,
   codeEditorRef,
+  textStreamBuffer,
+  codeStreamBuffer,
 }: {
   editorMode: EditorMode;
   textDiffPrev: RefObject<ProseMirrorEditorState | undefined>;
   textEditorRef: RefObject<ProseMirrorEditorView | null>;
   codeDiffPrev: RefObject<CodeMirrorEditorState | undefined>;
   codeEditorRef: RefObject<CodeMirrorEditorView | null>;
+  textStreamBuffer: RefObject<string>;
+  codeStreamBuffer: RefObject<string>;
 }) {
   switch (editorMode) {
     case "text": {
@@ -43,6 +47,9 @@ export async function finishDocumentUpdate({
 
       const textDiffResult = diffSentences(prevContent, content);
 
+      // Store the clean accepted content in the buffer before replacing with diff markers
+      textStreamBuffer.current = content;
+
       updateEditorWithDispatch(
         "text",
         textEditorRef,
@@ -66,14 +73,13 @@ export async function finishDocumentUpdate({
 
       const codeDiffResult = diffLines(prevContent, content);
 
-      console.log("Previous content:", prevContent);
-      console.log("Current content:", content);
-      console.log("Code diff result:", codeDiffResult);
+      // Store the clean accepted content in the buffer before replacing with diff markers
+      codeStreamBuffer.current = content;
 
       updateEditorWithDispatch(
         "code",
         codeEditorRef,
-        createDiffViewString(codeDiffResult, true),
+        createDiffViewString(codeDiffResult, false),
       );
 
       break;

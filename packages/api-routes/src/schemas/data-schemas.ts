@@ -17,7 +17,9 @@ export const dataSchemas = {
   codeDelta: z.string(),
   // sheetDelta: z.string(), // Maybe add sheet later
   createFinish: artifactSchema,
-  updateFinish: artifactSchema,
+  updateFinish: z.object({
+    diffId: uuidSchema,
+  }),
   fileGenerating: z.string(),
   fileGenerated: z.string(),
 };

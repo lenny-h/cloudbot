@@ -212,5 +212,29 @@ export const mathSchemaSpec = createSchemaSpec({
       },
       parseDOM: [{ tag: "math-select" }],
     },
+
+    ins: {
+      parseDOM: [{ tag: "ins" }],
+      toDOM: () => [
+        "ins",
+        {
+          style:
+            "background-color: rgba(0, 180, 0, 0.2); text-decoration: underline;",
+        },
+        0,
+      ],
+    },
+
+    del: {
+      parseDOM: [{ tag: "del" }, { tag: "s" }],
+      toDOM: () => [
+        "del",
+        {
+          style:
+            "background-color: rgba(220, 0, 0, 0.2); text-decoration: line-through;",
+        },
+        0,
+      ],
+    },
   },
 });

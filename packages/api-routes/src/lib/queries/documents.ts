@@ -52,13 +52,18 @@ export async function saveDiff({
   kind: ArtifactKind;
   userId: string;
 }) {
-  await db().insert(diffs).values({
-    documentId,
-    previousText,
-    newText,
-    kind,
-    owner: userId,
-  });
+  const result = await db()
+    .insert(diffs)
+    .values({
+      documentId,
+      previousText,
+      newText,
+      kind,
+      owner: userId,
+    })
+    .returning({ id: diffs.id });
+
+  return result[0].id;
 }
 
 /**

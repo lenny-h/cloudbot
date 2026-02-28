@@ -23,8 +23,13 @@ export function DataStreamHandler() {
     setCodeDocumentIdentifier,
   } = useEditor();
   const { panelRef, textEditorRef, codeEditorRef } = useRefs();
-  const { textDiffPrev, codeDiffPrev, textStreamBuffer, setShowDiffActions } =
-    useDiff();
+  const {
+    textDiffPrev,
+    codeDiffPrev,
+    textStreamBuffer,
+    codeStreamBuffer,
+    setCurrentDiffId,
+  } = useDiff();
 
   useEffect(() => {
     if (!dataStream?.length) {
@@ -46,6 +51,8 @@ export function DataStreamHandler() {
           break;
 
         case "data-documentIdentifier":
+          console.log("Received document identifier:", delta.data);
+
           const { id, title, kind } = delta.data;
 
           setEditorMode(kind);
@@ -72,7 +79,7 @@ export function DataStreamHandler() {
               }
 
               codeDiffPrev.current = codeEditorRef.current.state;
-              textStreamBuffer.current = "";
+              codeStreamBuffer.current = "";
               break;
           }
 
@@ -116,7 +123,7 @@ export function DataStreamHandler() {
             "code",
             codeEditorRef,
             delta.data,
-            textStreamBuffer,
+            codeStreamBuffer,
           );
           break;
 
@@ -134,11 +141,13 @@ export function DataStreamHandler() {
             codeEditorRef,
           });
           textStreamBuffer.current = "";
+          codeStreamBuffer.current = "";
 
           break;
 
         case "data-updateFinish":
           // Stream finished
+          const { diffId } = delta.data;
 
           finishDocumentUpdate({
             editorMode,
@@ -146,11 +155,12 @@ export function DataStreamHandler() {
             textEditorRef,
             codeDiffPrev,
             codeEditorRef,
+            textStreamBuffer,
+            codeStreamBuffer,
           });
-          textStreamBuffer.current = "";
 
           // Show diff actions
-          setShowDiffActions(true);
+          setCurrentDiffId(diffId);
 
           break;
 

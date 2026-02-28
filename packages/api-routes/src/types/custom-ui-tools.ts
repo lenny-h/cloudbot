@@ -15,7 +15,13 @@ export type CustomUITools = {
   };
   updateDocument: {
     input: { id: string; description: string };
-    output: { id: string; title: string; kind: ArtifactKind; message: string };
+    output: {
+      id: string;
+      diffId: string;
+      title: string;
+      kind: ArtifactKind;
+      message: string;
+    };
   };
   generateFile: {
     input: { title: string; format: string; description: string };

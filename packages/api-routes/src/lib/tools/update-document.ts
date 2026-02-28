@@ -44,6 +44,7 @@ export const updateDocument = ({
     }),
     outputSchema: z.object({
       id: z.string(),
+      diffId: z.string(),
       title: z.string(),
       kind: artifactSchema,
       message: z.string(),
@@ -79,7 +80,7 @@ export const updateDocument = ({
           );
         }
 
-        await documentHandler.onUpdateDocument({
+        const diffId = await documentHandler.onUpdateDocument({
           document,
           description,
           dataStream,
@@ -89,12 +90,15 @@ export const updateDocument = ({
 
         dataStream.write({
           type: "data-updateFinish",
-          data: document.kind,
+          data: {
+            diffId,
+          },
           transient: true,
         });
 
         return {
           id,
+          diffId,
           title: document.title,
           kind: document.kind,
           message: "The document has been updated successfully.",

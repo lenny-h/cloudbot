@@ -43,7 +43,7 @@ export const EditorHeader = memo(() => {
   const { panelRef, textEditorRef, codeEditorRef } = useRefs();
   const { editorMode, textDocumentIdentifier, codeDocumentIdentifier } =
     useEditor();
-  const { showDiffActions, isViewingVersion, isBlocked } = useDiff();
+  const { currentDiffId, isViewingVersion, isBlocked } = useDiff();
   const { handleDiffAction } = useDiffActions();
 
   const [_, copyToClipboard] = useCopyToClipboard();
@@ -140,12 +140,10 @@ export const EditorHeader = memo(() => {
       </Button>
 
       <div className="flex-1 truncate text-left text-lg font-semibold">
-        {showDiffActions
-          ? webT.editorHeader.diffView
-          : documentIdentifier.title}
+        {currentDiffId ? webT.editorHeader.diffView : documentIdentifier.title}
       </div>
 
-      {showDiffActions ? (
+      {currentDiffId ? (
         <ButtonGroup>
           <Button onClick={() => handleDiffAction(true)}>
             {webT.editorHeader.accept}
@@ -190,13 +188,13 @@ export const EditorHeader = memo(() => {
             )}
           </ButtonGroup>
 
-          {!showDiffActions && !isViewingVersion && <ModeSwitcher />}
+          {!currentDiffId && !isViewingVersion && <ModeSwitcher />}
 
-          {!showDiffActions && (
+          {!currentDiffId && (
             <LoadButton type={editorMode === "pdf" ? "files" : "documents"} />
           )}
 
-          {!showDiffActions && documentIdentifier.id && (
+          {!currentDiffId && documentIdentifier.id && (
             <VersionSelector
               documentId={documentIdentifier.id}
               isBlocked={isBlocked}

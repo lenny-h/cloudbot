@@ -32,5 +32,7 @@ export function createDiffViewString(
     });
   }
 
+  console.log("Generated diff string:", diffString);
+
   return diffString;
 }

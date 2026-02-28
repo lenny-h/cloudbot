@@ -15,8 +15,9 @@ type DiffContextType = {
   textDiffPrev: RefObject<TextEditorState | undefined>;
   codeDiffPrev: RefObject<CodeEditorState | undefined>;
   textStreamBuffer: RefObject<string>;
-  showDiffActions: boolean;
-  setShowDiffActions: React.Dispatch<React.SetStateAction<boolean>>;
+  codeStreamBuffer: RefObject<string>;
+  currentDiffId: string | null;
+  setCurrentDiffId: React.Dispatch<React.SetStateAction<string | null>>;
   isViewingVersion: boolean;
   setIsViewingVersion: React.Dispatch<React.SetStateAction<boolean>>;
   isBlocked: boolean;
@@ -32,7 +33,8 @@ export function DiffProvider({ children }: Props) {
   const textDiffPrev = useRef<TextEditorState | undefined>(undefined);
   const codeDiffPrev = useRef<CodeEditorState | undefined>(undefined);
   const textStreamBuffer = useRef<string>("");
-  const [showDiffActions, setShowDiffActions] = useState(false);
+  const codeStreamBuffer = useRef<string>("");
+  const [currentDiffId, setCurrentDiffId] = useState<string | null>(null);
   const [isViewingVersion, setIsViewingVersion] = useState(false);
 
   const isBlocked =
@@ -46,8 +48,9 @@ export function DiffProvider({ children }: Props) {
         textDiffPrev,
         codeDiffPrev,
         textStreamBuffer,
-        showDiffActions,
-        setShowDiffActions,
+        codeStreamBuffer,
+        currentDiffId,
+        setCurrentDiffId,
         isViewingVersion,
         setIsViewingVersion,
         isBlocked,

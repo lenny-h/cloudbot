@@ -54,6 +54,7 @@ export const mockedTools = {
     }),
     outputSchema: z.object({
       id: z.string(),
+      diffId: z.string(),
       title: z.string(),
       kind: artifactSchema,
       message: z.string(),

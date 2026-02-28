@@ -12,12 +12,14 @@ import chatsIsFavouriteRoute from "./chats/is-favourite/[chatId]/route.js";
 import chatsRoute from "./chats/route.js";
 import chatsTitleRoute from "./chats/title/[chatId]/route.js";
 import completionRoute from "./completion/route.js";
+import documentsAcceptDiffRoute from "./documents/accept-diff/[diffId]/route.js";
 import documentsDocumentIdRoute from "./documents/[documentId]/route.js";
 import documentsIlike from "./documents/ilike/route.js";
 import documentsRoute from "./documents/route.js";
 import documentsTitleRoute from "./documents/title/[documentId]/[title]/route.js";
 import documentsVersionRoute from "./documents/version/[documentId]/route.js";
 import documentsVersionsRoute from "./documents/versions/[documentId]/route.js";
+import documentsViewDiffRoute from "./documents/view-diff/[diffId]/route.js";
 import filesFileIdRoute from "./files/[fileId]/route.js";
 import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/[filename]/route.js";
 import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/route.js";
@@ -67,10 +69,12 @@ const protectedApiRouter = new Hono()
 
   // Documents
   .route("/documents", documentsRoute)
+  .route("/documents/accept-diff/:diffId", documentsAcceptDiffRoute)
   .route("/documents/ilike", documentsIlike)
   .route("/documents/title/:documentId/:title", documentsTitleRoute)
   .route("/documents/version/:documentId", documentsVersionRoute)
   .route("/documents/versions/:documentId", documentsVersionsRoute)
+  .route("/documents/view-diff/:diffId", documentsViewDiffRoute)
   .route("/documents/:documentId", documentsDocumentIdRoute)
 
   // Files

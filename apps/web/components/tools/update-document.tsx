@@ -1,5 +1,6 @@
 "use client";
 
+import { useViewDiff } from "@/hooks/use-view-diff";
 import { useViewDocument } from "@/hooks/use-view-document";
 import { type ArtifactKind } from "@workspace/api-routes/schemas/artifact-schema";
 import { Badge } from "@workspace/ui/components/badge";
@@ -27,6 +28,7 @@ interface ToolUpdateDocumentProps {
       input: { id: string; description: string };
       output: {
         id: string;
+        diffId: string;
         title: string;
         kind: ArtifactKind;
         message: string;
@@ -39,6 +41,7 @@ export function ToolUpdateDocument({ part }: ToolUpdateDocumentProps) {
   const [isOpen, setIsOpen] = useState(part.state === "output-available");
   const { state, input, output } = part;
   const { viewDocument } = useViewDocument();
+  const { viewDiff } = useViewDiff();
 
   const getStatusBadge = () => {
     if (state === "input-streaming" || state === "input-available") {
@@ -101,15 +104,6 @@ export function ToolUpdateDocument({ part }: ToolUpdateDocumentProps) {
             <>
               <div className="space-y-1.5">
                 <div className="text-muted-foreground text-xs font-medium">
-                  Document ID
-                </div>
-                <code className="bg-muted/50 rounded px-2 py-1 font-mono text-sm">
-                  {input.id}
-                </code>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="text-muted-foreground text-xs font-medium">
                   Description
                 </div>
                 <div className="bg-muted/30 max-h-60 overflow-y-auto rounded border p-3">
@@ -120,17 +114,30 @@ export function ToolUpdateDocument({ part }: ToolUpdateDocumentProps) {
               </div>
 
               {output && state === "output-available" && (
-                <Button
-                  onClick={() =>
-                    viewDocument(output.id, output.kind, output.title)
-                  }
-                  className="w-full"
-                  size="sm"
-                  variant="outline"
-                >
-                  <Eye className="mr-2 size-4" />
-                  View Document
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() =>
+                      viewDiff(output.diffId, output.id, output.title)
+                    }
+                    className="flex-1"
+                    size="sm"
+                    variant="outline"
+                  >
+                    <Eye className="mr-2 size-4" />
+                    View Diff
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      viewDocument(output.id, output.kind, output.title)
+                    }
+                    className="flex-1"
+                    size="sm"
+                    variant="outline"
+                  >
+                    <Eye className="mr-2 size-4" />
+                    View Document
+                  </Button>
+                </div>
               )}
             </>
           )}

@@ -50,7 +50,7 @@ export type UpdateDocumentCallbackProps = {
 export type DocumentHandler<T = ArtifactKind> = {
   kind: T;
   onCreateDocument: (args: CreateDocumentCallbackProps) => Promise<void>;
-  onUpdateDocument: (args: UpdateDocumentCallbackProps) => Promise<void>;
+  onUpdateDocument: (args: UpdateDocumentCallbackProps) => Promise<string>;
 };
 
 export function createDocumentHandler<T extends ArtifactKind>(config: {
@@ -91,17 +91,15 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
         env: args.env,
       });
 
-      if (args.userId) {
-        await saveDiff({
-          documentId: args.document.id,
-          previousText: args.document.content || "",
-          newText: draftContent,
-          kind: config.kind,
-          userId: args.userId,
-        });
-      }
+      const diffId = await saveDiff({
+        documentId: args.document.id,
+        previousText: args.document.content || "",
+        newText: draftContent,
+        kind: config.kind,
+        userId: args.userId,
+      });
 
-      return;
+      return diffId;
     },
   };
 }
