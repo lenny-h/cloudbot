@@ -57,7 +57,7 @@ export async function finishDocumentCreation({
       const transaction = prevState.update({
         changes: {
           from: 0,
-          to: codeEditorRef.current.state.doc.length,
+          to: prevState.doc.length,
           insert: content,
         },
       });

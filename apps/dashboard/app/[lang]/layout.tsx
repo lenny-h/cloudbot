@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     },
   },
   // openGraph: {
-  //   siteName: "NextGpt",
+  //   siteName: "CloudBot",
   //   type: "website",
   //   images: [{ url: "/en/opengraph-image.png" }],
   // },

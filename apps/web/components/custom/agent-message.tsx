@@ -103,6 +103,10 @@ export const AgentMessage = ({
             <StreamingIndicator />
           ) : (
             <>
+              {webSources.length > 0 && (
+                <ToolSourceUrl parts={webSources} />
+              )}
+
               {message.parts.map((part, index) => {
                 switch (part.type) {
                   case "text": {
@@ -139,7 +143,8 @@ export const AgentMessage = ({
                     return <ToolSourceDocument key={index} part={part} />;
 
                   case "source-url":
-                    return <ToolSourceUrl key={index} part={part} />;
+                    // Rendered as a merged component below
+                    return null;
 
                   case "tool-createDocument":
                     return <ToolCreateDocument key={index} part={part} />;

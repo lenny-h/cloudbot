@@ -1,5 +1,6 @@
 import { createDiffViewString } from "@/components/editors/helper-functions/create-diff-view-string";
 import { diffLines } from "@/components/editors/jsdiff/line";
+import { editableCompartment } from "@/components/editors/main/code-editor";
 import { useDiff } from "@/contexts/diff-context";
 import { useEditor } from "@/contexts/editor-context";
 import { useRefs } from "@/contexts/refs-context";
@@ -120,16 +121,13 @@ export function useDocumentHandler() {
 
           const diffResult = diffLines(newText, previousText);
 
-          // Dynamically Import StateEffect, EditorView
-          const { StateEffect } = await import("@codemirror/state");
+          // Reconfigure only the editable compartment, preserving all other extensions
           const { EditorView } = await import("@codemirror/view");
-
-          // Create a transaction that reconfigures the editable facet to false
-          // This disables editing for the diff view
-          const effect = StateEffect.reconfigure.of([
-            EditorView.editable.of(false),
-          ]);
-          codeEditorRef.current.dispatch({ effects: effect });
+          codeEditorRef.current.dispatch({
+            effects: editableCompartment.reconfigure(
+              EditorView.editable.of(false),
+            ),
+          });
 
           updateEditorWithDispatch(
             "code",

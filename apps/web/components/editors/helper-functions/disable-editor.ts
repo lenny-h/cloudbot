@@ -1,3 +1,4 @@
+import { editableCompartment } from "@/components/editors/main/code-editor";
 import { type EditorMode } from "@/contexts/editor-context";
 import { type EditorView as CodeMirrorEditorView } from "@codemirror/view";
 import { type EditorView } from "prosemirror-view";
@@ -18,17 +19,14 @@ export const disableEditor = async (
     }
     case "code": {
       if (codeEditorRef.current) {
-        // Dynamically Import StateEffect, EditorView
-        const { StateEffect } = await import("@codemirror/state");
         const { EditorView } = await import("@codemirror/view");
 
-        // Create a transaction that reconfigures the editable facet to false
-        // This disables editing while streaming
-        const effect = StateEffect.reconfigure.of([
-          EditorView.editable.of(false),
-        ]);
-
-        codeEditorRef.current.dispatch({ effects: effect });
+        // Reconfigure only the editable compartment, preserving all other extensions
+        codeEditorRef.current.dispatch({
+          effects: editableCompartment.reconfigure(
+            EditorView.editable.of(false),
+          ),
+        });
       }
       break;
     }

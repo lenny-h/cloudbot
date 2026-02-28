@@ -32,7 +32,7 @@ const app = new Hono()
   // Default root route
   .get("/", (c) => {
     return c.json({
-      name: "NextGPT API",
+      name: "CloudBot API",
       version: "1.0.0",
       status: "Running",
     });

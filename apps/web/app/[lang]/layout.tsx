@@ -14,14 +14,14 @@ export async function generateStaticParams() {
 
 export const metadata: Metadata = {
   // metadataBase: new URL("https://nextgpt.cloud"),
-  applicationName: "NextGpt",
+  applicationName: "CloudBot",
   title: {
-    default: "NextGpt",
-    template: "%s - NextGpt",
+    default: "CloudBot",
+    template: "%s - CloudBot",
   },
   description:
-    "NextGpt is a chatbot framework that can easily be hosted on Cloudflare.",
-  keywords: ["nextgpt", "chatbot"],
+    "CloudBot is a chatbot framework that can easily be hosted on Cloudflare.",
+  keywords: ["CloudBot", "chatbot"],
   robots: {
     index: true,
     follow: true,
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     },
   },
   // openGraph: {
-  //   siteName: "NextGpt",
+  //   siteName: "CloudBot",
   //   type: "website",
   //   images: [{ url: "/en/opengraph-image.png" }],
   // },
