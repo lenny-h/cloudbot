@@ -85,6 +85,7 @@ jobs:
           command: deploy --minify
           secrets: |
             NODE_ENV
+            BASE_DOMAIN
             BETTER_AUTH_URL
             ALLOWED_ORIGINS
             ENABLE_EMAIL_SIGNUP
@@ -105,6 +106,7 @@ jobs:
         env:
           # Non-sensitive configuration vars
           NODE_ENV: ${{ vars.NODE_ENV }}
+          BASE_DOMAIN: ${{ vars.BASE_DOMAIN }}
           BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
           ADMIN_USER_IDS: ${{ vars.ADMIN_USER_IDS }}
           ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}

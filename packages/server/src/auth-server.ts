@@ -147,11 +147,11 @@ function buildAuth() {
       database: {
         generateId: false,
       },
-      ...(process.env.SITE_URL
+      ...(process.env.BASE_DOMAIN
         ? {
             crossSubDomainCookies: {
               enabled: true,
-              domain: process.env.SITE_URL,
+              domain: process.env.BASE_DOMAIN,
             },
           }
         : {}),

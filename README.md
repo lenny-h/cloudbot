@@ -165,6 +165,7 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 **Configure as GitHub Variables** (plaintext in GitHub, available as env vars in Cloudflare):
 
 - `NODE_ENV` - Environment mode ("production")
+- `BASE_DOMAIN` - Base domain for cookie settings (e.g., "your-domain.com")
 - `BETTER_AUTH_URL` - The base URL for Better Auth (e.g., "https://api.your-domain.com")
 - `ADMIN_USER_IDS` - Comma-separated list of admin user IDs (optional)
 - `ALLOWED_ORIGINS` - Comma-separated CORS origins (e.g., "https://chat.your-domain.com,https://admin.your-domain.com")
