@@ -148,9 +148,7 @@ export abstract class ChatHandler {
     if (attachments.length > 0) {
       for (const attachment of attachments) {
         try {
-          const file = await this.env.CLOUDBOT_BUCKET.get(
-            `${process.env.R2_BUCKET_NAME}/${attachment.filename}`,
-          );
+          const file = await this.env.CLOUDBOT_BUCKET.get(attachment.filename);
 
           if (!file) {
             logger.warn("Attachment not found in R2", {

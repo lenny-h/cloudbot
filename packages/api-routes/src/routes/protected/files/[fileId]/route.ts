@@ -53,9 +53,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().delete(
         key: `${process.env.R2_BUCKET_NAME}/${key}`,
       });
 
-      await c.env.CLOUDBOT_BUCKET.delete(
-        `${process.env.R2_BUCKET_NAME}/${key}`,
-      );
+      await c.env.CLOUDBOT_BUCKET.delete(key);
     } catch (e) {
       // We don't want to fail the whole request if the R2 delete fails, since the database record has already been deleted and we don't want orphaned records. We'll just log the error and move on.
       logger.error("Failed to delete file from R2:", {

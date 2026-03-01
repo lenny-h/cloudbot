@@ -147,16 +147,12 @@ export const generateFile = ({ userId, dataStream, env }: GenerateFileProps) =>
         // Upload to R2
         const contentBuffer = new TextEncoder().encode(content);
 
-        await env.CLOUDBOT_BUCKET.put(
-          `${process.env.R2_BUCKET_NAME}/${key}`,
-          contentBuffer,
-          {
-            httpMetadata: { contentType },
-            customMetadata: {
-              title,
-            },
+        await env.CLOUDBOT_BUCKET.put(key, contentBuffer, {
+          httpMetadata: { contentType },
+          customMetadata: {
+            title,
           },
-        );
+        });
 
         // Notify the UI that the file is ready
         const sanitizedTitle = title.replace(/[^a-zA-Z0-9-_\s]/g, "").trim();
