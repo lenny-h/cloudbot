@@ -144,8 +144,11 @@ const getComponents = ({
       );
       return source ? <DocSourceBadge source={source} /> : null;
     } else if (sourceType === "web") {
-      // Match by URL
-      const source = webSources?.find((s) => s.url === sourceRef);
+      // Match by URL, stripping protocol for comparison since
+      // the backend removes it to prevent remark-gfm autolinking
+      const source = webSources?.find(
+        (s) => s.url.replace(/^https?:\/\//, "") === sourceRef,
+      );
       return source ? <WebSourceBadge source={source} /> : null;
     }
 

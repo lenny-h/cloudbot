@@ -17,7 +17,7 @@ export function cspMiddleware(middleware: CustomMiddleware) {
           env === "development" ? " 'unsafe-eval'" : ""
         } https: http:;
         style-src 'self' 'unsafe-inline';
-        img-src 'self' blob: https://www.google.com;
+        img-src 'self' blob: https://www.google.com https://*.gstatic.com;
         font-src 'self';
         object-src 'self';
         frame-src 'self' blob: data: ${cspEndpoints};

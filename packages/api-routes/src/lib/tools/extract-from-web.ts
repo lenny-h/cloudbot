@@ -209,7 +209,14 @@ export const extractFromWeb = ({ env, userLocation }: ExtractFromWebProps) =>
               title: s.title,
             })) ?? [];
 
-        return { extractedInformation: result.text, sources };
+        // Strip protocol from URLs in [[web:...]] citations so that
+        // remark-gfm doesn't autolink them in the frontend markdown parser.
+        const sanitizedText = result.text.replace(
+          /\[\[web:https?:\/\//g,
+          "[[web:",
+        );
+
+        return { extractedInformation: sanitizedText, sources };
       } catch (error) {
         logger.error("Error in extractFromWeb tool", error);
         throw error;
