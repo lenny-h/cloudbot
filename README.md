@@ -28,7 +28,7 @@ wrangler whoami
 
 ```bash
 # Create the D1 database
-wrangler d1 create cloudbot-db --remote
+wrangler d1 create cloudbot-db
 ```
 
 **Output example:**
@@ -53,7 +53,7 @@ Update `apps/api/wrangler.jsonc`:
 "d1_databases": [
     {
         "binding": "CLOUDBOT_DB",
-        "database_name": "CLOUDBOT_DB",
+        "database_name": "cloudbot-db",
         "database_id": "YOUR_ACTUAL_DATABASE_ID_HERE",
         "migrations_dir": "./../../packages/server/src/drizzle/migrations"
     }
@@ -64,14 +64,14 @@ Update `apps/api/wrangler.jsonc`:
 
 ```bash
 # Apply migrations to remote database
-wrangler d1 migrations apply CLOUDBOT_DB --remote
+wrangler d1 migrations apply cloudbot-db --env=production --remote
 ```
 
 To verify:
 
 ```bash
 # List tables in remote database
-wrangler d1 execute CLOUDBOT_DB --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
+wrangler d1 execute cloudbot-db --remote --command "SELECT name FROM sqlite_master WHERE type='table'"
 ```
 
 ### Step 5: Create Remote R2 Bucket
@@ -85,17 +85,7 @@ wrangler r2 bucket create cloudbot-bucket
 
 In the Cloudflare dashboard, navigate to **AI** → **AI Search** and create a new AI Search instance with the name `cloudbot-ai-search`. When prompted, connect it to the `cloudbot-bucket` R2 bucket you created in the previous step. This enables semantic search over files stored in R2 and is required for certain search features in the API.
 
-### Step 7: Test Remote Connection
-
-```bash
-# Test with remote resources
-cd apps/api
-wrangler dev --remote
-```
-
-The `--remote` flag connects to your remote D1 and R2 instead of local ones.
-
-### Step 8: Update Custom Domains in wrangler.jsonc
+### Step 7: Update Custom Domains in wrangler.jsonc
 
 Replace the example domain (`nextgpt.cloud`) with your own domain in each app's `wrangler.jsonc`:
 
@@ -131,7 +121,7 @@ Replace the example domain (`nextgpt.cloud`) with your own domain in each app's 
 
 Make sure your domain is added to Cloudflare and the nameservers are updated.
 
-### Step 9: Set Up GitHub Secrets (for CI/CD)
+### Step 8: Set Up GitHub Secrets (for CI/CD)
 
 To enable automatic deployment via GitHub Actions, you need to configure secrets and variables in your GitHub repository. Go to **GitHub** → **Settings** → **Secrets and variables** → **Actions**.
 
@@ -160,17 +150,17 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `GITHUB_CLIENT_SECRET` - GitHub OAuth client secret (if OAuth enabled)
 - `GITLAB_CLIENT_SECRET` - GitLab OAuth client secret (if OAuth enabled)
 - `SSO_CLIENT_SECRET` - SSO client secret (if SSO enabled)
-- `CLOUDFLARE_SECRET_ACCESS_KEY` - Cloudflare R2 secret access key
-- `AI_GATEWAY_API_KEY` - Vercel AI Gateway API key (optional)
-- `ANTHROPIC_API_KEY` - Anthropic API key (optional)
-- `ANTHROPIC_AUTH_TOKEN` - Anthropic auth token (optional)
-- `AWS_SECRET_ACCESS_KEY` - AWS secret key for Bedrock (optional)
-- `AZURE_API_KEY` - Azure API key (optional)
-- `GOOGLE_PRIVATE_KEY` - Google service account private key (optional)
-- `OPENAI_API_KEY` - OpenAI API key (optional)
-- `EXA_API_KEY` - Exa Labs API key (optional)
-- `PARALLEL_API_KEY` - Parallel API key (optional)
-- `TAVILY_API_KEY` - Tavily API key (optional)
+- `CLOUDFLARE_SECRET_ACCESS_KEY` - Cloudflare R2 secret access key (can be obtained from Cloudflare dashboard under R2 settings)
+- `AI_GATEWAY_API_KEY` - Vercel AI Gateway API key (if using Vercel AI Gateway as model provider)
+- `ANTHROPIC_API_KEY` - Anthropic API key (if using Anthropic as model provider)
+- `ANTHROPIC_AUTH_TOKEN` - Anthropic auth token (if using Anthropic with auth token instead of API key)
+- `AWS_SECRET_ACCESS_KEY` - AWS secret key for Bedrock (if using AWS Bedrock as model provider)
+- `AZURE_API_KEY` - Azure API key (if using Microsoft Azure as model provider)
+- `GOOGLE_PRIVATE_KEY` - Google service account private key (if using Google Vertex AI as model provider)
+- `OPENAI_API_KEY` - OpenAI API key (if using OpenAI as model provider)
+- `EXA_API_KEY` - Exa Labs API key (if using Exa Labs as search provider)
+- `PARALLEL_API_KEY` - Parallel API key (if using Parallel as search provider)
+- `TAVILY_API_KEY` - Tavily API key (if using Tavily as search provider)
 
 **Configure as GitHub Variables** (plaintext in GitHub, available as env vars in Cloudflare):
 
@@ -183,11 +173,11 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `ENABLE_SSO` - Enable SSO authentication ("true" or "false")
 - `ALLOWED_EMAIL_DOMAINS` - Restrict email domains (comma-separated, optional)
 - `RESEND_SENDER_EMAIL` - Resend sender email address
-- `GOOGLE_CLIENT_ID` - Google OAuth client ID (public)
-- `GITHUB_CLIENT_ID` - GitHub OAuth client ID (public)
-- `GITLAB_CLIENT_ID` - GitLab OAuth client ID (public)
-- `SSO_DOMAIN` - SSO domain (e.g., "example.com")
-- `SSO_PROVIDER_ID` - SSO provider ID (e.g., "keycloak-test")
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID (public, optional)
+- `GITHUB_CLIENT_ID` - GitHub OAuth client ID (public, optional)
+- `GITLAB_CLIENT_ID` - GitLab OAuth client ID (public, optional)
+- `SSO_DOMAIN` - SSO domain (e.g., "example.com", optional)
+- `SSO_PROVIDER_ID` - SSO provider ID (e.g., "keycloak-test", optional)
 - `SSO_CLIENT_ID` - SSO client ID (public)
 - `SSO_ISSUER` - SSO issuer URL
 - `SSO_DISCOVERY_ENDPOINT` - OIDC discovery endpoint
@@ -196,9 +186,9 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `SSO_JWKS_ENDPOINT` - JWKS endpoint
 - `NEXT_PUBLIC_LLM_MODELS` - JSON array of LLM models (see `.env.example`)
 - `R2_ENDPOINT` - Cloudflare R2 endpoint URL
-- `CLOUDFLARE_ACCESS_KEY_ID` - Cloudflare R2 access key ID (public)
-- `AWS_ACCESS_KEY_ID` - AWS access key ID (public)
-- `AWS_REGION` - AWS region (e.g., "us-east-1")
+- `CLOUDFLARE_ACCESS_KEY_ID` - Cloudflare R2 access key ID
+- `AWS_ACCESS_KEY_ID` - AWS access key ID (if using AWS Bedrock as model provider)
+- `AWS_REGION` - AWS region (e.g., "us-east-1", if using AWS Bedrock)
 - `AZURE_RESOURCE_NAME` - Azure resource name
 - `GOOGLE_VERTEX_PROJECT` - Google Vertex AI project ID
 - `GOOGLE_VERTEX_LOCATION` - Google Vertex AI location
@@ -218,7 +208,7 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP` - Same as API ("true" or "false")
 - `NEXT_PUBLIC_ENABLE_OAUTH_LOGIN` - Same as API ("true" or "false")
 - `NEXT_PUBLIC_ENABLE_SSO` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_CSP_ENDPOINTS` - Content Security Policy endpoints (e.g., R2 bucket URL)
+- `NEXT_PUBLIC_CSP_ENDPOINTS` - Content Security Policy endpoints (https://cloudbot-bucket.<your-cloudflare-account-id>.r2.cloudflarestorage.com)
 - `NEXT_PUBLIC_LLM_MODELS` - Same JSON as API
 
 _Note: These are embedded in the client-side bundle during build, so they're passed as build-time environment variables, not Cloudflare secrets._
@@ -255,7 +245,6 @@ For manual deployment, set secrets with:
 
 ```bash
 wrangler secret put BETTER_AUTH_SECRET --env production
-wrangler secret put OPENAI_API_KEY --env production
 ```
 
 And define non-sensitive config in `wrangler.jsonc`:
@@ -269,7 +258,7 @@ And define non-sensitive config in `wrangler.jsonc`:
 }
 ```
 
-### Step 10: Deploy via GitHub Actions (Automatic)
+### Step 9: Deploy via GitHub Actions (Automatic)
 
 Once secrets are configured, deployments happen automatically:
 
@@ -287,7 +276,7 @@ git push origin main
 - ✅ Status appears in your repo's **Actions** tab
 - ✅ Cloudflare logging is turned off; you can turn it off in the 'wrangler.jsonc' file for each app under the 'observability' section.
 
-### Step 11: Manual Deployment (if needed)
+### Step 10: Manual Deployment (if needed)
 
 For manual deployment, ensure all environment variables from Step 9 are configured as Cloudflare Workers secrets using:
 
