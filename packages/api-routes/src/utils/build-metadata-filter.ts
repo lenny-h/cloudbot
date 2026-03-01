@@ -23,9 +23,9 @@ export function buildMetadataFilter(
   if (fileMetadata.length > 0) {
     const filenames = fileMetadata.map((f) => {
       if (f.visibility === "private") {
-        return `${userId}/${f.folderId}/${f.id}`;
+        return `${userId}/${f.folderId}/${f.name}`;
       }
-      return `${f.visibility}/${f.folderId}/${f.id}`;
+      return `${f.visibility}/${f.folderId}/${f.name}`;
     });
 
     // Single file - use simple eq filter

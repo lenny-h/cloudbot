@@ -2,13 +2,11 @@
 
 import * as m from "motion/react-m";
 
+import { type DocumentSource } from "@workspace/api-routes/lib/tools/extract-from-documents";
+import { type WebSource } from "@workspace/api-routes/lib/tools/extract-from-web";
 import { type CustomUIMessage } from "@workspace/api-routes/types/custom-ui-message";
 import { cn } from "@workspace/ui/lib/utils";
-import {
-  type ChatRequestOptions,
-  type SourceDocumentUIPart,
-  type SourceUrlUIPart,
-} from "ai";
+import { type ChatRequestOptions } from "ai";
 import { LazyMotion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
@@ -17,8 +15,6 @@ import {
   ToolExtractFromDocuments,
   ToolExtractFromWeb,
   ToolGenerateFile,
-  ToolSourceDocument,
-  ToolSourceUrl,
   ToolUpdateDocument,
 } from "../tools";
 import { Markdown } from "./markdown";
@@ -61,27 +57,40 @@ export const AgentMessage = ({
       .replace(/\\\((.*?)\\\)/gs, "$$$1$$");
   };
 
-  // Derive sources and text content from message parts
-  const { docSources, webSources, textContent } = useMemo(() => {
-    const docs: SourceDocumentUIPart[] = [];
-    const webs: SourceUrlUIPart[] = [];
-    const texts: string[] = [];
+  // Derive text content from message parts
+  const textContent = useMemo(() => {
+    return message.parts
+      .filter((part) => part.type === "text" && part.text.length > 0)
+      .map((part) => (part as { type: "text"; text: string }).text)
+      .join("\n");
+  }, [message.parts]);
 
-    for (const part of message.parts) {
-      if (part.type === "source-document") {
-        docs.push(part);
-      } else if (part.type === "source-url") {
-        webs.push(part);
-      } else if (part.type === "text" && part.text.length > 0) {
-        texts.push(part.text);
-      }
-    }
+  // Extract sources from tool parts
+  const docSources = useMemo(() => {
+    return message.parts
+      .filter(
+        (part) =>
+          part.type === "tool-extractFromDocuments" &&
+          part.state === "output-available" &&
+          part.output?.sources,
+      )
+      .flatMap(
+        (part) =>
+          (part as { output: { sources: DocumentSource[] } }).output.sources,
+      );
+  }, [message.parts]);
 
-    return {
-      docSources: docs,
-      webSources: webs,
-      textContent: texts.join("\n"),
-    };
+  const webSources = useMemo(() => {
+    return message.parts
+      .filter(
+        (part) =>
+          part.type === "tool-extractFromWeb" &&
+          part.state === "output-available" &&
+          part.output?.sources,
+      )
+      .flatMap(
+        (part) => (part as { output: { sources: WebSource[] } }).output.sources,
+      );
   }, [message.parts]);
 
   return (
@@ -103,10 +112,6 @@ export const AgentMessage = ({
             <StreamingIndicator />
           ) : (
             <>
-              {webSources.length > 0 && (
-                <ToolSourceUrl parts={webSources} />
-              )}
-
               {message.parts.map((part, index) => {
                 switch (part.type) {
                   case "text": {
@@ -130,6 +135,8 @@ export const AgentMessage = ({
                         key={index}
                         isLoading={isLoading}
                         reasoning={part.text}
+                        docSources={docSources}
+                        webSources={webSources}
                       />
                     );
 
@@ -138,13 +145,6 @@ export const AgentMessage = ({
 
                   case "tool-extractFromWeb":
                     return <ToolExtractFromWeb key={index} part={part} />;
-
-                  case "source-document":
-                    return <ToolSourceDocument key={index} part={part} />;
-
-                  case "source-url":
-                    // Rendered as a merged component below
-                    return null;
 
                   case "tool-createDocument":
                     return <ToolCreateDocument key={index} part={part} />;

@@ -1,12 +1,12 @@
 "use client";
 
+import { type WebSource } from "@workspace/api-routes/lib/tools/extract-from-web";
 import { Badge } from "@workspace/ui/components/badge";
 import { cn } from "@workspace/ui/lib/utils";
-import { type SourceUrlUIPart } from "ai";
 import { Globe } from "lucide-react";
 
 interface WebSourceBadgeProps {
-  source: SourceUrlUIPart;
+  source: WebSource;
   className?: string;
 }
 

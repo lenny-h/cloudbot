@@ -2,7 +2,7 @@ import * as z from "zod";
 
 import { createLogger } from "@workspace/server/logger/logger.js";
 import { generateText, tool, type UIMessageStreamWriter } from "ai";
-import { webSearchModelIdx } from "../../providers/models.js";
+import { searchModelIdx } from "../../providers/models.js";
 import { webSearchPrompt } from "../../providers/prompts.js";
 import { getModel } from "../../providers/providers.js";
 import { type Bindings } from "../../types/bindings.js";
@@ -13,6 +13,12 @@ type ExtractFromWebProps = {
   env: Bindings;
   userLocation: UserLocation;
   dataStream: UIMessageStreamWriter<CustomUIMessage>;
+};
+
+export type WebSource = {
+  id: string;
+  url: string;
+  title: string;
 };
 
 type SearchProvider =
@@ -29,11 +35,7 @@ type SearchProvider =
 
 const logger = createLogger("extract-from-web");
 
-export const extractFromWeb = ({
-  env,
-  userLocation,
-  dataStream,
-}: ExtractFromWebProps) =>
+export const extractFromWeb = ({ env, userLocation }: ExtractFromWebProps) =>
   tool({
     description:
       "Searches the web for current information. Use this tool when you need to find up-to-date information, news, or facts that may not be in your training data.",
@@ -188,7 +190,7 @@ export const extractFromWeb = ({
           }
         }
 
-        const config = await getModel(env, webSearchModelIdx);
+        const config = await getModel(env, searchModelIdx);
         const result = await generateText({
           system: webSearchPrompt,
           prompt:
@@ -207,17 +209,7 @@ export const extractFromWeb = ({
               title: s.title,
             })) ?? [];
 
-        // Write sources to the data stream
-        for (const source of sources) {
-          dataStream.write({
-            sourceId: source.id,
-            type: "source-url",
-            url: source.url,
-            title: source.title,
-          });
-        }
-
-        return { extractedInformation: result.text };
+        return { extractedInformation: result.text, sources };
       } catch (error) {
         logger.error("Error in extractFromWeb tool", error);
         throw error;

@@ -5,7 +5,7 @@ import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { prompts } from "@workspace/server/drizzle/schema.js";
-import { and, eq, ilike } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
@@ -33,7 +33,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       })
       .from(prompts)
       .where(
-        and(eq(prompts.userId, user.id), ilike(prompts.name, `%${prefix}%`)),
+        and(eq(prompts.userId, user.id), like(prompts.name, `%${prefix}%`)),
       )
       .limit(5);
 

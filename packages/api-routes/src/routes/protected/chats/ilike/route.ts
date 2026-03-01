@@ -5,7 +5,7 @@ import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { chats } from "@workspace/server/drizzle/schema.js";
-import { and, eq, ilike } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
@@ -28,7 +28,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
     const result = await db()
       .select()
       .from(chats)
-      .where(and(eq(chats.userId, user.id), ilike(chats.title, `%${prefix}%`)))
+      .where(and(eq(chats.userId, user.id), like(chats.title, `%${prefix}%`)))
       .limit(5);
 
     return c.json(result);

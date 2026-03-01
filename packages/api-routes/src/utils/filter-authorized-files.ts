@@ -1,13 +1,17 @@
 import { db } from "@workspace/server/drizzle/db.js";
 import { folderUsers } from "@workspace/server/drizzle/schema.js";
+import { createLogger } from "@workspace/server/logger/logger.js";
 import { and, eq } from "drizzle-orm";
 
 export type FileMetadata = {
   id: string;
+  name: string;
   visibility: string;
   folderId: string;
   owner: string;
 };
+
+const logger = createLogger("filter-authorized-files");
 
 /**
  * Filters files based on user permissions
@@ -28,8 +32,14 @@ export async function filterAuthorizedFiles(
 
       // For protected files, check if user has access via folderUsers
       if (file.visibility === "protected") {
+        logger.debug(
+          `Checking access for user ${userId} to protected file ${file.id} in folder ${file.folderId}`,
+        );
+
         const access = await db()
-          .select()
+          .select({
+            folderId: folderUsers.folderId,
+          })
           .from(folderUsers)
           .where(
             and(
@@ -38,6 +48,8 @@ export async function filterAuthorizedFiles(
             ),
           )
           .limit(1);
+
+        logger.debug(`Access check result: ${access}`);
 
         return access.length > 0 ? file : null;
       }

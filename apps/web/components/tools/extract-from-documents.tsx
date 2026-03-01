@@ -1,16 +1,21 @@
 "use client";
 
+import { usePdf } from "@/contexts/pdf-context";
+import { useRefs } from "@/contexts/refs-context";
+import { type DocumentSource } from "@workspace/api-routes/lib/tools/extract-from-documents";
 import { Badge } from "@workspace/ui/components/badge";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@workspace/ui/components/collapsible";
+import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { cn } from "@workspace/ui/lib/utils";
 import { type ToolUIPart } from "ai";
 import {
   CheckCircle2,
   ChevronDown,
+  File,
   FileText,
   Loader2,
   XCircle,
@@ -21,9 +26,52 @@ interface ToolExtractFromDocumentsProps {
   part: ToolUIPart<{
     extractFromDocuments: {
       input: { query: string; max_num_results?: number };
-      output: { extractedInformation?: string; error?: string };
+      output: {
+        extractedInformation?: string;
+        sources?: DocumentSource[];
+        error?: string;
+      };
     };
   }>;
+}
+
+function DocumentSourceItem({ source }: { source: DocumentSource }) {
+  const isMobile = useIsMobile();
+  const { panelRef } = useRefs();
+  const { openPdf } = usePdf();
+
+  const isViewable = source.filename.toLowerCase().endsWith(".pdf");
+
+  const handleClick = () => {
+    if (isViewable) {
+      openPdf(isMobile, panelRef, source.folderId, source.filename);
+    }
+  };
+
+  return (
+    <li
+      role={isViewable ? "button" : undefined}
+      tabIndex={isViewable ? 0 : undefined}
+      onClick={isViewable ? handleClick : undefined}
+      onKeyDown={(e) => {
+        if (isViewable && (e.key === "Enter" || e.key === " ")) handleClick();
+      }}
+      className={cn(
+        "group flex items-center gap-3 px-3 py-2.5",
+        isViewable && "hover:bg-muted/50 cursor-pointer transition-colors",
+      )}
+    >
+      <File className="size-4 shrink-0 text-blue-600" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm leading-snug font-medium">
+          {source.filename}
+        </p>
+        <p className="text-muted-foreground truncate text-xs">
+          Score: {source.score.toFixed(2)}
+        </p>
+      </div>
+    </li>
+  );
 }
 
 export function ToolExtractFromDocuments({
@@ -114,6 +162,27 @@ export function ToolExtractFromDocuments({
                 </div>
                 <div className="bg-background rounded border p-3 text-sm whitespace-pre-wrap">
                   {output.extractedInformation}
+                </div>
+              </div>
+            )}
+
+          {output &&
+            state === "output-available" &&
+            output.sources &&
+            output.sources.length > 0 && (
+              <div className="space-y-1.5">
+                <div className="text-muted-foreground text-xs font-medium">
+                  Document Sources
+                  <span className="bg-muted text-muted-foreground ml-2 rounded-full px-1.5 py-0.5 text-xs">
+                    {output.sources.length}
+                  </span>
+                </div>
+                <div className="rounded border">
+                  <ul className="divide-y">
+                    {output.sources.map((source, idx) => (
+                      <DocumentSourceItem key={idx} source={source} />
+                    ))}
+                  </ul>
                 </div>
               </div>
             )}

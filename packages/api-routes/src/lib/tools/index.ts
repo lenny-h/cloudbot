@@ -23,6 +23,13 @@ export const mockedTools = {
     }),
     outputSchema: z.object({
       extractedInformation: z.string(),
+      sources: z.array(
+        z.object({
+          id: z.string(),
+          url: z.string(),
+          title: z.string(),
+        }),
+      ),
     }),
   }),
   extractFromDocuments: tool({
@@ -32,6 +39,13 @@ export const mockedTools = {
     }),
     outputSchema: z.object({
       extractedInformation: z.string(),
+      sources: z.array(
+        z.object({
+          folderId: z.string(),
+          filename: z.string(),
+          score: z.number(),
+        }),
+      ),
     }),
   }),
   createDocument: tool({

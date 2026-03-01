@@ -7,7 +7,7 @@ import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { filterAuthorizedFiles } from "@workspace/api-routes/utils/filter-authorized-files.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { files } from "@workspace/server/drizzle/schema.js";
-import { and, desc, ilike, inArray, sql } from "drizzle-orm";
+import { and, desc, like, inArray, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
@@ -38,7 +38,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       .where(
         and(
           inArray(files.folderId, folderIds),
-          ilike(files.name, sql`${prefix} || '%'`),
+          like(files.name, sql`${prefix} || '%'`),
         ),
       )
       .orderBy(desc(files.createdAt))

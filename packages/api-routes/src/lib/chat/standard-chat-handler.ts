@@ -104,12 +104,21 @@ export class StandardChatHandler extends ChatHandler {
         const requestedFiles = await db()
           .select({
             id: files.id,
+            name: files.name,
             visibility: files.visibility,
             folderId: files.folderId,
             owner: files.owner,
           })
           .from(files)
           .where(inArray(files.id, fileIds));
+
+        logger.debug(
+          `Requested ${requestedFiles.length} file(s) for context filter`,
+          {
+            userId: this.request.user.id,
+            fileIds,
+          },
+        );
 
         const authorizedFileMetadata = await filterAuthorizedFiles(
           requestedFiles,
@@ -156,6 +165,14 @@ export class StandardChatHandler extends ChatHandler {
           });
         }
       }
+
+      logger.debug(
+        `There are ${authorizedFileMetadata.length} authorized file(s) for the user`,
+        {
+          userId: this.request.user.id,
+          authorizedFileMetadata,
+        },
+      );
 
       tools.extractFromDocuments = extractFromDocuments({
         env: this.env,

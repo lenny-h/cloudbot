@@ -81,7 +81,11 @@ wrangler d1 execute CLOUDBOT_DB --remote --command "SELECT name FROM sqlite_mast
 wrangler r2 bucket create cloudbot-bucket
 ```
 
-### Step 6: Test Remote Connection
+### Step 6: Create AI Search Instance
+
+In the Cloudflare dashboard, navigate to **AI** → **AI Search** and create a new AI Search instance with the name `cloudbot-ai-search`. When prompted, connect it to the `cloudbot-bucket` R2 bucket you created in the previous step. This enables semantic search over files stored in R2 and is required for certain search features in the API.
+
+### Step 7: Test Remote Connection
 
 ```bash
 # Test with remote resources
@@ -91,7 +95,7 @@ wrangler dev --remote
 
 The `--remote` flag connects to your remote D1 and R2 instead of local ones.
 
-### Step 7: Update Custom Domains in wrangler.jsonc
+### Step 8: Update Custom Domains in wrangler.jsonc
 
 Replace the example domain (`nextgpt.cloud`) with your own domain in each app's `wrangler.jsonc`:
 
@@ -127,7 +131,7 @@ Replace the example domain (`nextgpt.cloud`) with your own domain in each app's 
 
 Make sure your domain is added to Cloudflare and the nameservers are updated.
 
-### Step 8: Set Up GitHub Secrets (for CI/CD)
+### Step 9: Set Up GitHub Secrets (for CI/CD)
 
 To enable automatic deployment via GitHub Actions, you need to configure secrets and variables in your GitHub repository. Go to **GitHub** → **Settings** → **Secrets and variables** → **Actions**.
 
@@ -170,7 +174,6 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 
 **Configure as GitHub Variables** (plaintext in GitHub, available as env vars in Cloudflare):
 
-- `PORT` - Server port (e.g., "3002")
 - `NODE_ENV` - Environment mode ("production")
 - `BETTER_AUTH_URL` - The base URL for Better Auth (e.g., "https://api.your-domain.com")
 - `ADMIN_USER_IDS` - Comma-separated list of admin user IDs (optional)
@@ -204,7 +207,7 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `SEARCH_PROVIDER` - Search provider name (e.g., "google", "tavily")
 - `TITLE_MODEL_IDX` - Model index for titles (e.g., "0")
 - `ARTIFACT_MODEL_IDX` - Model index for artifacts (e.g., "0")
-- `WEB_SEARCH_MODEL_IDX` - Model index for search (e.g., "0")
+- `SEARCH_MODEL_IDX` - Model index for search (e.g., "0")
 - `COMPLETION_MODEL_IDX` - Model index for completions (e.g., "0")
 
 #### Web App Secrets
@@ -266,7 +269,7 @@ And define non-sensitive config in `wrangler.jsonc`:
 }
 ```
 
-### Step 9: Deploy via GitHub Actions (Automatic)
+### Step 10: Deploy via GitHub Actions (Automatic)
 
 Once secrets are configured, deployments happen automatically:
 
@@ -284,7 +287,7 @@ git push origin main
 - ✅ Status appears in your repo's **Actions** tab
 - ✅ Cloudflare logging is turned off; you can turn it off in the 'wrangler.jsonc' file for each app under the 'observability' section.
 
-### Step 10: Manual Deployment (if needed)
+### Step 11: Manual Deployment (if needed)
 
 For manual deployment, ensure all environment variables from Step 9 are configured as Cloudflare Workers secrets using:
 

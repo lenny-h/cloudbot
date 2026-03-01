@@ -18,6 +18,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { type DocumentSource } from "@workspace/api-routes/lib/tools/extract-from-documents";
+import { type WebSource } from "@workspace/api-routes/lib/tools/extract-from-web";
 import { Markdown } from "./markdown";
 
 // ---------------------------------------------------------------------------
@@ -201,10 +203,12 @@ export type ReasoningContentProps = ComponentProps<
   typeof CollapsibleContent
 > & {
   children: string;
+  docSources?: DocumentSource[];
+  webSources?: WebSource[];
 };
 
 const ReasoningContentInner = memo(
-  ({ className, children, ...props }: ReasoningContentProps) => (
+  ({ className, children, docSources, webSources, ...props }: ReasoningContentProps) => (
     <CollapsibleContent
       className={cn(
         "mt-1.5 text-xs leading-relaxed",
@@ -214,7 +218,13 @@ const ReasoningContentInner = memo(
       {...props}
     >
       <div className="border-border/50 bg-muted/30 max-h-48 overflow-y-auto rounded-md border p-2.5 text-xs [&_li]:my-0 [&_ol]:my-1 [&_p]:my-0 [&_ul]:my-1">
-        <Markdown>{children}</Markdown>
+        <Markdown
+          docSources={docSources}
+          webSources={webSources}
+          parseSourceRefs={true}
+        >
+          {children}
+        </Markdown>
       </div>
     </CollapsibleContent>
   ),
@@ -228,14 +238,18 @@ ReasoningContentInner.displayName = "ReasoningContent";
 interface MessageReasoningProps {
   isLoading: boolean;
   reasoning: string;
+  docSources?: DocumentSource[];
+  webSources?: WebSource[];
 }
 
 export const MessageReasoning = memo(
-  ({ isLoading, reasoning }: MessageReasoningProps) => {
+  ({ isLoading, reasoning, docSources, webSources }: MessageReasoningProps) => {
     return (
       <ReasoningRoot isStreaming={isLoading}>
         <ReasoningTriggerInner />
-        <ReasoningContentInner>{reasoning}</ReasoningContentInner>
+        <ReasoningContentInner docSources={docSources} webSources={webSources}>
+          {reasoning}
+        </ReasoningContentInner>
       </ReasoningRoot>
     );
   },

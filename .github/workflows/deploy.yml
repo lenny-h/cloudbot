@@ -114,7 +114,7 @@ jobs:
             SEARCH_PROVIDER
             TITLE_MODEL_IDX
             ARTIFACT_MODEL_IDX
-            WEB_SEARCH_MODEL_IDX
+            SEARCH_MODEL_IDX
             COMPLETION_MODEL_IDX
 
             BETTER_AUTH_SECRET
@@ -171,7 +171,7 @@ jobs:
           SEARCH_PROVIDER: ${{ vars.SEARCH_PROVIDER }}
           TITLE_MODEL_IDX: ${{ vars.TITLE_MODEL_IDX }}
           ARTIFACT_MODEL_IDX: ${{ vars.ARTIFACT_MODEL_IDX }}
-          WEB_SEARCH_MODEL_IDX: ${{ vars.WEB_SEARCH_MODEL_IDX }}
+          SEARCH_MODEL_IDX: ${{ vars.SEARCH_MODEL_IDX }}
           COMPLETION_MODEL_IDX: ${{ vars.COMPLETION_MODEL_IDX }}
 
           # Sensitive secrets

@@ -5,7 +5,7 @@ import { Bindings } from "@workspace/api-routes/types/bindings.js";
 import { Variables } from "@workspace/api-routes/types/variables.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { folders } from "@workspace/server/drizzle/schema.js";
-import { and, eq, ilike, ne, or, sql } from "drizzle-orm";
+import { and, eq, like, ne, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
@@ -34,7 +34,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().get(
       .from(folders)
       .where(
         and(
-          ilike(folders.name, sql`${prefix} || '%'`),
+          like(folders.name, sql`${prefix} || '%'`),
           or(ne(folders.visibility, "private"), eq(folders.owner, user.id)),
         ),
       )

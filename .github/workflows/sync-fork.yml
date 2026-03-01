@@ -84,12 +84,6 @@ jobs:
           3. Test your changes
           4. Merge this PR
 
-          ### Conflict resolution tips
-          - **Database migrations**: If conflicts are in `packages/server/src/drizzle/migrations/`,
-            you may need to regenerate migrations after resolving schema conflicts (`npx drizzle-kit generate`).
-          - **Lock files**: Delete `pnpm-lock.yaml` and run `pnpm install` to regenerate.
-          - **Config files**: Carefully merge keeping your customizations while adopting upstream improvements.
-
           > ⚠️ **Do not force-push or rebase** — this branch is based on `upstream/main`.
           EOF
           )"

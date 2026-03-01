@@ -1,13 +1,15 @@
-import { ArtifactKind } from "../schemas/artifact-schema.js";
+import { type DocumentSource } from "../lib/tools/extract-from-documents.js";
+import { type WebSource } from "../lib/tools/extract-from-web.js";
+import { type ArtifactKind } from "../schemas/artifact-schema.js";
 
 export type CustomUITools = {
   extractFromWeb: {
     input: { informationToExtract: string };
-    output: { extractedInformation: string };
+    output: { extractedInformation: string; sources: WebSource[] };
   };
   extractFromDocuments: {
     input: { query: string; max_num_results?: number };
-    output: { extractedInformation: string };
+    output: { extractedInformation: string; sources: DocumentSource[] };
   };
   createDocument: {
     input: { title: string; kind: ArtifactKind; description: string };

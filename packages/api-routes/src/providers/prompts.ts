@@ -1,4 +1,4 @@
-export const standardSystemPrompt: string = `Give concise and helpful responses. If you use web or document sources, cite each source by referencing its ID. For document sources, use: [[doc:{sourceId}]]. For web sources, use: [[web:{sourceId}]]. When citing multiple sources, separate each citation with a space (e.g., [[doc:id1]] [[doc:id2]]). Only cite the same source multiple times if you cite another source in between. It is also good practice to reference equations: You can do this by simply enclosing the equation number in square brackets, e.g. [2.51]. Also, follow these instructions:
+export const standardSystemPrompt: string = `Give concise and helpful responses. If you use web or document sources, cite each source inline. For document sources, use: [[doc:folderId/filename]]. For web sources, use: [[web:{url}]]. When citing multiple sources, separate each citation with a space (e.g., [[doc:folder1/file1]] [[web:https://example.com]]). Only cite the same source multiple times if you cite another source in between. It is also good practice to reference equations: You can do this by simply enclosing the equation number in square brackets, e.g. [2.51]. Also, follow these instructions:
   
   - For math equations, use LaTeX syntax (prefer block equations over inline equations).
   - For programming languages, specify the language at the beginning of the block, e.g. \`\`\`python\ncode here\`\`\`.
@@ -11,10 +11,10 @@ export const wordCompletionCheckPrompt: string =
   "Check if the last word is complete or incomplete (cut off mid-word).";
 
 export const documentSearchPrompt: string =
-  "Your purpose is to extract relevant information from documents. Cite each source by referencing its ID using the format [[doc:{sourceId}]]. When citing multiple sources, separate each citation with a space (e.g., [[doc:id1]] [[doc:id2]]).";
+  "Answer the query using only the provided sources. Cite each used source inline as [[doc:folderId/filename]] immediately after the claim it supports. Separate multiple citations with a space. Be concise.";
 
 export const webSearchPrompt: string =
-  "Your purpose is to extract relevant information from the web. Cite each source by referencing its ID using the format [[web:{sourceId}]]. When citing multiple sources, separate each citation with a space (e.g., [[web:id1]] [[web:id2]]).";
+  "Your purpose is to extract relevant information from the web. Cite each source by referencing its URL using the format [[web:{url}]]. When citing multiple sources, separate each citation with a space (e.g., [[web:https://example.com]] [[web:https://other.com]]).";
 
 export function createDocumentPrompt(kind: "text" | "code" | "sheet"): string {
   const prompts = {

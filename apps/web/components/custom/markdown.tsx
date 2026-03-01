@@ -1,4 +1,5 @@
-import { type SourceDocumentUIPart, type SourceUrlUIPart } from "ai";
+import { type DocumentSource } from "@workspace/api-routes/lib/tools/extract-from-documents";
+import { type WebSource } from "@workspace/api-routes/lib/tools/extract-from-web";
 import "katex/dist/katex.min.css";
 import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -54,7 +55,7 @@ const processChildrenWithLineBreaks = (children: React.ReactNode) => {
   });
 };
 
-// Rehype plugin to convert [[doc:id]] and [[web:id]] into custom elements
+// Rehype plugin to convert [[doc:folderId/filename]] and [[web:url]] into custom elements
 const rehypeSourceRefs = () => {
   return (tree: any) => {
     const regex = /\[\[(doc|web):([^\]]+)\]\]/g;
@@ -83,12 +84,12 @@ const rehypeSourceRefs = () => {
             }
 
             const sourceType = match[1]; // "doc" or "web"
-            const sourceId = match[2]; // the ID
+            const sourceRef = match[2]; // folderId/filename for docs, URL for web
 
             newNodes.push({
               type: "element",
               tagName: "source-ref",
-              properties: { sourceType, sourceId },
+              properties: { sourceType, sourceRef },
               children: [],
             });
 
@@ -128,19 +129,23 @@ const getComponents = ({
   docSources,
   webSources,
 }: {
-  docSources?: SourceDocumentUIPart[];
-  webSources?: SourceUrlUIPart[];
+  docSources?: DocumentSource[];
+  webSources?: WebSource[];
 }): Partial<ComponentsWithSourceRef> => ({
   // Render custom element produced by rehypeSourceRefs
   "source-ref": ({ node }: any) => {
     const sourceType = node?.properties?.sourceType ?? "";
-    const sourceId = node?.properties?.sourceId ?? "";
+    const sourceRef = node?.properties?.sourceRef ?? "";
 
     if (sourceType === "doc") {
-      const source = docSources?.find((s) => s.sourceId === sourceId);
+      // Match by folderId/filename
+      const source = docSources?.find(
+        (s) => `${s.folderId}/${s.filename}` === sourceRef,
+      );
       return source ? <DocSourceBadge source={source} /> : null;
     } else if (sourceType === "web") {
-      const source = webSources?.find((s) => s.sourceId === sourceId);
+      // Match by URL
+      const source = webSources?.find((s) => s.url === sourceRef);
       return source ? <WebSourceBadge source={source} /> : null;
     }
 
@@ -297,8 +302,8 @@ const getComponents = ({
 
 interface MarkdownProps {
   children: string;
-  docSources?: SourceDocumentUIPart[];
-  webSources?: SourceUrlUIPart[];
+  docSources?: DocumentSource[];
+  webSources?: WebSource[];
   parseSourceRefs?: boolean;
 }
 
