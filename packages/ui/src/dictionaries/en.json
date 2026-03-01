@@ -115,6 +115,8 @@
   },
   "signUp": {
     "alreadyHaveAccount": "Already have an account?",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Confirm your password",
     "error": "Failed to sign up",
     "signingUp": "Signing up...",
     "signInText": "Sign in",

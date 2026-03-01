@@ -39,6 +39,7 @@ export const SignUp = memo(() => {
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
       name: "",
       username: "",
     },
@@ -112,6 +113,23 @@ export const SignUp = memo(() => {
                       <Input
                         type="password"
                         placeholder={sharedT.signIn.passwordPlaceholder}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{sharedT.signUp.confirmPasswordLabel}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder={sharedT.signUp.confirmPasswordPlaceholder}
                         {...field}
                       />
                     </FormControl>
