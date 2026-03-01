@@ -28,18 +28,18 @@ wrangler whoami
 
 ```bash
 # Create the D1 database
-wrangler d1 create CLOUDBOT_DB
+wrangler d1 create cloudbot-db --remote
 ```
 
 **Output example:**
 
 ```
-✅ Successfully created DB 'CLOUDBOT_DB'
+✅ Successfully created DB 'cloudbot-db'
 Created your database using D1's new storage backend.
 
 [[d1_databases]]
-binding = "DB"
-database_name = "CLOUDBOT_DB"
+binding = "CLOUDBOT_DB"
+database_name = "cloudbot-db"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 

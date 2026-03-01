@@ -28,7 +28,7 @@ export const VersionSelector = memo(
     const { sharedT } = useSharedTranslations();
     const { editorMode } = useEditor();
     const { textEditorRef, codeEditorRef } = useRefs();
-    const { textDiffPrev, codeDiffPrev, setIsViewingVersion } = useDiff();
+    const { textDiffPrev, codeDiffPrev, textStreamBuffer, codeStreamBuffer, setIsViewingVersion } = useDiff();
     const { handleDiffAction } = useDiffActions();
 
     const [versionCount, setVersionCount] = useState(0);
@@ -142,6 +142,14 @@ export const VersionSelector = memo(
         setViewingVersion(null);
         setIsViewingVersion(false);
 
+        // Populate the stream buffer with the version content so handleDiffAction
+        // applies it to the editor (instead of reverting to the pre-version state)
+        if (editorMode === "text") {
+          textStreamBuffer.current = content;
+        } else {
+          codeStreamBuffer.current = content;
+        }
+
         handleDiffAction(true); // Accept changes to update editor state
       } catch (error) {
         toast.error("Failed to restore version", { id: toastId });
@@ -152,6 +160,8 @@ export const VersionSelector = memo(
       textEditorRef,
       codeEditorRef,
       setIsViewingVersion,
+      textStreamBuffer,
+      codeStreamBuffer,
       handleDiffAction,
       sharedT.apiCodes,
     ]);

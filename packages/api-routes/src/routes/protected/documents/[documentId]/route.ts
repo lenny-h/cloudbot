@@ -13,7 +13,7 @@ import { validator } from "hono/validator";
 const paramSchema = z.object({ documentId: uuidSchema }).strict();
 const jsonSchema = z
   .object({
-    content: z.string().min(1).max(4096),
+    content: z.string().min(1).max(8192),
   })
   .strict();
 

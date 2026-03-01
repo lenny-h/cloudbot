@@ -147,7 +147,7 @@ const getComponents = ({
       // Match by URL, stripping protocol for comparison since
       // the backend removes it to prevent remark-gfm autolinking
       const source = webSources?.find(
-        (s) => s.url.replace(/^https?:\/\//, "") === sourceRef,
+        (s) => s.url.replace(/^https?:\/\/(www\.)?/, "") === sourceRef,
       );
       return source ? <WebSourceBadge source={source} /> : null;
     }

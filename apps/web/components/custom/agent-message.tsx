@@ -52,9 +52,14 @@ export const AgentMessage = ({
 }: AgentMessageProps) => {
   // Parse LaTeX content
   const parseContent = (text: string) => {
-    return text
-      .replace(/\\\[(.*?)\\\]/gs, "$$$$$1$$$$")
-      .replace(/\\\((.*?)\\\)/gs, "$$$1$$");
+    return (
+      text
+        .replace(/\\\[(.*?)\\\]/gs, "$$$$$1$$$$")
+        .replace(/\\\((.*?)\\\)/gs, "$$$1$$")
+        // Strip protocol and www. from URLs in [[web:...]] citations so that
+        // remark-gfm doesn't autolink them in the frontend markdown parser.
+        .replace(/\[\[web:https?:\/\/(www\.)?/g, "[[web:")
+    );
   };
 
   // Derive text content from message parts
