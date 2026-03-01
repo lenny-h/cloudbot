@@ -213,11 +213,11 @@ jobs:
     needs: changes
     if: needs.changes.outputs.dashboard == 'true'
     env:
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-      NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP: ${{ secrets.NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP }}
-      NEXT_PUBLIC_ENABLE_OAUTH_LOGIN: ${{ secrets.NEXT_PUBLIC_ENABLE_OAUTH_LOGIN }}
-      NEXT_PUBLIC_ENABLE_SSO: ${{ secrets.NEXT_PUBLIC_ENABLE_SSO }}
-      NEXT_PUBLIC_CSP_ENDPOINTS: ${{ secrets.NEXT_PUBLIC_CSP_ENDPOINTS }}
+      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP: ${{ vars.NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP }}
+      NEXT_PUBLIC_ENABLE_OAUTH_LOGIN: ${{ vars.NEXT_PUBLIC_ENABLE_OAUTH_LOGIN }}
+      NEXT_PUBLIC_ENABLE_SSO: ${{ vars.NEXT_PUBLIC_ENABLE_SSO }}
+      NEXT_PUBLIC_CSP_ENDPOINTS: ${{ vars.NEXT_PUBLIC_CSP_ENDPOINTS }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
