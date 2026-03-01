@@ -186,19 +186,20 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `SSO_JWKS_ENDPOINT` - JWKS endpoint
 - `NEXT_PUBLIC_LLM_MODELS` - JSON array of LLM models (see `.env.example`)
 - `R2_ENDPOINT` - Cloudflare R2 endpoint URL
+- `R2_BUCKET_NAME` - Cloudflare R2 bucket name (e.g., "cloudbot-bucket")
 - `CLOUDFLARE_ACCESS_KEY_ID` - Cloudflare R2 access key ID
-- `AWS_ACCESS_KEY_ID` - AWS access key ID (if using AWS Bedrock as model provider)
-- `AWS_REGION` - AWS region (e.g., "us-east-1", if using AWS Bedrock)
-- `AZURE_RESOURCE_NAME` - Azure resource name
-- `GOOGLE_VERTEX_PROJECT` - Google Vertex AI project ID
-- `GOOGLE_VERTEX_LOCATION` - Google Vertex AI location
-- `GOOGLE_CLIENT_EMAIL` - Google service account email
-- `GOOGLE_PRIVATE_KEY_ID` - Google private key ID
+- `AWS_ACCESS_KEY_ID` - AWS access key ID (optional)
+- `AWS_REGION` - AWS region (e.g., "us-east-1", optional)
+- `AZURE_RESOURCE_NAME` - Azure resource name (optional)
+- `GOOGLE_VERTEX_PROJECT` - Google Vertex AI project ID (optional)
+- `GOOGLE_VERTEX_LOCATION` - Google Vertex AI location (e.g., "us-central1", optional)
+- `GOOGLE_CLIENT_EMAIL` - Google service account email (optional)
+- `GOOGLE_PRIVATE_KEY_ID` - Google private key ID (optional)
 - `SEARCH_PROVIDER` - Search provider name (e.g., "google", "tavily")
-- `TITLE_MODEL_IDX` - Model index for titles (e.g., "0")
-- `ARTIFACT_MODEL_IDX` - Model index for artifacts (e.g., "0")
-- `SEARCH_MODEL_IDX` - Model index for search (e.g., "0")
-- `COMPLETION_MODEL_IDX` - Model index for completions (e.g., "0")
+- `TITLE_MODEL_IDX` - Model index for titles (e.g., "0", optional)
+- `ARTIFACT_MODEL_IDX` - Model index for artifacts (e.g., "0", optional)
+- `SEARCH_MODEL_IDX` - Model index for search (e.g., "0", optional)
+- `COMPLETION_MODEL_IDX` - Model index for completions (e.g., "0", optional)
 
 #### Web App Secrets
 
@@ -234,6 +235,8 @@ The GitHub Actions workflow automatically handles configuration:
 - Uploaded as encrypted Cloudflare Worker secrets
 - Never visible in Cloudflare dashboard or logs
 - Access via `env.SECRET_NAME` in your worker code
+
+> **Important:** Any secrets or variables you do not use must be removed from the `secrets:` list in the `deploy-api` job of `.github/workflows/deploy.yml`. Leaving unused entries will cause the deployment to fail if the corresponding GitHub Secret or Variable is not defined.
 
 **Variables** (passed via `env:` section):
 

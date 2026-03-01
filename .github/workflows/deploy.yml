@@ -85,59 +85,22 @@ jobs:
           secrets: |
             NODE_ENV
             BETTER_AUTH_URL
-            ADMIN_USER_IDS
             ALLOWED_ORIGINS
             ENABLE_EMAIL_SIGNUP
             ENABLE_OAUTH_LOGIN
             ENABLE_SSO
-            ALLOWED_EMAIL_DOMAINS
             RESEND_SENDER_EMAIL
-            GOOGLE_CLIENT_ID
-            GITHUB_CLIENT_ID
-            GITLAB_CLIENT_ID
-            SSO_DOMAIN
-            SSO_PROVIDER_ID
-            SSO_CLIENT_ID
-            SSO_ISSUER
-            SSO_DISCOVERY_ENDPOINT
-            SSO_AUTHORIZATION_ENDPOINT
-            SSO_TOKEN_ENDPOINT
-            SSO_JWKS_ENDPOINT
             NEXT_PUBLIC_LLM_MODELS
             R2_ENDPOINT
             R2_BUCKET_NAME
             CLOUDFLARE_ACCESS_KEY_ID
-            AWS_ACCESS_KEY_ID
-            AWS_REGION
-            AZURE_RESOURCE_NAME
-            GOOGLE_VERTEX_PROJECT
-            GOOGLE_VERTEX_LOCATION
-            GOOGLE_CLIENT_EMAIL
-            GOOGLE_PRIVATE_KEY_ID
             SEARCH_PROVIDER
-            TITLE_MODEL_IDX
-            ARTIFACT_MODEL_IDX
-            SEARCH_MODEL_IDX
-            COMPLETION_MODEL_IDX
 
             BETTER_AUTH_SECRET
             ENCRYPTION_KEY
             RESEND_API_KEY
-            GOOGLE_CLIENT_SECRET
-            GITHUB_CLIENT_SECRET
-            GITLAB_CLIENT_SECRET
-            SSO_CLIENT_SECRET
             CLOUDFLARE_SECRET_ACCESS_KEY
-            AI_GATEWAY_API_KEY
-            ANTHROPIC_API_KEY
-            ANTHROPIC_AUTH_TOKEN
-            AWS_SECRET_ACCESS_KEY
-            AZURE_API_KEY
-            GOOGLE_PRIVATE_KEY
             OPENAI_API_KEY
-            EXA_API_KEY
-            PARALLEL_API_KEY
-            TAVILY_API_KEY
         env:
           # Non-sensitive configuration vars
           NODE_ENV: ${{ vars.NODE_ENV }}

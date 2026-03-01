@@ -18,7 +18,7 @@ function buildAuth() {
   // Build plugins array and include SSO only when ENABLE_SSO is "true"
   const plugins = [
     admin({
-      adminUserIds: process.env.ADMIN_USER_IDS!.split(","),
+      adminUserIds: (process.env.ADMIN_USER_IDS ?? "").split(","),
     }),
     ...(process.env.ENABLE_SSO === "true"
       ? [
@@ -111,7 +111,7 @@ function buildAuth() {
           },
         }
       : {}),
-    trustedOrigins: process.env.ALLOWED_ORIGINS!.split(","),
+    trustedOrigins: (process.env.ALLOWED_ORIGINS ?? "").split(","),
     session: {
       expiresIn: 60 * 60 * 24 * 30, // 30 days
       disableSessionRefresh: true,
@@ -127,8 +127,9 @@ function buildAuth() {
           return;
         }
         if (process.env.ALLOWED_EMAIL_DOMAINS) {
-          const allowedDomains =
-            process.env.ALLOWED_EMAIL_DOMAINS?.split(",") || [];
+          const allowedDomains = (
+            process.env.ALLOWED_EMAIL_DOMAINS ?? ""
+          ).split(",");
           const emailDomain = ctx.body?.email.split("@").pop();
           if (!emailDomain || !allowedDomains.includes(emailDomain)) {
             throw new HTTPException(400, {
