@@ -81,6 +81,7 @@ jobs:
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: apps/api
+          environment: production
           command: deploy --minify
           secrets: |
             NODE_ENV
