@@ -151,7 +151,7 @@ export const getModel = async (
             ...(reasoningEnabled
               ? { reasoningEffort: "medium", reasoningSummary: "auto" }
               : {
-                  reasoningEffort: "none",
+                  reasoningEffort: "minimal",
                 }),
             store: false,
           },
