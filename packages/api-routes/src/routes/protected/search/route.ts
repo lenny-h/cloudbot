@@ -1,6 +1,8 @@
 import * as z from "zod";
 
+import { searchModelIdx } from "@workspace/api-routes/providers/models.js";
 import { documentSearchPrompt } from "@workspace/api-routes/providers/prompts.js";
+import { getModel } from "@workspace/api-routes/providers/providers.js";
 import { type Bindings } from "@workspace/api-routes/types/bindings.js";
 import { type Variables } from "@workspace/api-routes/types/variables.js";
 import { buildMetadataFilter } from "@workspace/api-routes/utils/build-metadata-filter.js";
@@ -11,10 +13,14 @@ import {
 } from "@workspace/api-routes/utils/filter-authorized-folders.js";
 import { db } from "@workspace/server/drizzle/db.js";
 import { folders } from "@workspace/server/drizzle/schema.js";
+import { createLogger } from "@workspace/server/logger/logger.js";
+import { generateText } from "ai";
 import { inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
+
+const logger = createLogger("search-route");
 
 const searchBodySchema = z
   .object({
@@ -68,31 +74,60 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       folderMetadata,
     );
 
-    const answer = await c.env.AI.autorag("autorag").aiSearch({
-      system_prompt: documentSearchPrompt,
+    logger.debug("Constructed the following metadata filter for search:", {
+      metadataFilter,
+    });
+
+    const searchResult = await c.env.AI.autorag(
+      process.env.AUTORAG_NAME ?? "",
+    ).search({
       query,
-      rewrite_query: false,
       max_num_results,
       ranking_options: {
-        score_threshold: 0.3,
+        score_threshold: 0.1,
       },
       reranking: {
         enabled: true,
         model: "@cf/baai/bge-reranker-base",
       },
-      stream: false,
       ...(metadataFilter && { filters: metadataFilter }),
     });
 
-    const sources = answer.data.map((source) => ({
-      fileId: source.file_id,
-      filename: source.filename,
-      mediaType: source.filename.split(".").pop() || "unknown",
-      score: source.score,
-    }));
+    logger.debug(
+      `Found ${searchResult.data.length} results for query: "${query}"`,
+    );
+
+    if (searchResult.data.length === 0) {
+      throw new HTTPException(404, { message: "NO_RESULTS" });
+    }
+
+    const sources = searchResult.data.map((item) => {
+      const parts = item.filename.split("/");
+      const filename = parts[parts.length - 1] ?? item.filename;
+      return {
+        folderId: parts[parts.length - 2] ?? "",
+        filename,
+        mediaType: filename.split(".").pop() || "unknown",
+        score: item.score,
+      };
+    });
+
+    const context = searchResult.data
+      .map((item, i) => {
+        const { folderId, filename } = sources[i]!;
+        return `[${folderId}/${filename}]\n${item.content}`;
+      })
+      .join("\n\n");
+
+    const config = await getModel(c.env, searchModelIdx);
+    const { text } = await generateText({
+      model: config.model,
+      system: documentSearchPrompt,
+      prompt: `Query: ${query}\n\nSources:\n${context}`,
+    });
 
     return c.json({
-      response: answer.response,
+      response: text,
       sources,
     });
   },

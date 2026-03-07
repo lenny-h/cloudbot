@@ -11,6 +11,7 @@ import { FileText, Loader2, Search, SearchX } from "lucide-react";
 import { memo, useCallback, useState } from "react";
 import { toast } from "sonner";
 import { FolderCombobox } from "./folder-combobox";
+import { Markdown } from "./markdown";
 
 interface Folder {
   id: string;
@@ -19,7 +20,7 @@ interface Folder {
 }
 
 interface SearchSource {
-  fileId: string;
+  folderId: string;
   filename: string;
   mediaType: string;
   score: number;
@@ -143,10 +144,10 @@ export const SearchPage = memo(() => {
       {!isSearching && searchResult && (
         <div className="flex flex-col gap-4">
           {/* AI Response */}
-          <div className="rounded-lg border p-4">
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+          <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg border p-4">
+            <Markdown docSources={searchResult.sources} parseSourceRefs={true}>
               {searchResult.response}
-            </p>
+            </Markdown>
           </div>
 
           {/* Sources */}
@@ -156,7 +157,7 @@ export const SearchPage = memo(() => {
               <div className="grid gap-2">
                 {searchResult.sources.map((source) => (
                   <div
-                    key={source.fileId}
+                    key={`${source.folderId}/${source.filename}`}
                     className="hover:bg-muted/30 flex items-center gap-3 rounded-lg border p-3 transition-colors"
                   >
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-purple-500/10 text-purple-600 dark:text-purple-400">
@@ -166,8 +167,13 @@ export const SearchPage = memo(() => {
                       <p className="truncate text-sm font-medium">
                         {source.filename}
                       </p>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-muted-foreground truncate text-xs">
                         {source.mediaType.toUpperCase()}
+                        {source.folderId && (
+                          <span className="ml-1 opacity-60">
+                            · {source.folderId}
+                          </span>
+                        )}
                       </p>
                     </div>
                     <Badge

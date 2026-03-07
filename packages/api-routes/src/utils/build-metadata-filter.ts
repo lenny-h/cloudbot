@@ -50,7 +50,12 @@ export function buildMetadataFilter(
 
   // If no files but there are folders, filter by folders
   if (folderMetadata.length > 0) {
-    const folderPaths = folderMetadata.map((f) => `${f.visibility}/${f.id}`);
+    const folderPaths = folderMetadata.map((f) => {
+      if (f.visibility === "private") {
+        return `${userId}/${f.id}/`;
+      }
+      return `${f.visibility}/${f.id}/`;
+    });
 
     // Single folder - use "starts with" filter pattern
     if (folderPaths.length === 1) {

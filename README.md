@@ -83,7 +83,9 @@ wrangler r2 bucket create cloudbot-bucket
 
 ### Step 6: Create AI Search Instance
 
-In the Cloudflare dashboard, navigate to **AI** → **AI Search** and create a new AI Search instance with the name `cloudbot-ai-search`. When prompted, connect it to the `cloudbot-bucket` R2 bucket you created in the previous step. This enables semantic search over files stored in R2 and is required for certain search features in the API.
+In the Cloudflare dashboard, navigate to **AI** → **AI Search** and create a new AI Search instance. When prompted, connect it to the `cloudbot-bucket` R2 bucket you created in the previous step. This enables semantic search over files stored in R2 and is required for certain search features in the API.
+
+Set the `AUTORAG_NAME` environment variable to the name you chose for the AI Search instance (defaults to `cloudbot-ai-search` in `wrangler.jsonc`).
 
 ### Step 7: Update Custom Domains in wrangler.jsonc
 
@@ -201,6 +203,7 @@ To enable automatic deployment via GitHub Actions, you need to configure secrets
 - `ARTIFACT_MODEL_IDX` - Model index for artifacts (e.g., "0", optional)
 - `SEARCH_MODEL_IDX` - Model index for search (e.g., "0", optional)
 - `COMPLETION_MODEL_IDX` - Model index for completions (e.g., "0", optional)
+- `AUTORAG_NAME` - Name of the Cloudflare AutoRAG instance (e.g., "cloudbot-ai-search")
 
 #### Web App Secrets
 

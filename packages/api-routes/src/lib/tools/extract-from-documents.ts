@@ -72,7 +72,9 @@ export const extractFromDocuments = ({
           JSON.stringify(metadataFilter, null, 2),
         );
 
-        const searchResult = await env.AI.autorag("cloudbot-ai-search").search({
+        const searchResult = await env.AI.autorag(
+          process.env.AUTORAG_NAME ?? "",
+        ).search({
           query,
           max_num_results,
           ranking_options: {
