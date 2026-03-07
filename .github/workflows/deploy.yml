@@ -87,6 +87,7 @@ jobs:
             NODE_ENV
             BASE_DOMAIN
             BETTER_AUTH_URL
+            ADMIN_USER_IDS
             ALLOWED_ORIGINS
             ENABLE_EMAIL_SIGNUP
             ENABLE_OAUTH_LOGIN
