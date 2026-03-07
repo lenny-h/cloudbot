@@ -11,7 +11,10 @@ export const adminMiddleware = async (c: Context, next: Next) => {
       throw new HTTPException(401, { message: "UNAUTHORIZED" });
     }
 
-    if (session.user.role !== "admin") {
+    const adminUserIds = (process.env.ADMIN_USER_IDS ?? "")
+      .split(",")
+      .map((id) => id.trim());
+    if (!adminUserIds.includes(session.user.id)) {
       throw new HTTPException(403, { message: "FORBIDDEN" });
     }
 

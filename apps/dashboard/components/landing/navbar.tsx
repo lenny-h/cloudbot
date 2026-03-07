@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { signOut, useSession } from "@workspace/ui/lib/auth-client";
+import { isAdminUser, signOut, useSession } from "@workspace/ui/lib/auth-client";
 import { LogOut, Shield, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +18,7 @@ import Link from "next/link";
 const Navbar = () => {
   const { data: session } = useSession();
 
-  const isAdmin = session?.user?.role === "admin";
+  const isAdmin = isAdminUser(session?.user?.id);
 
   const initials = session?.user?.name
     ?.split(" ")

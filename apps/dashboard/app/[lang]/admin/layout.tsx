@@ -2,7 +2,7 @@
 
 import DashboardLayout from "@/components/admin/dashboard-layout";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
-import { client } from "@workspace/ui/lib/auth-client";
+import { client, isAdminUser } from "@workspace/ui/lib/auth-client";
 import { CentralLoadingScreen } from "@workspace/ui/shared-components/central-loading-screen";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -19,12 +19,12 @@ export default function AdminLayout({
   useEffect(() => {
     if (!data?.user) {
       router.push(`/${locale}/sign-in`);
-    } else if (data.user.role !== "admin") {
+    } else if (!isAdminUser(data.user.id)) {
       return notFound();
     }
   }, [isPending, data, router]);
 
-  if (isPending || !data?.user || data.user.role !== "admin") {
+  if (isPending || !data?.user || !isAdminUser(data.user.id)) {
     return <CentralLoadingScreen />;
   }
 
