@@ -1,6 +1,7 @@
 "use client";
 
 import DashboardLayout from "@/components/admin/dashboard-layout";
+import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { client } from "@workspace/ui/lib/auth-client";
 import { CentralLoadingScreen } from "@workspace/ui/shared-components/central-loading-screen";
 import { notFound, useRouter } from "next/navigation";
@@ -12,14 +13,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   const { data, isPending } = client.useSession();
+  const { locale } = useSharedTranslations();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isPending) {
-      if (data?.user && data.user.role !== "admin") {
-        return notFound();
-      }
-      router.push("/");
+    if (!data?.user) {
+      router.push(`/${locale}/sign-in`);
+    } else if (data.user.role !== "admin") {
+      return notFound();
     }
   }, [isPending, data, router]);
 
