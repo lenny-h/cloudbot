@@ -5,7 +5,6 @@ import { and, eq } from "drizzle-orm";
 export type FolderMetadata = {
   id: string;
   visibility: string;
-  folderId: string;
   owner: string;
 };
 

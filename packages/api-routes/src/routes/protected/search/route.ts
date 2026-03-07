@@ -48,7 +48,6 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       .select({
         id: folders.id,
         visibility: folders.visibility,
-        folderId: folders.id,
         owner: folders.owner,
       })
       .from(folders)
