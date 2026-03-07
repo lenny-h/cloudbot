@@ -311,7 +311,9 @@
         "download": "Herunterladen",
         "deleting": "Datei wird gelöscht...",
         "deleted": "Datei gelöscht!",
-        "failedToDelete": "Fehler beim Löschen der Datei"
+        "failedToDelete": "Fehler beim Löschen der Datei",
+        "uploadPending": "Ausstehend",
+        "uploadPendingTooltip": "Diese Datei wurde nicht erfolgreich hochgeladen. Sie können sie löschen und erneut versuchen."
     },
     "searchSelection": {
         "chats": "Chats suchen...",

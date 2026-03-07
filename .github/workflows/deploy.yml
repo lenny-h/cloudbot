@@ -93,6 +93,7 @@ jobs:
             ENABLE_SSO
             RESEND_SENDER_EMAIL
             NEXT_PUBLIC_LLM_MODELS
+            AUTORAG_NAME
             R2_ENDPOINT
             R2_BUCKET_NAME
             CLOUDFLARE_ACCESS_KEY_ID
@@ -127,6 +128,7 @@ jobs:
           SSO_TOKEN_ENDPOINT: ${{ vars.SSO_TOKEN_ENDPOINT }}
           SSO_JWKS_ENDPOINT: ${{ vars.SSO_JWKS_ENDPOINT }}
           NEXT_PUBLIC_LLM_MODELS: ${{ vars.NEXT_PUBLIC_LLM_MODELS }}
+          AUTORAG_NAME: ${{ vars.AUTORAG_NAME }}
           R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
           R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
           CLOUDFLARE_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_ACCESS_KEY_ID }}

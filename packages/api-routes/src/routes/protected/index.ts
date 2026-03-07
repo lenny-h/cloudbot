@@ -20,6 +20,7 @@ import documentsTitleRoute from "./documents/title/[documentId]/[title]/route.js
 import documentsVersionRoute from "./documents/version/[documentId]/route.js";
 import documentsVersionsRoute from "./documents/versions/[documentId]/route.js";
 import documentsViewDiffRoute from "./documents/view-diff/[diffId]/route.js";
+import filesConfirmUploadRoute from "./files/confirm-upload/[fileId]/route.js";
 import filesFileIdRoute from "./files/[fileId]/route.js";
 import filesGetSignedUrlFolderFileRoute from "./files/get-signed-url/[folderId]/[filename]/route.js";
 import filesGetSignedUrlFolderRoute from "./files/get-signed-url/[folderId]/route.js";
@@ -79,6 +80,7 @@ const protectedApiRouter = new Hono()
 
   // Files
   .route("/files", filesRoute)
+  .route("/files/confirm-upload/:fileId", filesConfirmUploadRoute)
   .route(
     "/files/get-signed-url/:folderId/:filename",
     filesGetSignedUrlFolderFileRoute,

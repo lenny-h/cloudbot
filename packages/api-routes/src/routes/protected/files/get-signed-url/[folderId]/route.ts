@@ -93,7 +93,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       throw new HTTPException(403, { message: "FORBIDDEN" });
     }
 
-    // Create file entry with folder's visibility
+    // Create file entry with folder's visibility and pending upload status
     const fileId = generateUUID();
     try {
       await db().insert(files).values({
@@ -104,6 +104,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
         size: fileSize,
         format: fileType,
         visibility: folder.visibility,
+        uploadConfirmed: false,
       });
     } catch (error) {
       throw new HTTPException(409, { message: "FILE_ALREADY_EXISTS" });
@@ -128,6 +129,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().post(
       return c.json({
         signedUrl,
         key,
+        fileId,
       });
     } catch (error) {
       // Rollback: delete the file entry if signed URL generation fails

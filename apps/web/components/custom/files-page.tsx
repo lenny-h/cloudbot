@@ -8,12 +8,18 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
 import { useInfiniteQueryWithRPC } from "@workspace/ui/hooks/use-infinite-query";
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { apiFetcher } from "@workspace/ui/lib/fetcher";
 import { cn } from "@workspace/ui/lib/utils";
 import {
+  AlertTriangle,
   Download,
   Eye,
   File,
@@ -37,6 +43,7 @@ interface FileItem {
   name: string;
   folderId: string;
   visibility: string;
+  uploadConfirmed: boolean;
   owner: string;
   size: number;
   format: string;
@@ -236,20 +243,47 @@ export const FilesPage = memo(() => {
           {displayFiles.map((file) => (
             <div
               key={file.id}
-              className="hover:bg-muted/30 group flex items-center gap-3 rounded-lg border p-3 transition-colors"
+              className={cn(
+                "hover:bg-muted/30 group flex items-center gap-3 rounded-lg border p-3 transition-colors",
+                !file.uploadConfirmed &&
+                  "border-yellow-500/40 bg-yellow-500/5",
+              )}
             >
               <div
                 className={cn(
                   "flex size-9 shrink-0 items-center justify-center rounded-md border",
-                  isPdf(file)
-                    ? "border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400"
-                    : "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+                  !file.uploadConfirmed
+                    ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                    : isPdf(file)
+                      ? "border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400"
+                      : "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
                 )}
               >
-                <File className="size-4" />
+                {!file.uploadConfirmed ? (
+                  <AlertTriangle className="size-4" />
+                ) : (
+                  <File className="size-4" />
+                )}
               </div>
               <div className="flex-1 overflow-hidden">
-                <h3 className="truncate font-medium">{file.name}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="truncate font-medium">{file.name}</h3>
+                  {!file.uploadConfirmed && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge
+                          variant="outline"
+                          className="shrink-0 border-yellow-500/50 bg-yellow-500/10 text-xs text-yellow-600 dark:text-yellow-400"
+                        >
+                          {webT.filesPage.uploadPending}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{webT.filesPage.uploadPendingTooltip}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
                 <p className="text-muted-foreground text-xs">
                   {formatDate(file.createdAt)}
                 </p>
@@ -263,27 +297,28 @@ export const FilesPage = memo(() => {
                 </Badge>
               )}
               <div className="flex shrink-0 items-center gap-1">
-                {isPdf(file) ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
-                    onClick={() => handleViewPdf(file)}
-                    title={webT.filesPage.viewPdf}
-                  >
-                    <Eye className="size-4" />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
-                    onClick={() => handleDownload(file)}
-                    title={webT.filesPage.download}
-                  >
-                    <Download className="size-4" />
-                  </Button>
-                )}
+                {file.uploadConfirmed &&
+                  (isPdf(file) ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                      onClick={() => handleViewPdf(file)}
+                      title={webT.filesPage.viewPdf}
+                    >
+                      <Eye className="size-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                      onClick={() => handleDownload(file)}
+                      title={webT.filesPage.download}
+                    >
+                      <Download className="size-4" />
+                    </Button>
+                  ))}
                 <Button
                   variant="ghost"
                   size="sm"

@@ -1,0 +1,1 @@
+ALTER TABLE `files` ADD `upload_confirmed` integer DEFAULT false NOT NULL;

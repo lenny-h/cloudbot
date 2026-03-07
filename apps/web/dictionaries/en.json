@@ -311,7 +311,9 @@
         "download": "Download",
         "deleting": "Deleting file...",
         "deleted": "File deleted!",
-        "failedToDelete": "Failed to delete file"
+        "failedToDelete": "Failed to delete file",
+        "uploadPending": "Pending",
+        "uploadPendingTooltip": "This file was not uploaded successfully. You can delete it and try again."
     },
     "searchSelection": {
         "chats": "Search for chats...",

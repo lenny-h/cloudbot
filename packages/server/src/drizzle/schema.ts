@@ -248,6 +248,9 @@ export const files = sqliteTable(
     visibility: text("visibility", { enum: ["private", "protected", "public"] })
       .notNull()
       .default("private"),
+    uploadConfirmed: integer("upload_confirmed", { mode: "boolean" })
+      .notNull()
+      .default(false),
     folderId: text("folder_id")
       .notNull()
       .references(() => folders.id),

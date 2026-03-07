@@ -23,7 +23,7 @@ export function useFolderDropzone({ folderId }: Props) {
     }));
 
     try {
-      const { signedUrl } = await apiFetcher(
+      const { signedUrl, fileId } = await apiFetcher(
         (client) =>
           client.files["get-signed-url"][":folderId"].$post({
             param: { folderId },
@@ -67,6 +67,15 @@ export function useFolderDropzone({ folderId }: Props) {
         xhr.setRequestHeader("Content-Type", file.type);
         xhr.send(file);
       });
+
+      // Confirm the upload so the file becomes visible
+      await apiFetcher(
+        (client) =>
+          client.files["confirm-upload"][":fileId"].$post({
+            param: { fileId },
+          }),
+        sharedT.apiCodes,
+      );
 
       setUploads((prev) => ({
         ...prev,
