@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar-left";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import {
   Tooltip,
@@ -174,179 +175,187 @@ export const FilesPage = memo(() => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 md:px-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {webT.filesPage.title}
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {webT.filesPage.subtitle}
-          </p>
-        </div>
-      </div>
-
-      {/* Folder selection */}
-      <div className="space-y-2">
-        <p className="text-sm font-medium">{webT.filesPage.selectFolders}</p>
-        <FolderCombobox
-          selectedFolders={selectedFolders}
-          onSelectedFoldersChange={handleSetSelectedFolders}
-        />
-      </div>
-
-      {/* Search */}
-      {selectedFolderIds.length > 0 && (
-        <div className="relative">
-          <Search className="text-muted-foreground absolute top-2.5 left-2.5 size-4" />
-          <Input
-            placeholder={webT.searchSelection.files}
-            className="pl-8"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
-        </div>
-      )}
-
-      {/* File listing */}
-      {selectedFolderIds.length === 0 ? (
-        <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-lg border border-dashed">
-          <FolderOpen className="text-muted-foreground size-10" />
-          <p className="text-muted-foreground text-sm">
-            {webT.filesPage.selectFolders}
-          </p>
-        </div>
-      ) : filesPending ? (
-        <div className="grid gap-3">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="bg-muted/50 h-16 rounded-lg border" />
-          ))}
-        </div>
-      ) : filesError || !displayFiles ? (
-        <div className="flex h-64 items-center justify-center">
-          <p className="text-muted-foreground text-sm">
-            {webT.filesPage.errorLoading}
-          </p>
-        </div>
-      ) : displayFiles.length === 0 ? (
-        <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-lg border border-dashed">
-          <File className="text-muted-foreground size-10" />
-          <div className="text-center">
-            <p className="font-medium">{webT.filesPage.noFiles}</p>
+    <>
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b px-3">
+        <SidebarTrigger />
+      </header>
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 md:px-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {webT.filesPage.title}
+            </h1>
             <p className="text-muted-foreground mt-1 text-sm">
-              {webT.filesPage.noFilesDescription}
+              {webT.filesPage.subtitle}
             </p>
           </div>
         </div>
-      ) : (
-        <div className="grid gap-2">
-          {displayFiles.map((file) => (
-            <div
-              key={file.id}
-              className={cn(
-                "hover:bg-muted/30 group flex items-center gap-3 rounded-lg border p-3 transition-colors",
-                !file.uploadConfirmed &&
-                  "border-yellow-500/40 bg-yellow-500/5",
-              )}
-            >
+
+        {/* Folder selection */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium">{webT.filesPage.selectFolders}</p>
+          <FolderCombobox
+            selectedFolders={selectedFolders}
+            onSelectedFoldersChange={handleSetSelectedFolders}
+          />
+        </div>
+
+        {/* Search */}
+        {selectedFolderIds.length > 0 && (
+          <div className="relative">
+            <Search className="text-muted-foreground absolute top-2.5 left-2.5 size-4" />
+            <Input
+              placeholder={webT.searchSelection.files}
+              className="pl-8"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+          </div>
+        )}
+
+        {/* File listing */}
+        {selectedFolderIds.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-lg border border-dashed">
+            <FolderOpen className="text-muted-foreground size-10" />
+            <p className="text-muted-foreground text-sm">
+              {webT.filesPage.selectFolders}
+            </p>
+          </div>
+        ) : filesPending ? (
+          <div className="grid gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="bg-muted/50 h-16 rounded-lg border"
+              />
+            ))}
+          </div>
+        ) : filesError || !displayFiles ? (
+          <div className="flex h-64 items-center justify-center">
+            <p className="text-muted-foreground text-sm">
+              {webT.filesPage.errorLoading}
+            </p>
+          </div>
+        ) : displayFiles.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-lg border border-dashed">
+            <File className="text-muted-foreground size-10" />
+            <div className="text-center">
+              <p className="font-medium">{webT.filesPage.noFiles}</p>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {webT.filesPage.noFilesDescription}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-2">
+            {displayFiles.map((file) => (
               <div
+                key={file.id}
                 className={cn(
-                  "flex size-9 shrink-0 items-center justify-center rounded-md border",
-                  !file.uploadConfirmed
-                    ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
-                    : isPdf(file)
-                      ? "border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400"
-                      : "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+                  "hover:bg-muted/30 group flex items-center gap-3 rounded-lg border p-3 transition-colors",
+                  !file.uploadConfirmed &&
+                    "border-yellow-500/40 bg-yellow-500/5",
                 )}
               >
-                {!file.uploadConfirmed ? (
-                  <AlertTriangle className="size-4" />
-                ) : (
-                  <File className="size-4" />
-                )}
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <div className="flex items-center gap-2">
-                  <h3 className="truncate font-medium">{file.name}</h3>
-                  {!file.uploadConfirmed && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Badge
-                          variant="outline"
-                          className="shrink-0 border-yellow-500/50 bg-yellow-500/10 text-xs text-yellow-600 dark:text-yellow-400"
-                        >
-                          {webT.filesPage.uploadPending}
-                        </Badge>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{webT.filesPage.uploadPendingTooltip}</p>
-                      </TooltipContent>
-                    </Tooltip>
+                <div
+                  className={cn(
+                    "flex size-9 shrink-0 items-center justify-center rounded-md border",
+                    !file.uploadConfirmed
+                      ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                      : isPdf(file)
+                        ? "border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400"
+                        : "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+                  )}
+                >
+                  {!file.uploadConfirmed ? (
+                    <AlertTriangle className="size-4" />
+                  ) : (
+                    <File className="size-4" />
                   )}
                 </div>
-                <p className="text-muted-foreground text-xs">
-                  {formatDate(file.createdAt)}
-                </p>
+                <div className="flex-1 overflow-hidden">
+                  <div className="flex items-center gap-2">
+                    <h3 className="truncate font-medium">{file.name}</h3>
+                    {!file.uploadConfirmed && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            variant="outline"
+                            className="shrink-0 border-yellow-500/50 bg-yellow-500/10 text-xs text-yellow-600 dark:text-yellow-400"
+                          >
+                            {webT.filesPage.uploadPending}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{webT.filesPage.uploadPendingTooltip}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                  <p className="text-muted-foreground text-xs">
+                    {formatDate(file.createdAt)}
+                  </p>
+                </div>
+                {file.format && (
+                  <Badge
+                    variant="outline"
+                    className="hidden shrink-0 text-xs sm:inline-flex"
+                  >
+                    {file.format.split("/").pop()}
+                  </Badge>
+                )}
+                <div className="flex shrink-0 items-center gap-1">
+                  {file.uploadConfirmed &&
+                    (isPdf(file) ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                        onClick={() => handleViewPdf(file)}
+                        title={webT.filesPage.viewPdf}
+                      >
+                        <Eye className="size-4" />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                        onClick={() => handleDownload(file)}
+                        title={webT.filesPage.download}
+                      >
+                        <Download className="size-4" />
+                      </Button>
+                    ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-destructive opacity-0 transition-opacity group-hover:opacity-100"
+                    onClick={() => handleDeleteFile(file)}
+                    disabled={deletingId === file.id}
+                  >
+                    {deletingId === file.id ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="size-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
-              {file.format && (
-                <Badge
-                  variant="outline"
-                  className="hidden shrink-0 text-xs sm:inline-flex"
-                >
-                  {file.format.split("/").pop()}
-                </Badge>
-              )}
-              <div className="flex shrink-0 items-center gap-1">
-                {file.uploadConfirmed &&
-                  (isPdf(file) ? (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
-                      onClick={() => handleViewPdf(file)}
-                      title={webT.filesPage.viewPdf}
-                    >
-                      <Eye className="size-4" />
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-muted-foreground hover:text-primary opacity-0 transition-opacity group-hover:opacity-100"
-                      onClick={() => handleDownload(file)}
-                      title={webT.filesPage.download}
-                    >
-                      <Download className="size-4" />
-                    </Button>
-                  ))}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-destructive opacity-0 transition-opacity group-hover:opacity-100"
-                  onClick={() => handleDeleteFile(file)}
-                  disabled={deletingId === file.id}
-                >
-                  {deletingId === file.id ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="size-4" />
-                  )}
-                </Button>
+            ))}
+            {!ilikeResults && hasNextPage && (
+              <div
+                ref={inViewRef}
+                className="flex h-8 items-center justify-center"
+              >
+                {isFetchingNextPage && (
+                  <Loader2 className="size-4 animate-spin" />
+                )}
               </div>
-            </div>
-          ))}
-          {!ilikeResults && hasNextPage && (
-            <div
-              ref={inViewRef}
-              className="flex h-8 items-center justify-center"
-            >
-              {isFetchingNextPage && (
-                <Loader2 className="size-4 animate-spin" />
-              )}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 });
