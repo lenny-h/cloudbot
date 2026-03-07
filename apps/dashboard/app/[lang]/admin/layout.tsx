@@ -16,11 +16,10 @@ export default function AdminLayout({
 
   useEffect(() => {
     if (!isPending) {
-      if (!data?.user) {
-        router.push("/");
-      } else if (data.user.role !== "admin") {
+      if (data?.user && data.user.role !== "admin") {
         return notFound();
       }
+      router.push("/");
     }
   }, [isPending, data, router]);
 
