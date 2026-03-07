@@ -104,6 +104,7 @@ jobs:
             RESEND_API_KEY
             CLOUDFLARE_SECRET_ACCESS_KEY
             OPENAI_API_KEY
+            ANTHROPIC_API_KEY
         env:
           # Non-sensitive configuration vars
           NODE_ENV: ${{ vars.NODE_ENV }}
