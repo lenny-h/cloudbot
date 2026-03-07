@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { banUser } from "@/utils/auth";
 import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { Label } from "@workspace/ui/components/label";
@@ -21,18 +22,21 @@ interface UserBanDialogProps {
   onClose: () => void;
 }
 
-// Ban duration options in days
-const BAN_DURATIONS = [
-  { label: "1 day", value: "1" },
-  { label: "3 days", value: "3" },
-  { label: "7 days", value: "7" },
-  { label: "14 days", value: "14" },
-  { label: "30 days", value: "30" },
-  { label: "90 days", value: "90" },
-  { label: "Permanent", value: "permanent" },
-];
-
 export function UserBanDialog({ user, isOpen, onClose }: UserBanDialogProps) {
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.userBanDialog;
+
+  // Ban duration options in days
+  const BAN_DURATIONS = [
+    { label: t["1day"], value: "1" },
+    { label: t["3days"], value: "3" },
+    { label: t["7days"], value: "7" },
+    { label: t["14days"], value: "14" },
+    { label: t["30days"], value: "30" },
+    { label: t["90days"], value: "90" },
+    { label: t.permanent, value: "permanent" },
+  ];
+
   const [reason, setReason] = useState("");
   const [banDuration, setBanDuration] = useState("7"); // Default to 7 days
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +53,7 @@ export function UserBanDialog({ user, isOpen, onClose }: UserBanDialogProps) {
       }
 
       await banUser(user.id, reason, banExpiresIn);
-      toast.success(`${user.name || user.email} has been banned.`);
+      toast.success(t.banned.replace("{name}", user.name || user.email));
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -64,27 +68,27 @@ export function UserBanDialog({ user, isOpen, onClose }: UserBanDialogProps) {
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={handleBanUser}
-      title={`Ban User: ${user.name || user.email}`}
-      description="This will prevent the user from accessing the platform."
-      confirmText={isLoading ? "Processing..." : "Ban User"}
+      title={t.title.replace("{name}", user.name || user.email)}
+      description={t.description}
+      confirmText={isLoading ? t.processing : t.confirm}
       confirmVariant="destructive"
     >
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
-          <Label htmlFor="reason">Reason for ban (optional)</Label>
+          <Label htmlFor="reason">{t.reasonLabel}</Label>
           <Textarea
             id="reason"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Enter reason for banning this user (default: Spamming)"
+            placeholder={t.reasonPlaceholder}
             className="resize-none"
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="banDuration">Ban duration</Label>
+          <Label htmlFor="banDuration">{t.durationLabel}</Label>
           <Select value={banDuration} onValueChange={setBanDuration}>
             <SelectTrigger id="banDuration" className="w-full">
-              <SelectValue placeholder="Select duration" />
+              <SelectValue placeholder={t.durationPlaceholder} />
             </SelectTrigger>
             <SelectContent>
               {BAN_DURATIONS.map((option) => (

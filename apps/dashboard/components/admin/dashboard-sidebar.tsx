@@ -11,22 +11,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { signOut } from "@workspace/ui/lib/auth-client";
 import { GalleryVerticalEnd, LogOut, Settings, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-const sidebarNavItems = [
-  {
-    href: "/admin/users",
-    icon: Users,
-    label: "Users",
-  },
-];
-
 export function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.dashboardSidebar;
+
+  const sidebarNavItems = [
+    {
+      href: "/admin/users",
+      icon: Users,
+      label: t.users,
+    },
+  ];
 
   const handleLogout = async () => {
     try {
@@ -48,7 +51,7 @@ export function DashboardSidebar() {
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Admin Panel</span>
+                  <span className="font-semibold">{t.adminPanel}</span>
                   <span className="">v1.0.0</span>
                 </div>
               </a>
@@ -82,22 +85,22 @@ export function DashboardSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Settings">
+            <SidebarMenuButton asChild tooltip={t.settings}>
               <Link href="/admin/settings">
                 <Settings className="h-4 w-4" />
-                <span>Settings</span>
+                <span>{t.settings}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              tooltip="Logout"
+              tooltip={t.logout}
               className="cursor-pointer"
             >
               <button onClick={handleLogout}>
                 <LogOut className="h-4 w-4" />
-                <span>Logout</span>
+                <span>{t.logout}</span>
               </button>
             </SidebarMenuButton>
           </SidebarMenuItem>

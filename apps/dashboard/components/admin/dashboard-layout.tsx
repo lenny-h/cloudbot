@@ -14,6 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { Separator } from "@workspace/ui/components/separator";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,6 +22,7 @@ import React from "react";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const { dashboardT } = useDashboardTranslations();
   const pathSegments = pathname.split("/").filter((segment) => segment);
 
   const relevantSegments =
@@ -38,7 +40,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link href="/admin">Admin</Link>
+                    <Link href="/admin">
+                      {dashboardT.dashboardLayout.admin}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {relevantSegments.length > 0 && <BreadcrumbSeparator />}

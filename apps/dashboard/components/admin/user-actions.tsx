@@ -1,5 +1,6 @@
 "use client";
 
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -24,6 +25,8 @@ interface UserActionsProps {
 }
 
 export function UserActions({ user, onActionComplete }: UserActionsProps) {
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.userActions;
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -43,13 +46,13 @@ export function UserActions({ user, onActionComplete }: UserActionsProps) {
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t.openMenu}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="text-sm">
           <DropdownMenuLabel className="text-muted-foreground text-xs font-medium">
-            Actions
+            {t.actions}
           </DropdownMenuLabel>
           <DropdownMenuItem
             className="text-xs"
@@ -59,7 +62,7 @@ export function UserActions({ user, onActionComplete }: UserActionsProps) {
             }}
           >
             <Shield className="mr-2 h-4 w-4" />
-            <span>Update Role</span>
+            <span>{t.updateRole}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           {user.banned ? (
@@ -71,7 +74,7 @@ export function UserActions({ user, onActionComplete }: UserActionsProps) {
               }}
             >
               <Ban className="mr-2 h-4 w-4" />
-              <span>Unban User</span>
+              <span>{t.unbanUser}</span>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
@@ -82,7 +85,7 @@ export function UserActions({ user, onActionComplete }: UserActionsProps) {
               }}
             >
               <Ban className="mr-2 h-4 w-4" />
-              <span>Ban User</span>
+              <span>{t.banUser}</span>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
@@ -93,7 +96,7 @@ export function UserActions({ user, onActionComplete }: UserActionsProps) {
             }}
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            <span>Delete User</span>
+            <span>{t.deleteUser}</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-xs"
@@ -103,7 +106,7 @@ export function UserActions({ user, onActionComplete }: UserActionsProps) {
             }}
           >
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Revoke All Sessions</span>
+            <span>{t.revokeAllSessions}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

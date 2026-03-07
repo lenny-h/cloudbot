@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { updateUserRole } from "@/utils/auth";
 import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { Label } from "@workspace/ui/components/label";
@@ -20,12 +21,15 @@ interface UserRoleDialogProps {
   onClose: () => void;
 }
 
-const ROLE_OPTIONS = [
-  { label: "User", value: "user" },
-  { label: "Admin", value: "admin" },
-];
-
 export function UserRoleDialog({ user, isOpen, onClose }: UserRoleDialogProps) {
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.userRoleDialog;
+
+  const ROLE_OPTIONS = [
+    { label: t.user, value: "user" },
+    { label: t.admin, value: "admin" },
+  ];
+
   const [selectedRole, setSelectedRole] = useState(user.role || "user");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +37,7 @@ export function UserRoleDialog({ user, isOpen, onClose }: UserRoleDialogProps) {
     try {
       setIsLoading(true);
       await updateUserRole(user.id, selectedRole);
-      toast.success(`User role updated to ${selectedRole}`);
+      toast.success(t.updated.replace("{role}", selectedRole));
       onClose();
     } catch (error) {
       if (error instanceof Error) {
@@ -49,16 +53,16 @@ export function UserRoleDialog({ user, isOpen, onClose }: UserRoleDialogProps) {
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={handleUpdateRole}
-      title={`Update Role: ${user.name || user.email}`}
-      description="Change the user's role in the system."
-      confirmText={isLoading ? "Processing..." : "Update Role"}
+      title={t.title.replace("{name}", user.name || user.email)}
+      description={t.description}
+      confirmText={isLoading ? t.processing : t.confirm}
     >
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
-          <Label htmlFor="role">Select Role</Label>
+          <Label htmlFor="role">{t.selectRoleLabel}</Label>
           <Select value={selectedRole} onValueChange={setSelectedRole}>
             <SelectTrigger id="role" className="w-full">
-              <SelectValue placeholder="Select role" />
+              <SelectValue placeholder={t.selectRolePlaceholder} />
             </SelectTrigger>
             <SelectContent>
               {ROLE_OPTIONS.map((option) => (

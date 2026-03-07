@@ -1,3 +1,117 @@
 {
-  
+    "usersTable": {
+        "searchEmail": "Search email...",
+        "allRoles": "All Roles",
+        "admin": "Admin",
+        "user": "User",
+        "addUser": "Add a user",
+        "name": "Name",
+        "verification": "Verification",
+        "linkedAccounts": "Linked Accounts",
+        "role": "Role",
+        "status": "Status",
+        "lastSignIn": "Last Sign In",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "verified": "Verified",
+        "unverified": "Unverified",
+        "active": "Active",
+        "banned": "Banned",
+        "reason": "Reason: {reason}",
+        "expires": "Expires: {date}",
+        "never": "Never",
+        "showingUsers": "Showing {count} of {total} users",
+        "failedToLoad": "Failed to load users"
+    },
+    "userActions": {
+        "openMenu": "Open menu",
+        "actions": "Actions",
+        "updateRole": "Update Role",
+        "unbanUser": "Unban User",
+        "banUser": "Ban User",
+        "deleteUser": "Delete User",
+        "revokeAllSessions": "Revoke All Sessions"
+    },
+    "userAddDialog": {
+        "createdAndVerified": "User created and verified successfully",
+        "createdWithEmail": "User created successfully. Verification email sent.",
+        "title": "Add New User",
+        "description": "Create a new user account with the following details.",
+        "creating": "Creating...",
+        "createUser": "Create User",
+        "name": "Name",
+        "namePlaceholder": "Enter user's name",
+        "email": "Email",
+        "emailPlaceholder": "Enter user's email",
+        "password": "Password",
+        "passwordPlaceholder": "Enter user's password",
+        "role": "Role",
+        "selectRole": "Select role",
+        "user": "User",
+        "admin": "Admin",
+        "autoVerify": "Auto-verify email"
+    },
+    "userBanDialog": {
+        "1day": "1 day",
+        "3days": "3 days",
+        "7days": "7 days",
+        "14days": "14 days",
+        "30days": "30 days",
+        "90days": "90 days",
+        "permanent": "Permanent",
+        "banned": "{name} has been banned.",
+        "title": "Ban User: {name}",
+        "description": "This will prevent the user from accessing the platform.",
+        "processing": "Processing...",
+        "confirm": "Ban User",
+        "reasonLabel": "Reason for ban (optional)",
+        "reasonPlaceholder": "Enter reason for banning this user (default: Spamming)",
+        "durationLabel": "Ban duration",
+        "durationPlaceholder": "Select duration"
+    },
+    "userDeleteDialog": {
+        "deleted": "{name} has been deleted.",
+        "title": "Delete User: {name}",
+        "description": "This action cannot be undone. This will permanently delete the user and remove their data from the system.",
+        "processing": "Processing...",
+        "confirm": "Delete User"
+    },
+    "userRoleDialog": {
+        "updated": "User role updated to {role}",
+        "user": "User",
+        "admin": "Admin",
+        "title": "Update Role: {name}",
+        "description": "Change the user's role in the system.",
+        "processing": "Processing...",
+        "confirm": "Update Role",
+        "selectRoleLabel": "Select Role",
+        "selectRolePlaceholder": "Select role"
+    },
+    "userUnbanDialog": {
+        "unbanned": "{name} has been unbanned.",
+        "title": "Unban User: {name}",
+        "description": "This will restore the user's access to the platform.",
+        "processing": "Processing...",
+        "confirm": "Unban User"
+    },
+    "userRevokeSessionsDialog": {
+        "revoked": "All sessions for {name} have been revoked.",
+        "title": "Revoke Sessions: {name}",
+        "description": "This will log the user out of all devices. They will need to log in again to access their account.",
+        "processing": "Processing...",
+        "confirm": "Revoke Sessions"
+    },
+    "dashboardSidebar": {
+        "adminPanel": "Admin Panel",
+        "users": "Users",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "dashboardLayout": {
+        "admin": "Admin"
+    },
+    "confirmationDialog": {
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+    }
 }

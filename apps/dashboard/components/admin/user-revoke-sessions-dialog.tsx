@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { revokeUserSessions } from "@/utils/auth";
 import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { useState } from "react";
@@ -18,14 +19,14 @@ export function UserRevokeSessionsDialog({
   onClose,
 }: UserRevokeSessionsDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.userRevokeSessionsDialog;
 
   const handleRevokeSessions = async () => {
     try {
       setIsLoading(true);
       await revokeUserSessions(user.id);
-      toast.success(
-        `All sessions for ${user.name || user.email} have been revoked.`,
-      );
+      toast.success(t.revoked.replace("{name}", user.name || user.email));
       onClose();
     } catch (error) {
       if (error instanceof Error) {
@@ -41,9 +42,9 @@ export function UserRevokeSessionsDialog({
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={handleRevokeSessions}
-      title={`Revoke Sessions: ${user.name || user.email}`}
-      description="This will log the user out of all devices. They will need to log in again to access their account."
-      confirmText={isLoading ? "Processing..." : "Revoke Sessions"}
+      title={t.title.replace("{name}", user.name || user.email)}
+      description={t.description}
+      confirmText={isLoading ? t.processing : t.confirm}
       confirmVariant="destructive"
     />
   );

@@ -1,3 +1,117 @@
 {
-  
+    "usersTable": {
+        "searchEmail": "E-Mail suchen...",
+        "allRoles": "Alle Rollen",
+        "admin": "Admin",
+        "user": "Benutzer",
+        "addUser": "Benutzer hinzufügen",
+        "name": "Name",
+        "verification": "Verifizierung",
+        "linkedAccounts": "Verknüpfte Konten",
+        "role": "Rolle",
+        "status": "Status",
+        "lastSignIn": "Letzte Anmeldung",
+        "createdAt": "Erstellt am",
+        "actions": "Aktionen",
+        "verified": "Verifiziert",
+        "unverified": "Nicht verifiziert",
+        "active": "Aktiv",
+        "banned": "Gesperrt",
+        "reason": "Grund: {reason}",
+        "expires": "Läuft ab: {date}",
+        "never": "Nie",
+        "showingUsers": "{count} von {total} Benutzern angezeigt",
+        "failedToLoad": "Benutzer konnten nicht geladen werden"
+    },
+    "userActions": {
+        "openMenu": "Menü öffnen",
+        "actions": "Aktionen",
+        "updateRole": "Rolle ändern",
+        "unbanUser": "Sperre aufheben",
+        "banUser": "Benutzer sperren",
+        "deleteUser": "Benutzer löschen",
+        "revokeAllSessions": "Alle Sitzungen widerrufen"
+    },
+    "userAddDialog": {
+        "createdAndVerified": "Benutzer erstellt und verifiziert",
+        "createdWithEmail": "Benutzer erstellt. Bestätigungs-E-Mail gesendet.",
+        "title": "Neuen Benutzer hinzufügen",
+        "description": "Erstellen Sie ein neues Benutzerkonto mit den folgenden Details.",
+        "creating": "Wird erstellt...",
+        "createUser": "Benutzer erstellen",
+        "name": "Name",
+        "namePlaceholder": "Name des Benutzers eingeben",
+        "email": "E-Mail",
+        "emailPlaceholder": "E-Mail des Benutzers eingeben",
+        "password": "Passwort",
+        "passwordPlaceholder": "Passwort des Benutzers eingeben",
+        "role": "Rolle",
+        "selectRole": "Rolle auswählen",
+        "user": "Benutzer",
+        "admin": "Admin",
+        "autoVerify": "E-Mail automatisch verifizieren"
+    },
+    "userBanDialog": {
+        "1day": "1 Tag",
+        "3days": "3 Tage",
+        "7days": "7 Tage",
+        "14days": "14 Tage",
+        "30days": "30 Tage",
+        "90days": "90 Tage",
+        "permanent": "Dauerhaft",
+        "banned": "{name} wurde gesperrt.",
+        "title": "Benutzer sperren: {name}",
+        "description": "Dies verhindert den Zugriff des Benutzers auf die Plattform.",
+        "processing": "Wird verarbeitet...",
+        "confirm": "Benutzer sperren",
+        "reasonLabel": "Grund der Sperrung (optional)",
+        "reasonPlaceholder": "Grund für die Sperrung eingeben (Standard: Spamming)",
+        "durationLabel": "Sperrdauer",
+        "durationPlaceholder": "Dauer auswählen"
+    },
+    "userDeleteDialog": {
+        "deleted": "{name} wurde gelöscht.",
+        "title": "Benutzer löschen: {name}",
+        "description": "Diese Aktion kann nicht rückgängig gemacht werden. Der Benutzer und alle zugehörigen Daten werden dauerhaft gelöscht.",
+        "processing": "Wird verarbeitet...",
+        "confirm": "Benutzer löschen"
+    },
+    "userRoleDialog": {
+        "updated": "Benutzerrolle auf {role} aktualisiert",
+        "user": "Benutzer",
+        "admin": "Admin",
+        "title": "Rolle ändern: {name}",
+        "description": "Ändern Sie die Rolle des Benutzers im System.",
+        "processing": "Wird verarbeitet...",
+        "confirm": "Rolle aktualisieren",
+        "selectRoleLabel": "Rolle auswählen",
+        "selectRolePlaceholder": "Rolle auswählen"
+    },
+    "userUnbanDialog": {
+        "unbanned": "Die Sperre für {name} wurde aufgehoben.",
+        "title": "Sperre aufheben: {name}",
+        "description": "Dies stellt den Zugang des Benutzers zur Plattform wieder her.",
+        "processing": "Wird verarbeitet...",
+        "confirm": "Sperre aufheben"
+    },
+    "userRevokeSessionsDialog": {
+        "revoked": "Alle Sitzungen für {name} wurden widerrufen.",
+        "title": "Sitzungen widerrufen: {name}",
+        "description": "Der Benutzer wird von allen Geräten abgemeldet und muss sich erneut anmelden.",
+        "processing": "Wird verarbeitet...",
+        "confirm": "Sitzungen widerrufen"
+    },
+    "dashboardSidebar": {
+        "adminPanel": "Admin-Bereich",
+        "users": "Benutzer",
+        "settings": "Einstellungen",
+        "logout": "Abmelden"
+    },
+    "dashboardLayout": {
+        "admin": "Admin"
+    },
+    "confirmationDialog": {
+        "confirm": "Bestätigen",
+        "cancel": "Abbrechen"
+    }
 }

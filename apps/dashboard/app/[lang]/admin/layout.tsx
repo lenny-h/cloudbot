@@ -2,7 +2,8 @@
 
 import DashboardLayout from "@/components/admin/dashboard-layout";
 import { useSharedTranslations } from "@workspace/ui/contexts/shared-translations-context";
-import { client, isAdminUser } from "@workspace/ui/lib/auth-client";
+import { client } from "@workspace/ui/lib/auth-client";
+import { isAdminUser } from "@workspace/ui/lib/is-admin-user";
 import { CentralLoadingScreen } from "@workspace/ui/shared-components/central-loading-screen";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect } from "react";

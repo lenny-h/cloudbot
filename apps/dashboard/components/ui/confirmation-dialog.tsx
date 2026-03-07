@@ -1,5 +1,6 @@
 "use client";
 
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,11 +31,15 @@ export function ConfirmationDialog({
   onConfirm,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   confirmVariant = "default",
   children,
 }: ConfirmationDialogProps) {
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.confirmationDialog;
+  const resolvedConfirmText = confirmText ?? t.confirm;
+  const resolvedCancelText = cancelText ?? t.cancel;
   const handleConfirm = () => {
     onConfirm();
     onClose();
@@ -56,7 +61,9 @@ export function ConfirmationDialog({
         </AlertDialogHeader>
         {children}
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel onClick={onClose}>
+            {resolvedCancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             className={
@@ -65,7 +72,7 @@ export function ConfirmationDialog({
                 : ""
             }
           >
-            {confirmText}
+            {resolvedConfirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

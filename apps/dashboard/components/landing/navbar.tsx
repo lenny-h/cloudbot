@@ -10,7 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { isAdminUser, signOut, useSession } from "@workspace/ui/lib/auth-client";
+import { signOut, useSession } from "@workspace/ui/lib/auth-client";
+import { isAdminUser } from "@workspace/ui/lib/is-admin-user";
 import { LogOut, Shield, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

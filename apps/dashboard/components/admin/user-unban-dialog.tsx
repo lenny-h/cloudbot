@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { unbanUser } from "@/utils/auth";
 import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { useState } from "react";
@@ -18,12 +19,14 @@ export function UserUnbanDialog({
   onClose,
 }: UserUnbanDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.userUnbanDialog;
 
   const handleUnbanUser = async () => {
     try {
       setIsLoading(true);
       await unbanUser(user.id);
-      toast.success(`${user.name || user.email} has been unbanned.`);
+      toast.success(t.unbanned.replace("{name}", user.name || user.email));
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -38,9 +41,9 @@ export function UserUnbanDialog({
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={handleUnbanUser}
-      title={`Unban User: ${user.name || user.email}`}
-      description="This will restore the user's access to the platform."
-      confirmText={isLoading ? "Processing..." : "Unban User"}
+      title={t.title.replace("{name}", user.name || user.email)}
+      description={t.description}
+      confirmText={isLoading ? t.processing : t.confirm}
     />
   );
 }

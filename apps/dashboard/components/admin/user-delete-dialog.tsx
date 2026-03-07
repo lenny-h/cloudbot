@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { deleteUser } from "@/utils/auth";
 import { type UserWithDetails } from "@workspace/api-routes/types/user-with-details.js";
 import { useState } from "react";
@@ -18,12 +19,14 @@ export function UserDeleteDialog({
   onClose,
 }: UserDeleteDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.userDeleteDialog;
 
   const handleDeleteUser = async () => {
     try {
       setIsLoading(true);
       await deleteUser(user.id);
-      toast.success(`${user.name || user.email} has been deleted.`);
+      toast.success(t.deleted.replace("{name}", user.name || user.email));
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -38,9 +41,9 @@ export function UserDeleteDialog({
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={handleDeleteUser}
-      title={`Delete User: ${user.name || user.email}`}
-      description="This action cannot be undone. This will permanently delete the user and remove their data from the system."
-      confirmText={isLoading ? "Processing..." : "Delete User"}
+      title={t.title.replace("{name}", user.name || user.email)}
+      description={t.description}
+      confirmText={isLoading ? t.processing : t.confirm}
       confirmVariant="destructive"
     />
   );

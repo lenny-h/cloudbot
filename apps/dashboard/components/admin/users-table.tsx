@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDashboardTranslations } from "@/contexts/dashboard-translations";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@workspace/ui/components/badge";
 import {
@@ -29,6 +30,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@workspace/ui/components/select";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import {
@@ -74,6 +76,8 @@ const getAccountIcon = (account: string) => {
 
 export function UsersTable() {
   const { sharedT } = useSharedTranslations();
+  const { dashboardT } = useDashboardTranslations();
+  const t = dashboardT.usersTable;
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -146,7 +150,7 @@ export function UsersTable() {
           <Search className="text-muted-foreground absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search email..."
+            placeholder={t.searchEmail}
             className="bg-background w-50 rounded-md border py-2 pr-2 pl-8 text-sm"
             value={email}
             onChange={(e) => {
@@ -163,37 +167,26 @@ export function UsersTable() {
             setPage(1);
           }}
         >
-          <SelectTrigger className="flex w-35 items-center gap-2">
-            <span className="flex items-center gap-2">
-              {role === "all" ? (
-                <Users className="h-4 w-4" />
-              ) : role === "admin" ? (
-                <Shield className="h-4 w-4" />
-              ) : (
-                <User className="h-4 w-4" />
-              )}
-              {role === "all"
-                ? "All Roles"
-                : role.charAt(0).toUpperCase() + role.slice(1)}
-            </span>
+          <SelectTrigger className="w-35">
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">
               <span className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
-                All Roles
+                {t.allRoles}
               </span>
             </SelectItem>
             <SelectItem value="admin">
               <span className="flex items-center gap-2">
                 <Shield className="h-4 w-4" />
-                Admin
+                {t.admin}
               </span>
             </SelectItem>
             <SelectItem value="user">
               <span className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                User
+                {t.user}
               </span>
             </SelectItem>
           </SelectContent>
@@ -204,12 +197,12 @@ export function UsersTable() {
         onClick={() => setIsAddDialogOpen(true)}
       >
         <UserPlus className="h-4 w-4" />
-        Add a user
+        {t.addUser}
       </button>
     </div>
   );
 
-  if (error) return <div>Failed to load users</div>;
+  if (error) return <div>{t.failedToLoad}</div>;
   if (!data)
     return (
       <div className="border-accent-foreground space-y-4">
@@ -219,14 +212,14 @@ export function UsersTable() {
             <TableHeader>
               <TableRow>
                 {[
-                  { label: "Name" },
-                  { label: "Verification" },
-                  { label: "Linked Accounts" },
-                  { label: "Role" },
-                  { label: "Status" },
-                  { label: "Last Sign In" },
-                  { label: "Created At" },
-                  { label: "Actions", className: "w-[80px]" },
+                  { label: t.name },
+                  { label: t.verification },
+                  { label: t.linkedAccounts },
+                  { label: t.role },
+                  { label: t.status },
+                  { label: t.lastSignIn },
+                  { label: t.createdAt },
+                  { label: t.actions, className: "w-[80px]" },
                 ].map((col) => (
                   <TableHead
                     key={col.label}
@@ -374,14 +367,14 @@ export function UsersTable() {
           <TableHeader className="bg-muted sticky top-0 z-10">
             <TableRow>
               {[
-                { label: "Name" },
-                { label: "Verification" },
-                { label: "Linked Accounts" },
-                { label: "Role" },
-                { label: "Status" },
-                { label: "Last Sign In" },
-                { label: "Created At" },
-                { label: "Actions", className: "w-[80px]" },
+                { label: t.name },
+                { label: t.verification },
+                { label: t.linkedAccounts },
+                { label: t.role },
+                { label: t.status },
+                { label: t.lastSignIn },
+                { label: t.createdAt },
+                { label: t.actions, className: "w-[80px]" },
               ].map((col) => (
                 <TableHead
                   key={col.label}
@@ -464,7 +457,7 @@ export function UsersTable() {
                           className="flex items-center gap-1 border-green-200 bg-green-50 px-2 py-1 text-xs text-green-700 dark:border-green-700 dark:bg-green-900 dark:text-green-200"
                         >
                           <CheckCircle className="h-3 w-3" />
-                          Verified
+                          {t.verified}
                         </Badge>
                       ) : (
                         <Badge
@@ -472,7 +465,7 @@ export function UsersTable() {
                           className="flex items-center gap-1 border-yellow-200 bg-yellow-50 px-2 py-1 text-xs text-yellow-700 dark:border-yellow-700 dark:bg-yellow-900 dark:text-yellow-200"
                         >
                           <XCircle className="h-3 w-3" />
-                          Unverified
+                          {t.unverified}
                         </Badge>
                       )}
                     </TableCell>
@@ -503,10 +496,7 @@ export function UsersTable() {
                         ) : (
                           <User className="h-3 w-3" />
                         )}
-                        {user.role
-                          ? user.role.charAt(0).toUpperCase() +
-                            user.role.slice(1)
-                          : "User"}
+                        {user.role === "admin" ? t.admin : t.user}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-3">
@@ -519,18 +509,21 @@ export function UsersTable() {
                                 className="flex cursor-help items-center gap-1 px-2 py-1 text-xs"
                               >
                                 <Ban className="h-3 w-3" />
-                                Banned
+                                {t.banned}
                               </Badge>
                             </TooltipTrigger>
                             {user.banReason && (
                               <TooltipContent>
-                                Reason: {user.banReason}
+                                {t.reason.replace("{reason}", user.banReason)}
                               </TooltipContent>
                             )}
                           </Tooltip>
                           {user.banExpires && (
                             <span className="text-muted-foreground text-xs">
-                              Expires: {format(user.banExpires, "MMM d, yyyy")}
+                              {t.expires.replace(
+                                "{date}",
+                                format(user.banExpires, "MMM d, yyyy"),
+                              )}
                             </span>
                           )}
                         </div>
@@ -540,14 +533,14 @@ export function UsersTable() {
                           className="flex items-center gap-1 border-green-200 bg-green-50 px-2 py-1 text-xs text-green-700 dark:border-green-700 dark:bg-green-900 dark:text-green-200"
                         >
                           <Check className="h-3 w-3" />
-                          Active
+                          {t.active}
                         </Badge>
                       )}
                     </TableCell>
                     <TableCell className="text-muted-foreground px-4 py-3 text-xs">
                       {user.lastSignIn
                         ? format(user.lastSignIn, "MMM d, yyyy 'at' h:mm a")
-                        : "Never"}
+                        : t.never}
                     </TableCell>
                     <TableCell className="text-muted-foreground px-4 py-3 text-xs">
                       {format(user.createdAt, "MMM d, yyyy 'at' h:mm a")}
@@ -565,7 +558,9 @@ export function UsersTable() {
       </div>
       <div className="flex items-center justify-between px-4 py-1">
         <div className="text-muted-foreground text-sm">
-          Showing {transformedUsers.length} of {total} users
+          {t.showingUsers
+            .replace("{count}", String(transformedUsers.length))
+            .replace("{total}", String(total))}
         </div>
         {renderPagination()}
       </div>
