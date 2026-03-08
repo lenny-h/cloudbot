@@ -1,5 +1,6 @@
 "use client";
 
+import { isAdminUser } from "@/lib/is-admin-user";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -11,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import { signOut, useSession } from "@workspace/ui/lib/auth-client";
-import { isAdminUser } from "@workspace/ui/lib/is-admin-user";
 import { LogOut, Shield, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
