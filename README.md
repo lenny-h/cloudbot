@@ -85,7 +85,7 @@ wrangler r2 bucket create cloudbot-bucket
 
 In the Cloudflare dashboard, navigate to **AI** → **AI Search** and create a new AI Search instance. When prompted, connect it to the `cloudbot-bucket` R2 bucket you created in the previous step. This enables semantic search over files stored in R2 and is required for certain search features in the API.
 
-Set the `AUTORAG_NAME` environment variable to the name you chose for the AI Search instance (defaults to `cloudbot-ai-search` in `wrangler.jsonc`).
+Set the `AUTORAG_NAME` environment variable to the name you chose for the AI Search instance.
 
 ### Step 7: Update Custom Domains in wrangler.jsonc
 
@@ -125,145 +125,88 @@ Make sure your domain is added to Cloudflare and the nameservers are updated.
 
 ### Step 8: Set Up GitHub Secrets (for CI/CD)
 
-To enable automatic deployment via GitHub Actions, you need to configure secrets and variables in your GitHub repository. Go to **GitHub** → **Settings** → **Secrets and variables** → **Actions**.
+This step is based on `.github/workflows/deploy.yml`.
 
-#### Required Secrets (Deployment)
+Go to **GitHub** -> **Settings** -> **Secrets and variables** -> **Actions** and add the following.
 
-**GitHub Secrets** → Configure in GitHub "Secrets" tab:
+#### 8.1 Required for Workflow to Run
 
-- **CLOUDFLARE_API_TOKEN** - Cloudflare API token with Workers edit permissions
-  - Go to Cloudflare Dashboard → **My Profile** → **API Tokens**
-  - Click **Create Token** → Select "Edit Cloudflare Workers"
+| Name                    | Type     | Required? | What it is                                                                        | How to obtain                                                                                                                           |
+| ----------------------- | -------- | --------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Secret   | Yes       | API token used by Wrangler GitHub Action to deploy Workers and run D1 migrations. | Cloudflare Dashboard -> **My Profile** -> **API Tokens** -> **Create Token**. Use a token with Workers/D1 permissions for your account. |
+| `CLOUDFLARE_ACCOUNT_ID` | Variable | Yes       | Cloudflare account ID used by Wrangler action.                                    | Cloudflare Dashboard -> right sidebar/account overview -> copy **Account ID**.                                                          |
 
-- **CLOUDFLARE_ACCOUNT_ID** - Your Cloudflare account ID
-  - Go to Cloudflare Dashboard → **Home**
-  - Copy your Account ID
+#### 8.2 Deploy Jobs
 
-#### API Worker Configuration
+These values are passed to the API, App, and Dashboard Worker deployments.
 
-**Configure as GitHub Secrets** (encrypted in both GitHub and Cloudflare):
+**GitHub Variables (`vars`)**
 
-- `BETTER_AUTH_SECRET` - Secret key for Better Auth. Generate with:
-  - MacOS/Linux: `openssl rand -hex 32`
-  - Windows PowerShell: `[byte[]]$bytes = New-Object byte[] 16; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes); ($bytes | ForEach-Object { $_.ToString("x2") }) -join ""`
-- `ENCRYPTION_KEY` - 32-character key for AES-256 encryption (generate same way)
-- `RESEND_API_KEY` - Resend API key (if email signup enabled)
-- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret (if OAuth enabled)
-- `GITHUB_CLIENT_SECRET` - GitHub OAuth client secret (if OAuth enabled)
-- `GITLAB_CLIENT_SECRET` - GitLab OAuth client secret (if OAuth enabled)
-- `SSO_CLIENT_SECRET` - SSO client secret (if SSO enabled)
-- `CLOUDFLARE_SECRET_ACCESS_KEY` - Cloudflare R2 secret access key (can be obtained from Cloudflare dashboard under R2 settings)
-- `AI_GATEWAY_API_KEY` - Vercel AI Gateway API key (if using Vercel AI Gateway as model provider)
-- `ANTHROPIC_API_KEY` - Anthropic API key (if using Anthropic as model provider)
-- `ANTHROPIC_AUTH_TOKEN` - Anthropic auth token (if using Anthropic with auth token instead of API key)
-- `AWS_SECRET_ACCESS_KEY` - AWS secret key for Bedrock (if using AWS Bedrock as model provider)
-- `AZURE_API_KEY` - Azure API key (if using Microsoft Azure as model provider)
-- `GOOGLE_PRIVATE_KEY` - Google service account private key (if using Google Vertex AI as model provider)
-- `OPENAI_API_KEY` - OpenAI API key (if using OpenAI as model provider)
-- `EXA_API_KEY` - Exa Labs API key (if using Exa Labs as search provider)
-- `PARALLEL_API_KEY` - Parallel API key (if using Parallel as search provider)
-- `TAVILY_API_KEY` - Tavily API key (if using Tavily as search provider)
+| Name                         | Required?                        | What it is                                                            | How to obtain                                                                                                                                         |
+| ---------------------------- | -------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`                   | Yes                              | Runtime environment for API worker.                                   | Setting to 'development' will turn on debug logs.                                                                                                     |
+| `BASE_DOMAIN`                | Yes                              | Base cookie/domain scope (`your-domain.com`).                         | Your primary domain in Cloudflare DNS.                                                                                                                |
+| `BETTER_AUTH_URL`            | Yes                              | Public base URL used by auth backend (`https://api.your-domain.com`). | Your deployed API URL/domain.                                                                                                                         |
+| `ADMIN_USER_IDS`             | Optional                         | Comma-separated user IDs that should have admin access.               | Create after users exist; get IDs from your DB or from the browser console when the app is running.                                                   |
+| `ALLOWED_ORIGINS`            | Yes                              | Comma-separated CORS allow-list for frontend origins.                 | Set to `chat.your-domain.com,admin.your-domain.com`                                                                                                   |
+| `ENABLE_EMAIL_SIGNUP`        | Required                         | Feature flag (`true`/`false`) for email signup.                       | Decide based on your requirements.                                                                                                                    |
+| `ENABLE_OAUTH_LOGIN`         | Required                         | Feature flag (`true`/`false`) for OAuth login.                        | Decide based on your requirements.                                                                                                                    |
+| `ENABLE_SSO`                 | Required                         | Feature flag (`true`/`false`) for SSO login.                          | Decide based on your requirements.                                                                                                                    |
+| `ALLOWED_EMAIL_DOMAINS`      | Optional                         | Comma-separated email domain allow-list.                              | Define your allowed domains, if restricting signup (eg setting to `your-company.com` will only allow email addressed ending with `@your-company.com`) |
+| `RESEND_SENDER_EMAIL`        | Required if email enabled        | Sender email identity for transactional email.                        | Create/verify sender domain/address in Resend dashboard.                                                                                              |
+| `GOOGLE_CLIENT_ID`           | Required if Google OAuth enabled | Public OAuth client ID.                                               | Google Cloud Console -> APIs & Services -> Credentials -> OAuth Client ID.                                                                            |
+| `GITHUB_CLIENT_ID`           | Required if GitHub OAuth enabled | Public OAuth app/client ID.                                           | GitHub Developer Settings -> OAuth Apps/GitHub App credentials.                                                                                       |
+| `GITLAB_CLIENT_ID`           | Required if GitLab OAuth enabled | Public OAuth client ID.                                               | GitLab Applications settings for your OAuth app.                                                                                                      |
+| `SSO_DOMAIN`                 | Required if SSO enabled          | Organization domain used by SSO flow.                                 | Value from your IdP/tenant configuration.                                                                                                             |
+| `SSO_PROVIDER_ID`            | Required if SSO enabled          | Identifier for configured SSO provider.                               | Value configured in your SSO provider setup.                                                                                                          |
+| `SSO_CLIENT_ID`              | Required if SSO enabled          | Public SSO/OIDC client ID.                                            | Your IdP app/client registration.                                                                                                                     |
+| `SSO_ISSUER`                 | Required if SSO enabled          | OIDC issuer URL.                                                      | Copy from IdP OIDC metadata/docs.                                                                                                                     |
+| `SSO_DISCOVERY_ENDPOINT`     | Required if SSO enabled          | OIDC discovery URL.                                                   | Usually `https://<issuer>/.well-known/openid-configuration`.                                                                                          |
+| `SSO_AUTHORIZATION_ENDPOINT` | Required if SSO enabled          | OIDC authorization endpoint URL.                                      | From IdP metadata/discovery document.                                                                                                                 |
+| `SSO_TOKEN_ENDPOINT`         | Required if SSO enabled          | OIDC token endpoint URL.                                              | From IdP metadata/discovery document.                                                                                                                 |
+| `SSO_JWKS_ENDPOINT`          | Required if SSO enabled          | OIDC JWKS endpoint URL for key validation.                            | From IdP metadata/discovery document.                                                                                                                 |
+| `NEXT_PUBLIC_LLM_MODELS`     | Yes                              | JSON list of models that you want to use.                             | Must be valid json. You can eg copy and modify the value in `.env.example`.                                                                           |
+| `AUTORAG_NAME`               | Yes                              | Name of Cloudflare AI Search/AutoRAG instance.                        | Cloudflare dashboard -> AI Search/AutoRAG instance name.                                                                                              |
+| `R2_ENDPOINT`                | Yes                              | Endpoint URL for your R2 bucket API access.                           | Set to `https://your-account-id.r2.cloudflarestorage.com`                                                                                             |
+| `R2_BUCKET_NAME`             | Yes                              | Target R2 bucket name.                                                | Bucket name created in Step 5.                                                                                                                        |
+| `CLOUDFLARE_ACCESS_KEY_ID`   | Yes                              | R2 S3 access key ID.                                                  | Cloudflare R2 -> API Tokens -> create R2 API token/access key pair.                                                                                   |
+| `AWS_ACCESS_KEY_ID`          | Required if AWS used             | AWS access key for AWS-based model/provider integrations.             | AWS IAM -> create access key for integration user.                                                                                                    |
+| `AWS_REGION`                 | Required if AWS used             | AWS region for AWS integrations.                                      | Your AWS service region (example `us-east-1`).                                                                                                        |
+| `AZURE_RESOURCE_NAME`        | Required if Azure used           | Azure OpenAI resource/deployment host resource name.                  | Azure portal -> Azure OpenAI resource overview.                                                                                                       |
+| `GOOGLE_VERTEX_PROJECT`      | Required if Vertex used          | GCP project ID for Vertex AI.                                         | Google Cloud Console -> Project info.                                                                                                                 |
+| `GOOGLE_VERTEX_LOCATION`     | Required if Vertex used          | Vertex AI region (example `us-central1`).                             | Google Cloud Console -> Vertex AI region you deployed in.                                                                                             |
+| `GOOGLE_CLIENT_EMAIL`        | Required if Vertex used          | Service account email for Google auth.                                | Google Cloud IAM -> Service Accounts -> email.                                                                                                        |
+| `GOOGLE_PRIVATE_KEY_ID`      | Required if Vertex used          | ID of service account private key.                                    | Generated with Google service account key JSON.                                                                                                       |
+| `SEARCH_PROVIDER`            | Usually yes                      | Name of configured search provider (`google`, `tavily`, etc.).        | Choose based on the API key you configured.                                                                                                           |
+| `TITLE_MODEL_IDX`            | Optional                         | Index of model in `NEXT_PUBLIC_LLM_MODELS` for title generation.      | Choose integer index from your models array.                                                                                                          |
+| `ARTIFACT_MODEL_IDX`         | Optional                         | Index of model for artifact generation.                               | Choose integer index from your models array.                                                                                                          |
+| `SEARCH_MODEL_IDX`           | Optional                         | Index of model used for search tasks.                                 | Choose integer index from your models array.                                                                                                          |
+| `COMPLETION_MODEL_IDX`       | Optional                         | Index of model used for text completion in text editor.               | Choose integer index from your models array.                                                                                                          |
 
-**Configure as GitHub Variables** (plaintext in GitHub, available as env vars in Cloudflare):
+**GitHub Secrets (`secrets`)**
 
-- `NODE_ENV` - Environment mode ("production")
-- `BASE_DOMAIN` - Base domain for cookie settings (e.g., "your-domain.com")
-- `BETTER_AUTH_URL` - The base URL for Better Auth (e.g., "https://api.your-domain.com")
-- `ADMIN_USER_IDS` - Comma-separated list of admin user IDs (optional)
-- `ALLOWED_ORIGINS` - Comma-separated CORS origins (e.g., "https://chat.your-domain.com,https://admin.your-domain.com")
-- `ENABLE_EMAIL_SIGNUP` - Enable email/password signup ("true" or "false")
-- `ENABLE_OAUTH_LOGIN` - Enable OAuth providers ("true" or "false")
-- `ENABLE_SSO` - Enable SSO authentication ("true" or "false")
-- `ALLOWED_EMAIL_DOMAINS` - Restrict email domains (comma-separated, optional)
-- `RESEND_SENDER_EMAIL` - Resend sender email address
-- `GOOGLE_CLIENT_ID` - Google OAuth client ID (public, optional)
-- `GITHUB_CLIENT_ID` - GitHub OAuth client ID (public, optional)
-- `GITLAB_CLIENT_ID` - GitLab OAuth client ID (public, optional)
-- `SSO_DOMAIN` - SSO domain (e.g., "example.com", optional)
-- `SSO_PROVIDER_ID` - SSO provider ID (e.g., "keycloak-test", optional)
-- `SSO_CLIENT_ID` - SSO client ID (public)
-- `SSO_ISSUER` - SSO issuer URL
-- `SSO_DISCOVERY_ENDPOINT` - OIDC discovery endpoint
-- `SSO_AUTHORIZATION_ENDPOINT` - Authorization endpoint
-- `SSO_TOKEN_ENDPOINT` - Token endpoint
-- `SSO_JWKS_ENDPOINT` - JWKS endpoint
-- `NEXT_PUBLIC_LLM_MODELS` - JSON array of LLM models (see `.env.example`)
-- `R2_ENDPOINT` - Cloudflare R2 endpoint URL
-- `R2_BUCKET_NAME` - Cloudflare R2 bucket name (e.g., "cloudbot-bucket")
-- `CLOUDFLARE_ACCESS_KEY_ID` - Cloudflare R2 access key ID
-- `AWS_ACCESS_KEY_ID` - AWS access key ID (optional)
-- `AWS_REGION` - AWS region (e.g., "us-east-1", optional)
-- `AZURE_RESOURCE_NAME` - Azure resource name (optional)
-- `GOOGLE_VERTEX_PROJECT` - Google Vertex AI project ID (optional)
-- `GOOGLE_VERTEX_LOCATION` - Google Vertex AI location (e.g., "us-central1", optional)
-- `GOOGLE_CLIENT_EMAIL` - Google service account email (optional)
-- `GOOGLE_PRIVATE_KEY_ID` - Google private key ID (optional)
-- `SEARCH_PROVIDER` - Search provider name (e.g., "google", "tavily")
-- `TITLE_MODEL_IDX` - Model index for titles (e.g., "0", optional)
-- `ARTIFACT_MODEL_IDX` - Model index for artifacts (e.g., "0", optional)
-- `SEARCH_MODEL_IDX` - Model index for search (e.g., "0", optional)
-- `COMPLETION_MODEL_IDX` - Model index for completions (e.g., "0", optional)
-- `AUTORAG_NAME` - Name of the Cloudflare AutoRAG instance (e.g., "cloudbot-ai-search")
+| Name                           | Required?                             | What it is                                               | How to obtain                                                               |
+| ------------------------------ | ------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `BETTER_AUTH_SECRET`           | Yes                                   | Secret used by Better Auth for signing/crypto.           | Generate random 32-byte hex string: `openssl rand -hex 32` (or equivalent). |
+| `ENCRYPTION_KEY`               | Yes                                   | App encryption key (AES-style secret).                   | Generate strong random key (32-byte hex or app-required format).            |
+| `RESEND_API_KEY`               | Required if email enabled             | API key for sending email through Resend.                | Resend dashboard -> API Keys -> create key.                                 |
+| `GOOGLE_CLIENT_SECRET`         | Required if Google OAuth enabled      | OAuth client secret for Google login.                    | Google Cloud OAuth credentials page.                                        |
+| `GITHUB_CLIENT_SECRET`         | Required if GitHub OAuth enabled      | OAuth app/client secret for GitHub login.                | GitHub Developer Settings -> OAuth app secret.                              |
+| `GITLAB_CLIENT_SECRET`         | Required if GitLab OAuth enabled      | OAuth client secret for GitLab login.                    | GitLab application credentials page.                                        |
+| `SSO_CLIENT_SECRET`            | Required if SSO enabled               | OIDC client secret for enterprise SSO provider.          | Your IdP application credentials.                                           |
+| `CLOUDFLARE_SECRET_ACCESS_KEY` | Yes                                   | R2 S3 secret key paired with `CLOUDFLARE_ACCESS_KEY_ID`. | Cloudflare R2 API token/access key creation flow.                           |
+| `AI_GATEWAY_API_KEY`           | Required if Vercel AI Gateway used    | Vercel AI Gateway api key.                               | Vercel dashboard.                                                           |
+| `ANTHROPIC_API_KEY`            | Required if Anthropic key auth used   | Anthropic API key.                                       | Anthropic console -> API keys.                                              |
+| `ANTHROPIC_AUTH_TOKEN`         | Required if Anthropic token auth used | Anthropic auth token alternative to API key mode.        | Anthropic account/token settings, if using token auth.                      |
+| `AWS_SECRET_ACCESS_KEY`        | Required if AWS used                  | AWS secret access key paired with `AWS_ACCESS_KEY_ID`.   | AWS IAM access key creation flow.                                           |
+| `AZURE_API_KEY`                | Required if Azure used                | API key for Azure model endpoint.                        | Azure portal -> Keys and Endpoint for your resource.                        |
+| `GOOGLE_PRIVATE_KEY`           | Required if Vertex used               | Service account private key value for Google auth.       | Download/create service account key JSON and copy private key value.        |
+| `OPENAI_API_KEY`               | Required if OpenAI used               | OpenAI API key for model calls.                          | OpenAI dashboard -> API keys.                                               |
+| `EXA_API_KEY`                  | Required if Exa search used           | API key for Exa search provider.                         | Exa dashboard -> API keys.                                                  |
+| `PARALLEL_API_KEY`             | Required if Parallel search used      | API key for Parallel search provider.                    | Parallel provider dashboard -> API keys.                                    |
+| `TAVILY_API_KEY`               | Required if Tavily search used        | API key for Tavily search provider.                      | Tavily dashboard -> API keys.                                               |
 
-#### Web App Secrets
-
-**Configure as GitHub Variables** (all are non-sensitive configuration):
-
-- `NEXT_PUBLIC_API_URL` - API URL (e.g., "https://api.your-domain.com")
-- `NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_ENABLE_OAUTH_LOGIN` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_ENABLE_SSO` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_CSP_ENDPOINTS` - Content Security Policy endpoints (https://cloudbot-bucket.<your-cloudflare-account-id>.r2.cloudflarestorage.com)
-- `NEXT_PUBLIC_LLM_MODELS` - Same JSON as API
-
-_Note: These are embedded in the client-side bundle during build, so they're passed as build-time environment variables, not Cloudflare secrets._
-
-#### Dashboard App Secrets
-
-**Configure as GitHub Variables** (all are non-sensitive configuration):
-
-- `NEXT_PUBLIC_API_URL` - API URL (e.g., "https://api.your-domain.com")
-- `NEXT_PUBLIC_ENABLE_EMAIL_SIGNUP` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_ENABLE_OAUTH_LOGIN` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_ENABLE_SSO` - Same as API ("true" or "false")
-- `NEXT_PUBLIC_CSP_ENDPOINTS` - Content Security Policy endpoints
-
-_Note: These are embedded in the client-side bundle during build._
-
-#### Cloudflare Workers Configuration
-
-The GitHub Actions workflow automatically handles configuration:
-
-**Secrets** (listed in `secrets:` parameter):
-
-- Uploaded as encrypted Cloudflare Worker secrets
-- Never visible in Cloudflare dashboard or logs
-- Access via `env.SECRET_NAME` in your worker code
-
-> **Important:** Any secrets or variables you do not use must be removed from the `secrets:` list in the `deploy-api` job of `.github/workflows/deploy.yml`. Leaving unused entries will cause the deployment to fail if the corresponding GitHub Secret or Variable is not defined.
-
-**Variables** (passed via `env:` section):
-
-- Available as environment variables during build and runtime
-- Can also be defined in `wrangler.jsonc` under `[vars]`
-- Visible in logs for easier debugging
-
-For manual deployment, set secrets with:
-
-```bash
-wrangler secret put BETTER_AUTH_SECRET --env production
-```
-
-And define non-sensitive config in `wrangler.jsonc`:
-
-```jsonc
-{
-  "vars": {
-    "NODE_ENV": "production",
-    "BETTER_AUTH_URL": "https://api.your-domain.com",
-  },
-}
-```
+Note: The `deploy-api` step also has a Wrangler `secrets:` list. Keep this list in sync with the values you actually use (e.g. if you dont use tavily, remove TAVILY_API_KEY from the `secrets:` list). If a key is listed there but missing in GitHub (and thus in `env:`), deployment can fail.
 
 ### Step 9: Deploy via GitHub Actions (Automatic)
 
@@ -281,7 +224,7 @@ git push origin main
 - ✅ GitHub Actions workflow triggers
 - ✅ API, Web, and Dashboard deploy simultaneously
 - ✅ Status appears in your repo's **Actions** tab
-- ✅ Cloudflare logging is turned off; you can turn it off in the 'wrangler.jsonc' file for each app under the 'observability' section.
+- ✅ Cloudflare logging is turned on; you can turn it off in the 'wrangler.jsonc' file for each app under the 'observability' section.
 
 ### Step 10: Manual Deployment (if needed)
 
